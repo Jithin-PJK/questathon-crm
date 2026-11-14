@@ -3,1015 +3,810 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Questathon CRM | FlytBase Customer Success</title>
+  <title>FlytBase CS Intelligence CRM | Questathon CRM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ════════════════════════════════════════════════════════════
+       FlytBase Official Design System Palette
+    ════════════════════════════════════════════════════════════ */
     :root {
-      --sidebar-bg: #0c1222;
-      --sidebar-nav-hover: #182238;
-      --sidebar-active: #1d2a45;
-      --sidebar-text: #94a3b8;
-      --sidebar-text-bright: #ffffff;
-      --sidebar-border: #1e293b;
+      /* Charcoal Dark Base */
+      --dbg: #141416;         /* Default Page Background */
+      --ds: #1c1d21;          /* Card / Surface */
+      --de: #24262b;          /* Elevated Surface */
+      --de-hover: #2b2e35;    /* Hover State */
+      --db: #2f323a;          /* Surface Border */
+      --db-subtle: #222429;   /* Subtle Border */
+      --dm: #6b7280;          /* Muted Gray */
+      --dsc: #9ca3af;         /* Subtle Text */
+      --dh: #f3f4f6;          /* High-emphasis Text / Headings */
+      --white: #ffffff;
 
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --border-subtle: #f1f5f9;
-      --border-strong: #cbd5e1;
+      /* FlytBase Signal Orange (Primary Accent) */
+      --orange: #ec7d42;      /* Primary Accent */
+      --orange-bright: #f97316;
+      --orange-dark: #d95b28;
+      --orange-glow: rgba(236, 125, 66, 0.15);
+      --orange-bg: rgba(236, 125, 66, 0.1);
 
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --text-light: #94a3b8;
+      /* Eucalyptus / Success */
+      --eucalyptus: #3a7a65;
+      --eucalyptus-light: rgba(58, 122, 101, 0.15);
+      --eucalyptus-text: #6ee7b7;
 
-      --blue: #2563eb;
-      --blue-hover: #1d4ed8;
-      --blue-light: #eff6ff;
-      --blue-border: #bfdbfe;
-
-      --red: #ef4444;
-      --red-dark: #dc2626;
-      --red-light: #fef2f2;
-      --red-border: #fecaca;
-
-      --amber: #d97706;
-      --amber-light: #fffbeb;
-      --amber-border: #fef3c7;
-
-      --green: #10b981;
-      --green-light: #ecfdf5;
-      --green-border: #a7f3d0;
+      /* Semantic Status */
+      --status-error: #f43f5e;
+      --status-error-bg: rgba(244, 63, 94, 0.12);
+      --status-warning: #d9a441;
+      --status-warning-bg: rgba(217, 164, 65, 0.12);
+      --status-info: #38bdf8;
+      --status-info-bg: rgba(56, 189, 248, 0.12);
 
       --radius-sm: 6px;
-      --radius-md: 8px;
-      --radius-lg: 12px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+      --shadow-glow: 0 0 25px rgba(236, 125, 66, 0.2);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
     body {
-      background-color: var(--bg);
-      color: var(--text-main);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 13.5px;
-      line-height: 1.5;
+      background: var(--dbg);
+      color: var(--dh);
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+      min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
 
-    button, input, textarea, select { font-family: inherit; }
+    button, input, select, textarea { font-family: inherit; }
 
     /* Layout */
-    .app-layout {
-      display: flex;
+    .app-shell {
+      display: grid;
+      grid-template-columns: 270px 1fr;
       min-height: 100vh;
     }
 
-    /* Left Sidebar */
+    /* FlytBase Dark Sidebar */
     .sidebar {
-      width: 250px;
-      background: var(--sidebar-bg);
-      color: var(--sidebar-text);
+      background: #101114;
+      border-right: 1px solid var(--db);
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
-      position: fixed;
+      gap: 28px;
+      position: sticky;
       top: 0;
-      left: 0;
-      bottom: 0;
-      z-index: 50;
-      border-right: 1px solid var(--sidebar-border);
+      height: 100vh;
       overflow-y: auto;
     }
 
-    /* Account Switcher in Sidebar */
-    .account-switcher-box {
-      padding: 16px;
-      border-bottom: 1px solid var(--sidebar-border);
-    }
-    .account-picker-btn {
-      width: 100%;
-      background: #151e33;
-      border: 1px solid #233152;
-      border-radius: var(--radius-md);
-      padding: 10px 12px;
+    .brand-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      color: var(--sidebar-text-bright);
-      cursor: pointer;
-      text-align: left;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .account-picker-btn:hover {
-      background: #1c2844;
-      border-color: #3b82f6;
-    }
-    .account-picker-name {
-      font-size: 13px;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 135px;
-    }
-    .account-picker-badge {
-      font-size: 11px;
-      font-weight: 700;
-      background: #2563eb;
-      color: #ffffff;
-      padding: 2px 7px;
-      border-radius: 12px;
-    }
-    .account-picker-badge.new {
-      background: #f59e0b;
-    }
-
-    /* Account Selection Dropdown List */
-    .account-dropdown {
-      margin-top: 8px;
-      background: #11192d;
-      border: 1px solid #233152;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .account-option {
-      padding: 10px 12px;
-      border-bottom: 1px solid #1a253e;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--sidebar-text);
-      font-size: 12px;
-      transition: background 0.1s, color 0.1s;
-    }
-    .account-option:last-child { border-bottom: none; }
-    .account-option:hover, .account-option.active {
-      background: #1e2b48;
-      color: #ffffff;
-    }
-    .account-option.active {
-      font-weight: 700;
-      border-left: 3px solid #3b82f6;
-    }
-
-    /* Sidebar Navigation Sections */
-    .nav-section-title {
-      padding: 20px 16px 8px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #64748b;
-    }
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 16px;
-      color: var(--sidebar-text);
-      font-size: 13px;
-      font-weight: 500;
+      gap: 12px;
       text-decoration: none;
-      border-left: 3px solid transparent;
-      transition: background 0.1s, color 0.1s, border-color 0.1s;
-      cursor: pointer;
     }
-    .nav-link:hover {
-      background: var(--sidebar-nav-hover);
-      color: var(--sidebar-text-bright);
+    .flyt-logo-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+      display: grid;
+      place-items: center;
+      color: white;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 4px 14px rgba(236, 125, 66, 0.35);
     }
-    .nav-link.active {
-      background: var(--sidebar-active);
-      color: var(--sidebar-text-bright);
-      border-left-color: var(--blue);
-      font-weight: 600;
-    }
-    .nav-num {
-      color: #64748b;
-      font-weight: 600;
-      width: 14px;
-    }
-
-    /* Sidebar Footer */
-    .sidebar-footer {
-      margin-top: auto;
-      padding: 16px;
-      border-top: 1px solid var(--sidebar-border);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .btn-sync-sidebar {
-      width: 100%;
-      background: #182238;
-      border: 1px solid #233152;
-      color: #93c5fd;
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
+    .brand-meta h1 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.3px;
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
-      transition: background 0.15s;
     }
-    .btn-sync-sidebar:hover {
-      background: #202d4a;
+    .brand-tagline {
+      font-size: 10px;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      font-weight: 700;
     }
 
-    /* Main Content Wrapper */
-    .main-wrapper {
-      margin-left: 250px;
-      flex: 1;
+    .nav-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--dm);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      padding-left: 8px;
+    }
+    .nav-menu {
       display: flex;
       flex-direction: column;
-      min-width: 0;
+      gap: 5px;
+    }
+    .nav-tab-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      color: var(--dsc);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+    .nav-tab-item:hover {
+      background: var(--ds);
+      color: var(--white);
+      border-color: var(--db);
+    }
+    .nav-tab-item.active {
+      background: var(--de);
+      color: var(--white);
+      border-color: var(--orange);
+      box-shadow: inset 3px 0 0 var(--orange), 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .nav-badge-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: var(--ds);
+      color: var(--dsc);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .nav-tab-item.active .nav-badge-num {
+      background: var(--orange);
+      color: white;
     }
 
-    /* Top Sticky Header */
-    .top-header {
+    .sidebar-dock-card {
+      margin-top: auto;
+      background: var(--ds);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .dock-status-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--eucalyptus-text);
+      box-shadow: 0 0 8px var(--eucalyptus-text);
+      display: inline-block;
+      animation: pulseGreen 2s infinite;
+    }
+    @keyframes pulseGreen {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Main Container */
+    .main-wrap {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--dbg);
+    }
+
+    /* Top Command Header */
+    .command-header {
+      background: #101114;
+      border-bottom: 1px solid var(--db);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       position: sticky;
       top: 0;
-      z-index: 40;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      height: 60px;
-      padding: 0 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      z-index: 20;
     }
-    .breadcrumb-trail {
+
+    /* Account Selector Pill Toggle */
+    .account-toggle-wrap {
+      display: flex;
+      background: var(--ds);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-lg);
+      padding: 3px;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .account-toggle-btn {
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: transparent;
+      color: var(--dsc);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 13.5px;
+      transition: all 0.15s ease;
     }
-    .breadcrumb-trail .portfolio { color: var(--text-muted); cursor: pointer; }
-    .breadcrumb-trail .sep { color: #cbd5e1; font-size: 12px; }
-    .breadcrumb-trail .current-account-name { font-weight: 600; color: var(--text-main); }
+    .account-toggle-btn.active {
+      background: var(--orange);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(236, 125, 66, 0.3);
+    }
+    .account-toggle-btn:not(.active):hover {
+      color: var(--white);
+      background: var(--de);
+    }
+    .acc-pill-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.2);
+    }
 
-    .header-actions {
+    .top-tools {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    /* Status Pill: MCP Live Ready */
-    .mcp-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      background: var(--green-light);
-      border: 1px solid var(--green-border);
-      border-radius: 20px;
+    /* Cooldown Pill */
+    .cooldown-badge {
       font-size: 12px;
-      font-weight: 600;
-      color: var(--green);
-    }
-    .pulse-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-      animation: pulseGreen 2s infinite;
-    }
-    @keyframes pulseGreen {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-
-    /* Top Buttons */
-    .btn-white {
-      background: #ffffff;
-      border: 1px solid var(--border-strong);
-      color: var(--text-main);
+      font-weight: 700;
       padding: 7px 14px;
-      border-radius: var(--radius-md);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.1s, border-color 0.1s;
-    }
-    .btn-white:hover {
-      background: #f8fafc;
-      border-color: #94a3b8;
-    }
-    .btn-blue {
-      background: var(--blue);
-      border: 1px solid var(--blue);
-      color: #ffffff;
-      padding: 7px 16px;
-      border-radius: var(--radius-md);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.1s;
-    }
-    .btn-blue:hover {
-      background: var(--blue-hover);
-    }
-
-    /* Notification Bell & Drawer */
-    .notif-container { position: relative; }
-    .notif-icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      position: relative;
-    }
-    .notif-badge-bubble {
-      position: absolute;
-      top: -4px;
-      right: -4px;
-      background: var(--red-dark);
-      color: #ffffff;
-      font-size: 10px;
-      font-weight: 700;
-      min-width: 17px;
-      height: 17px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 4px;
-    }
-    .notif-badge-bubble:empty { display: none; }
-
-    #notificationDropdown {
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 0;
-      width: 400px;
-      max-width: 90vw;
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-      z-index: 100;
-      overflow: hidden;
-    }
-    .notif-dropdown-header {
-      padding: 12px 16px;
-      background: #f8fafc;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      font-size: 13px;
-    }
-    .notif-dropdown-list {
-      max-height: 350px;
-      overflow-y: auto;
-    }
-    .notif-entry {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      transition: background 0.1s;
-    }
-    .notif-entry:hover { background: #f8fafc; }
-    .notif-entry.unread { background: #eff6ff; }
-    .notif-entry-title { font-weight: 600; font-size: 12.5px; margin-bottom: 3px; }
-    .notif-entry-time { font-size: 11px; color: var(--text-light); }
-    .notif-entry-body { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-
-    /* Page Body */
-    .page-body {
-      padding: 24px 28px 80px;
-      max-width: 1240px;
-    }
-
-    /* Live Account Signals Red Box */
-    .live-signals-box {
-      border: 1px solid #fca5a5;
-      background: #fff5f5;
-      border-radius: var(--radius-lg);
-      padding: 18px 22px;
-      margin-bottom: 24px;
-    }
-    .live-signals-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-    .live-signals-title {
+      border-radius: 20px;
+      background: var(--ds);
+      color: var(--dsc);
+      border: 1px solid var(--db);
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #991b1b;
-    }
-    .live-signals-tag {
-      font-size: 11px;
-      font-weight: 700;
-      color: #dc2626;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .signal-card {
-      background: #ffffff;
-      border: 1px solid #fed7d7;
-      border-radius: var(--radius-md);
-      padding: 16px 18px;
-      margin-bottom: 10px;
-    }
-    .signal-card:last-child { margin-bottom: 0; }
-    .signal-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 6px;
-    }
-    .signal-card-title {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-    .signal-card-date {
-      font-size: 11px;
-      font-weight: 600;
-      color: #dc2626;
-      background: #fee2e2;
-      padding: 2px 8px;
-      border-radius: 4px;
       font-family: 'JetBrains Mono', monospace;
     }
-    .signal-card-body {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-    .signal-btn-row {
-      display: flex;
-      gap: 10px;
-    }
-    .btn-inspect {
-      background: #f8fafc;
-      border: 1px solid var(--border-strong);
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-main);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .btn-act {
-      background: var(--blue);
-      border: 1px solid var(--blue);
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-weight: 600;
-      color: #ffffff;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+    .cooldown-badge.ready {
+      background: var(--eucalyptus-light);
+      color: var(--eucalyptus-text);
+      border-color: rgba(58, 122, 101, 0.4);
     }
 
-    /* Account Header & Baseline Card */
-    .account-meta-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 22px 24px;
-      margin-bottom: 24px;
-    }
-    .account-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-    }
-    .account-hero-name {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--text-main);
-      letter-spacing: -0.01em;
-    }
-    .account-hero-sub {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 3px;
-    }
-    .account-type-pill {
-      font-size: 12px;
-      font-weight: 600;
-      color: #2563eb;
-      background: #eff6ff;
-      border: 1px solid #dbeafe;
-      padding: 4px 10px;
-      border-radius: 20px;
-    }
-
-    /* Official Story vs Ground Truth Box */
-    .story-truth-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
       border-radius: var(--radius-md);
-      padding: 16px 20px;
-      display: grid;
-      grid-template-columns: 1fr 1.3fr;
-      gap: 24px;
-      margin-bottom: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--db);
+      background: var(--ds);
+      color: var(--dh);
+      transition: all 0.15s ease;
+      text-decoration: none;
     }
-    .story-label, .truth-label {
+    .btn:hover {
+      background: var(--de);
+      border-color: var(--dsc);
+      color: var(--white);
+    }
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .btn-orange {
+      background: var(--orange);
+      color: #ffffff;
+      border-color: var(--orange);
+      box-shadow: 0 2px 10px rgba(236, 125, 66, 0.3);
+    }
+    .btn-orange:hover {
+      background: var(--orange-dark);
+      border-color: var(--orange-dark);
+    }
+
+    /* Notification Bell & Drawer */
+    .notif-wrap { position: relative; }
+    .notif-bell-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      background: var(--ds);
+      border: 1px solid var(--db);
+      display: grid;
+      place-items: center;
+      color: var(--dh);
+      cursor: pointer;
+      position: relative;
+      font-size: 16px;
+    }
+    .notif-counter-bubble {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--status-error);
+      color: white;
       font-size: 10px;
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-light);
-      margin-bottom: 6px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      padding: 0 4px;
     }
-    .story-text {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-style: italic;
-      line-height: 1.5;
+    .notif-counter-bubble:empty { display: none; }
+
+    #notificationDropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 400px;
+      max-width: 90vw;
+      background: var(--ds);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      overflow: hidden;
     }
-    .truth-text {
+    .notif-drop-head {
+      padding: 12px 16px;
+      background: #111215;
+      border-bottom: 1px solid var(--db);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 13px;
-      color: var(--text-main);
-      line-height: 1.5;
-      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .notif-drop-list {
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    .notif-drop-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--db-subtle);
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .notif-drop-item:hover { background: var(--de); }
+    .notif-drop-item.unread { border-left: 3px solid var(--orange); background: rgba(236, 125, 66, 0.05); }
+    .notif-drop-item-title { font-weight: 700; font-size: 13px; color: var(--white); margin-bottom: 3px; }
+    .notif-drop-item-sub { font-size: 12px; color: var(--dsc); line-height: 1.4; }
+
+    /* Content Stage */
+    .content-stage {
+      padding: 32px;
+      max-width: 1480px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
 
-    /* Evidence Pills (§ source) */
-    .pills-wrap {
+    /* Urgent Signals Alert Banner */
+    .urgent-signals-banner {
+      background: linear-gradient(135deg, rgba(236, 125, 66, 0.12), rgba(244, 63, 94, 0.08));
+      border: 1px solid rgba(236, 125, 66, 0.35);
+      border-left: 5px solid var(--orange);
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sig-banner-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .sig-banner-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sig-item-card {
+      background: var(--ds);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sig-date-badge {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      background: var(--orange-bg);
+      color: var(--orange);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(236, 125, 66, 0.25);
+    }
+
+    /* Page Header */
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--db);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .page-title-eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--orange);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .page-head h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.6px;
+    }
+    .page-desc {
+      font-size: 14px;
+      color: var(--dsc);
+      margin-top: 4px;
+      max-width: 820px;
+    }
+
+    /* Cards & Grids */
+    .card {
+      background: var(--ds);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: all 0.2s ease;
+    }
+    .card:hover {
+      border-color: #40444f;
+    }
+
+    .card-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+
+    /* KPI Highlights */
+    .kpi-card {
+      background: var(--ds);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--dsc);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .kpi-val {
+      font-family: 'Manrope', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.8px;
+    }
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--dsc);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Source ID Pills */
+    .source-list {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       align-items: center;
     }
     .source-pill {
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      padding: 2px 7px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      font-weight: 600;
-      color: #334155;
+      background: #121316;
+      color: #cbd5e1;
+      border: 1px solid var(--db);
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.1s, border-color 0.1s;
+      gap: 4px;
+      transition: all 0.15s ease;
     }
     .source-pill:hover {
-      background: #e2e8f0;
-      border-color: #94a3b8;
+      background: var(--de);
+      color: var(--orange);
+      border-color: var(--orange);
+      transform: translateY(-1px);
     }
-    .source-pill .section-sign {
-      color: #64748b;
+    .source-pill::before {
+      content: "§";
+      color: var(--orange);
+      font-weight: 700;
     }
 
-    /* 4 KPI Metric Cards */
-    .kpi-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-    .kpi-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 16px 18px;
-    }
-    .kpi-title {
-      font-size: 10px;
-      font-weight: 800;
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-light);
-      margin-bottom: 6px;
+      letter-spacing: 0.6px;
     }
-    .kpi-number {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--text-main);
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-    .kpi-subline {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .kpi-badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 1px 6px;
-      border-radius: 4px;
-    }
-    .kpi-badge.blue { background: #dbeafe; color: #1e40af; }
-    .kpi-badge.red { background: #fee2e2; color: #991b1b; }
-    .kpi-badge.green { background: #d1fae5; color: #065f46; }
+    .badge-orange { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(236, 125, 66, 0.3); }
+    .badge-green { background: var(--eucalyptus-light); color: var(--eucalyptus-text); border: 1px solid rgba(58, 122, 101, 0.4); }
+    .badge-red { background: var(--status-error-bg); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.4); }
+    .badge-blue { background: var(--status-info-bg); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.4); }
+    .badge-gray { background: var(--de); color: var(--dsc); border: 1px solid var(--db); }
 
-    /* The 5 Question Sections */
-    .question-section {
-      margin-top: 36px;
-      padding-top: 12px;
-    }
-    .question-section-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .q-badge-and-title {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-    .q-number-box {
-      width: 28px;
-      height: 28px;
-      background: #0f172a;
-      color: #ffffff;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 800;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .q-title-text {
-      font-size: 19px;
-      font-weight: 800;
-      color: var(--text-main);
-      line-height: 1.2;
-    }
-    .q-desc-text {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    .q-header-right-meta {
-      font-size: 12px;
-      font-weight: 700;
-      color: #2563eb;
-      white-space: nowrap;
-    }
-
-    /* Deal / Opportunity Cards (Q1) */
-    .grid-2col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
+    /* Page 1: Deals Bridge */
     .deal-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--blue);
-      border-radius: var(--radius-md);
-      padding: 18px 20px;
-      display: flex;
-      flex-direction: column;
+      border-left: 4px solid var(--orange);
     }
+    .deal-card.unpriced { border-left-color: var(--dm); }
     .deal-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 12px;
+      gap: 12px;
     }
-    .deal-name {
-      font-size: 15px;
+    .deal-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
       font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 3px;
+      color: var(--white);
     }
-    .deal-id-stage {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .deal-ceiling-number {
-      font-size: 18px;
+    .deal-val {
+      font-family: 'Manrope', sans-serif;
+      font-size: 22px;
       font-weight: 800;
-      color: var(--text-main);
+      color: var(--white);
       text-align: right;
     }
-    .deal-ceiling-label {
-      font-size: 9.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-light);
-      text-align: right;
-    }
-
-    /* Core Blocker Box */
-    .core-blocker-box {
-      background: #fff5f5;
-      border: 1px solid #fee2e2;
-      border-radius: var(--radius-sm);
+    .deal-blocker-box {
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      border-radius: var(--radius-md);
       padding: 10px 14px;
-      margin-bottom: 12px;
+      font-size: 13px;
+      color: #fecdd3;
     }
-    .core-blocker-title {
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #dc2626;
-      margin-bottom: 4px;
-    }
-    .core-blocker-text {
-      font-size: 12.5px;
-      color: #991b1b;
-      line-height: 1.4;
-    }
-
-    /* Deadline Looming Box */
-    .deadline-looming-box {
-      background: #fffbeb;
-      border: 1px solid #fef3c7;
-      border-radius: var(--radius-sm);
-      padding: 9px 12px;
-      margin-bottom: 12px;
+    .deal-deadline-box {
+      background: var(--de);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 13px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 10px;
-      font-size: 12px;
-      color: #92400e;
-    }
-    .deadline-tag-badge {
-      background: #fee2e2;
-      color: #991b1b;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 4px;
-      white-space: nowrap;
     }
 
-    /* Stakeholder Cards (Q2) */
-    .grid-3col {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
+    /* Page 2: Stakeholder Power */
     .stakeholder-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 18px 20px;
+      background: var(--ds);
     }
-    .stk-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 14px;
-    }
-    .stk-name { font-size: 15px; font-weight: 700; color: var(--text-main); }
-    .stk-role { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .stk-temp-badge {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: #eff6ff;
-      color: #2563eb;
-    }
-    .stk-temp-badge.neutral { background: #f1f5f9; color: #475569; }
-
-    .stk-quad-table {
+    .power-matrix-table {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: var(--radius-sm);
-      padding: 10px 8px;
-      margin-bottom: 14px;
+      gap: 6px;
+      background: var(--de);
+      padding: 10px;
+      border-radius: var(--radius-md);
+      font-size: 11px;
       text-align: center;
     }
-    .stk-col-label {
-      font-size: 9px;
-      font-weight: 800;
+    .matrix-cell b {
+      display: block;
+      color: var(--dm);
+      font-size: 10px;
       text-transform: uppercase;
-      color: var(--text-light);
-      margin-bottom: 3px;
+      letter-spacing: 0.6px;
+      margin-bottom: 2px;
     }
-    .stk-col-val {
-      font-size: 11.5px;
-      font-weight: 600;
-      color: var(--text-main);
-      line-height: 1.2;
-    }
-    .stk-col-val.blocker {
-      color: #dc2626;
+    .matrix-cell span {
       font-weight: 700;
+      color: var(--white);
     }
+    .matrix-cell.blocker span { color: #fda4af; }
 
-    .stk-quote-box {
-      font-size: 12.5px;
-      color: #475569;
-      line-height: 1.45;
-      margin-bottom: 12px;
-      font-style: italic;
-    }
-
-    /* Ranked Strategic Moves (Q3) */
-    .moves-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+    /* Page 3: Ranked Moves */
     .move-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 20px 22px;
-      display: flex;
-      gap: 18px;
+      display: grid;
+      grid-template-columns: 50px 1fr;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 22px;
+      background: var(--ds);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-lg);
     }
-    .move-rank-box {
-      width: 34px;
-      height: 34px;
-      background: #0f172a;
-      color: #ffffff;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
+    .move-rank {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+      color: white;
+      display: grid;
+      place-items: center;
+      font-family: 'Manrope', sans-serif;
       font-weight: 800;
+      font-size: 24px;
+      box-shadow: 0 4px 14px rgba(236, 125, 66, 0.35);
       flex-shrink: 0;
     }
-    .move-content { flex: 1; }
-    .move-title { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-    .move-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; margin-bottom: 12px; }
-    .move-tags-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
+    .move-info h4 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
     }
-    .move-tag {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 4px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .move-tag.owner { background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; }
-    .move-tag.deal { background: #fdf2f8; color: #9d174d; border: 1px solid #fce7f3; }
-    .move-tag.window { background: #fefce8; color: #854d0e; border: 1px solid #fef9c3; }
-
-    /* Threat Radar Cards (Q4) */
-    .threat-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 18px 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    .threat-card.critical { border-left: 4px solid #ef4444; }
-    .threat-card.medium { border-left: 4px solid #3b82f6; }
-    .threat-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
+    .move-info p {
+      font-size: 13px;
+      color: var(--dsc);
+      line-height: 1.5;
       margin-bottom: 10px;
     }
-    .threat-name { font-size: 14.5px; font-weight: 700; color: var(--text-main); }
-    .threat-badge {
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 4px;
-    }
-    .threat-badge.critical { background: #fee2e2; color: #b91c1c; }
-    .threat-badge.medium { background: #dbeafe; color: #1d4ed8; }
-    .threat-body { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
-    .threat-consequence-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      margin-bottom: 12px;
-      font-size: 12px;
-      color: #334155;
-      line-height: 1.45;
-    }
-    .threat-consequence-label {
-      font-weight: 700;
-      color: #0f172a;
+    .move-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
     }
 
-    /* Blindspots Ledger Table (Q5) */
-    .ledger-table-wrap {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
+    /* Page 4: Threat Radar */
+    .threat-card {
+      border-left: 4px solid var(--status-warning);
+    }
+    .threat-card.critical { border-left-color: var(--status-error); }
+    .threat-card.info { border-left-color: var(--status-info); }
+    .threat-consequence {
+      background: var(--de);
+      border-left: 3px solid var(--db);
+      padding: 10px 14px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 13px;
+      color: #e2e8f0;
+    }
+    .threat-consequence b { color: var(--orange); }
+
+    /* Page 5: Blindspots Ledger Table */
+    .blindspot-table-box {
+      background: var(--ds);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-lg);
       overflow: hidden;
     }
-    .ledger-table {
+    .flyt-table {
       width: 100%;
       border-collapse: collapse;
+      text-align: left;
       font-size: 13px;
     }
-    .ledger-table th {
-      background: #f8fafc;
-      padding: 12px 18px;
-      text-align: left;
-      font-size: 10.5px;
+    .flyt-table th {
+      background: #111215;
+      padding: 14px 20px;
+      font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-light);
-      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.8px;
+      color: var(--dsc);
+      border-bottom: 1px solid var(--db);
     }
-    .ledger-table td {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--border);
+    .flyt-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--db-subtle);
+      color: var(--dh);
       vertical-align: top;
-      line-height: 1.45;
     }
-    .ledger-table tr:last-child td { border-bottom: none; }
-    .gap-title-col { font-weight: 700; color: var(--text-main); width: 26%; }
-    .gap-why-col { color: var(--text-muted); width: 40%; }
-    .gap-impact-col { width: 14%; font-weight: 700; }
-    .gap-impact-col.high { color: #dc2626; }
-    .gap-impact-col.medium { color: #2563eb; }
-    .gap-who-col { color: #334155; font-weight: 500; width: 20%; }
+    .flyt-table tr:hover td {
+      background: var(--de);
+    }
 
-    /* Modals & Popups */
+    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(2px);
+      background: rgba(10, 11, 14, 0.75);
+      backdrop-filter: blur(6px);
+      display: grid;
+      place-items: center;
       z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       padding: 20px;
     }
-    .modal-dialog {
-      background: #ffffff;
-      border-radius: var(--radius-lg);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-      width: 100%;
+    .modal-box {
+      background: var(--ds);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-xl);
       max-width: 600px;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 24px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
-    .modal-title-bar {
+    .modal-header {
+      padding: 18px 24px;
+      background: var(--de);
+      border-bottom: 1px solid var(--db);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--white);
     }
-    .modal-title-text { font-size: 16px; font-weight: 700; }
-    .modal-close-x {
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: var(--text-light);
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 80vh;
+      overflow-y: auto;
     }
 
     /* Floating Toast */
@@ -1019,343 +814,254 @@
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: #0f172a;
-      color: #ffffff;
-      padding: 16px 20px;
+      background: var(--de);
+      border: 1px solid var(--orange);
+      color: var(--white);
+      padding: 14px 20px;
       border-radius: var(--radius-md);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
       z-index: 200;
-      max-width: 380px;
-      animation: slideInToast 0.2s ease-out;
-    }
-    @keyframes slideInToast {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .hidden { display: none !important; }
 
-    @media (max-width: 1000px) {
-      .grid-2col, .grid-3col { grid-template-columns: 1fr; }
-      .kpi-row { grid-template-columns: repeat(2, 1fr); }
-      .story-truth-box { grid-template-columns: 1fr; }
+    @media (max-width: 1024px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .card-grid-2, .card-grid-3, .card-grid-4 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<div class="app-layout">
+<div class="app-shell">
 
-  <!-- LEFT SIDEBAR -->
+  <!-- FLYTBASE DARK SIDEBAR -->
   <aside class="sidebar">
-    <!-- Account Switcher Box -->
-    <div class="account-switcher-box">
-      <div class="account-picker-btn" onclick="toggleAccountMenu()">
-        <span class="account-picker-name" id="currentAccountPickerName">Eastern Counties...</span>
-        <span class="account-picker-badge" id="currentAccountPickerBadge">$2.3M</span>
+    <a href="#" class="brand-header" onclick="switchPage('overview')">
+      <div class="flyt-logo-box">F</div>
+      <div class="brand-meta">
+        <h1>FlytBase</h1>
+        <div class="brand-tagline">CS Intelligence CRM</div>
       </div>
-      <div class="account-dropdown hidden" id="accountMenuDropdown"></div>
-    </div>
+    </a>
 
     <!-- The 5 Questions Navigation -->
-    <div class="nav-section-title">The 5 Questions</div>
-    <a class="nav-link active" href="#q1-book" onclick="setActiveNav(this)">
-      <span class="nav-num">1.</span> Book Worth &amp; Value
-    </a>
-    <a class="nav-link" href="#q2-power" onclick="setActiveNav(this)">
-      <span class="nav-num">2.</span> Stakeholder Power
-    </a>
-    <a class="nav-link" href="#q3-moves" onclick="setActiveNav(this)">
-      <span class="nav-num">3.</span> Top 3 First Moves
-    </a>
-    <a class="nav-link" href="#q4-threats" onclick="setActiveNav(this)">
-      <span class="nav-num">4.</span> Looming Threats
-    </a>
-    <a class="nav-link" href="#q5-missing" onclick="setActiveNav(this)">
-      <span class="nav-num">5.</span> Missing Information
-    </a>
+    <div>
+      <div class="nav-label">The 5 Questions</div>
+      <nav class="nav-menu">
+        <button class="nav-tab-item active" id="tabBtn1" onclick="switchPage(1)">
+          <span class="nav-badge-num">1</span> Book Worth &amp; Value
+        </button>
+        <button class="nav-tab-item" id="tabBtn2" onclick="switchPage(2)">
+          <span class="nav-badge-num">2</span> Stakeholder Power
+        </button>
+        <button class="nav-tab-item" id="tabBtn3" onclick="switchPage(3)">
+          <span class="nav-badge-num">3</span> Top 3 First Moves
+        </button>
+        <button class="nav-tab-item" id="tabBtn4" onclick="switchPage(4)">
+          <span class="nav-badge-num">4</span> Looming Threats
+        </button>
+        <button class="nav-tab-item" id="tabBtn5" onclick="switchPage(5)">
+          <span class="nav-badge-num">5</span> Missing Information
+        </button>
+      </nav>
+    </div>
 
-    <!-- Activity Section -->
-    <div class="nav-section-title">Activity</div>
-    <a class="nav-link" href="#live-signals" onclick="setActiveNav(this)">
-      <span>⚡</span> Live Signal Feed
-    </a>
-    <a class="nav-link" onclick="openNoteModal()">
-      <span>📝</span> Write Account Note
-    </a>
+    <!-- Activity & Signals Navigation -->
+    <div>
+      <div class="nav-label">Live Activity</div>
+      <nav class="nav-menu">
+        <button class="nav-tab-item" id="tabBtnSignals" onclick="switchPage('signals')">
+          <span style="color:var(--orange);">⚡</span> Live Signal Feed
+        </button>
+        <button class="nav-tab-item" onclick="openNoteModal()">
+          <span>📝</span> Write Account Note
+        </button>
+      </nav>
+    </div>
 
-    <!-- Sidebar Footer with Sync & MCP Time -->
-    <div class="sidebar-footer">
-      <button class="btn-sync-sidebar" onclick="syncAllAccounts()">
-        <span>🔄</span> Sync Accounts
-      </button>
-      <div style="font-size:11px;color:#64748b;text-align:center;">
-        MCP Sync: <span id="mcpLastSyncRelative" style="color:#94a3b8;font-weight:600;">Just now</span>
+    <!-- Dock Status Sidebar Card -->
+    <div class="sidebar-dock-card">
+      <div class="dock-status-line">
+        <span style="font-weight:700;color:var(--white);display:flex;align-items:center;gap:6px;">
+          <span class="pulse-dot"></span> MCP Autonomous
+        </span>
+        <span class="badge badge-green" style="font-size:9px;">CONNECTED</span>
       </div>
+      <div style="font-size:11px;color:var(--dsc);">
+        Sync: <span id="mcpLastSyncRelative" style="color:var(--orange);font-weight:700;">Just now</span>
+      </div>
+      <button class="btn btn-orange" style="width:100%;font-size:11px;padding:6px;margin-top:4px;" onclick="syncAccountsRemote()">
+        🔄 Sync Accounts (Remote)
+      </button>
     </div>
   </aside>
 
-  <!-- MAIN WRAPPER -->
-  <main class="main-wrapper">
+  <!-- MAIN APP CONTAINER -->
+  <main class="main-wrap">
 
-    <!-- Top Sticky Header -->
-    <header class="top-header">
-      <div class="breadcrumb-trail">
-        <span class="portfolio" onclick="switchAccount('A')">Portfolio</span>
-        <span class="sep">/</span>
-        <span class="current-account-name" id="topHeaderAccountName">Eastern Counties Police Alliance</span>
-      </div>
+    <!-- Top Command Header -->
+    <header class="command-header">
+      <!-- Multi-Account Toggle Pills -->
+      <div class="account-toggle-wrap" id="accountSelectorBar"></div>
 
-      <div class="header-actions">
-        <!-- MCP Live Ready Status Badge -->
-        <div class="mcp-pill" id="mcpLivePill">
+      <!-- Top Tools -->
+      <div class="top-tools">
+        <!-- MCP Status / Cooldown -->
+        <div class="cooldown-badge ready" id="mcpCooldownBadge">
           <span class="pulse-dot"></span>
-          <span id="mcpPillText">MCP Live Ready</span>
+          <span id="mcpCooldownText">MCP Live Ready</span>
         </div>
 
         <!-- Refresh Live Signals Button -->
-        <button class="btn-white" id="refreshSignalsBtn" onclick="refreshSignalsNow()">
+        <button class="btn" id="refreshSignalsBtn" onclick="refreshSignalsMcp()">
           <span>↻</span> Refresh Live Signals
         </button>
 
         <!-- Write Account Note Button -->
-        <button class="btn-blue" onclick="openNoteModal()">
+        <button class="btn btn-orange" onclick="openNoteModal()">
           <span>+</span> Write Account Note
         </button>
 
-        <!-- Notification Bell & Dropdown -->
-        <div class="notif-container">
-          <button class="notif-icon-btn" onclick="toggleNotifDropdown()">
+        <!-- Notification Bell -->
+        <div class="notif-wrap">
+          <button class="notif-bell-btn" id="notifBell" onclick="toggleNotifDropdown()">
             <span>🔔</span>
-            <span class="notif-badge-bubble" id="notifBadge">0</span>
+            <span class="notif-counter-bubble" id="notifCountBadge"></span>
           </button>
           <div class="hidden" id="notificationDropdown">
-            <div class="notif-dropdown-header">
-              <span>Account Notifications</span>
-              <span style="font-size:11px;color:#2563eb;cursor:pointer;" onclick="markAllNotificationsRead()">Mark all read</span>
+            <div class="notif-drop-head">
+              <span style="color:var(--white);">Operational Alerts</span>
+              <span style="font-size:11px;color:var(--orange);cursor:pointer;" onclick="markAllRead()">Mark all read</span>
             </div>
-            <div class="notif-dropdown-list" id="notifList"></div>
+            <div class="notif-drop-list" id="notifDropdownList"></div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Page Body -->
-    <div class="page-body">
+    <!-- CONTENT STAGE -->
+    <div class="content-stage">
 
-      <!-- Live Account Signals Red Banner (shown at top) -->
-      <section class="live-signals-box" id="live-signals">
-        <div class="live-signals-header">
-          <div class="live-signals-title">
-            <span>📕</span> <span id="signalsBoxTitle">Live Account Signals (2)</span>
+      <!-- Urgent Signals Live Banner -->
+      <div class="urgent-signals-banner" id="urgentSignalsBanner">
+        <div class="sig-banner-head">
+          <div class="sig-banner-title">
+            <span style="color:var(--orange);font-size:18px;">⚡</span>
+            <span id="signalsBannerCount">Live Account Signals (2)</span>
           </div>
-          <div class="live-signals-tag">Incoming Operational Event</div>
+          <span class="badge badge-red">Incoming Operational Event</span>
         </div>
-        <div id="liveSignalsCardsList"></div>
-      </section>
+        <div id="urgentSignalsList" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
 
-      <!-- Account Header & Evidence Baseline Section -->
-      <section class="account-meta-card">
-        <div class="account-title-row">
+      <!-- Account Overview & Verified Ground Truth Card -->
+      <div class="card" style="border-top:3px solid var(--orange);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
           <div>
-            <div class="account-hero-name" id="accHeroName">Eastern Counties Police Alliance</div>
-            <div class="account-hero-sub" id="accHeroSub">Evidence Baseline · 23 verified source records · 4 pipeline items</div>
-          </div>
-          <div class="account-type-pill" id="accTypePill">Multi-Force Alliance</div>
-        </div>
-
-        <!-- Official Story vs Verified Ground Truth -->
-        <div class="story-truth-box">
-          <div>
-            <div class="story-label">OFFICIAL STORY (CHAMPION CLAIM)</div>
-            <div class="story-text" id="accOfficialStory">
-              "Rollout under way. 4 forces, 35 docks, 300-dock framework tender in preparation."
+            <h3 style="font-family:'Manrope',sans-serif;font-size:24px;font-weight:800;color:var(--white);" id="accHeroTitle">
+              Eastern Counties Police Alliance
+            </h3>
+            <div style="font-size:13px;color:var(--dsc);margin-top:2px;" id="accHeroBaseline">
+              Evidence Baseline · 23 verified source records · 4 pipeline items
             </div>
           </div>
-          <div>
-            <div class="truth-label">VERIFIED OPERATIONAL SIGNAL (GROUND TRUTH)</div>
-            <div class="truth-text" id="accGroundTruth">
-              Only Westmere &amp; Metro Central fly operationally (14/18 docks active last month). Tarn Valley has never flown a live mission due to 4-month blocked DPIA; Norwold only trains. Alliance has no pooled budget — each force CFO must sign off individually.
-            </div>
-            <div class="pills-wrap" id="accGroundTruthPills">
-              <span class="source-pill"><span class="section-sign">§</span> rc_appetite_2</span>
-              <span class="source-pill"><span class="section-sign">§</span> km_usage_1</span>
-              <span class="source-pill"><span class="section-sign">§</span> rc_funding_2</span>
-              <span class="source-pill"><span class="section-sign">§</span> fo_dpia_2</span>
-            </div>
-          </div>
+          <span class="badge badge-orange" id="accHeroTag">Multi-Force Alliance</span>
         </div>
 
-        <!-- 4 KPI Metrics Row -->
-        <div class="kpi-row">
+        <!-- Official Claim vs Ground Truth -->
+        <div class="card-grid-2" style="background:#121316;border:1px solid var(--db);border-radius:var(--radius-md);padding:16px;">
+          <div>
+            <div style="font-size:10px;font-weight:800;color:var(--dm);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+              Official Story (Champion Claim)
+            </div>
+            <div style="font-size:13px;color:var(--dsc);font-style:italic;" id="accHeroOfficialStory"></div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:800;color:var(--dm);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+              Verified Operational Signal (Ground Truth)
+            </div>
+            <div style="font-size:13px;color:var(--dh);margin-bottom:8px;" id="accHeroGroundTruth"></div>
+            <div class="source-list" id="accHeroGroundTruthPills"></div>
+          </div>
+        </div>
+
+        <!-- 4 KPI Metrics -->
+        <div class="card-grid-4">
           <div class="kpi-card">
-            <div class="kpi-title">OPPORTUNITY CEILINGS</div>
-            <div class="kpi-number" id="kpiCeiling">$2,300,000</div>
-            <div class="kpi-subline">
-              <span class="kpi-badge blue">Pipeline Max</span>
-              <span id="kpiOppCount">4 opportunities</span>
+            <div class="kpi-label">Opportunity Ceilings</div>
+            <div class="kpi-val" id="kpiHeroCeiling">$2,300,000</div>
+            <div class="kpi-sub">
+              <span class="badge badge-blue">Pipeline Max</span>
+              <span id="kpiHeroCeilingSub">4 opportunities</span>
             </div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-title">CONFIRMED REVENUE</div>
-            <div class="kpi-number" id="kpiConfirmed">$0</div>
-            <div class="kpi-subline">
-              <span class="kpi-badge red">Booked</span>
-              <span id="kpiConfirmedSub">No pooled budget; unrenewed</span>
+            <div class="kpi-label">Confirmed Revenue</div>
+            <div class="kpi-val" id="kpiHeroConfirmed">$0</div>
+            <div class="kpi-sub">
+              <span class="badge badge-red">Booked</span>
+              <span>No pooled budget; unrenewed</span>
             </div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-title">VERIFIED FLIGHT SIGNAL</div>
-            <div class="kpi-number" id="kpiFlight">14 / 18 active</div>
-            <div class="kpi-subline" id="kpiFlightSub">
-              Westmere &amp; Metro Central operational
-            </div>
-            <div class="pills-wrap" style="margin-top:6px;" id="kpiFlightPills">
-              <span class="source-pill"><span class="section-sign">§</span> km_usage_1</span>
-              <span class="source-pill"><span class="section-sign">§</span> flight_log_force_month</span>
-            </div>
+            <div class="kpi-label">Verified Flight Signal</div>
+            <div class="kpi-val" id="kpiHeroFlight">14 / 18 active</div>
+            <div class="kpi-sub" id="kpiHeroFlightSub">Westmere &amp; Metro Central</div>
+            <div class="source-list" style="margin-top:6px;" id="kpiHeroFlightPills"></div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-title">STAKEHOLDER COVERAGE</div>
-            <div class="kpi-number" id="kpiStakeholders">5</div>
-            <div class="kpi-subline">
-              <span class="kpi-badge green">Mapped</span>
+            <div class="kpi-label">Stakeholder Coverage</div>
+            <div class="kpi-val" id="kpiHeroStakeholders">5</div>
+            <div class="kpi-sub">
+              <span class="badge badge-green">Mapped</span>
               <span>Power &amp; blockers identified</span>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- 1. What is the book worth? -->
-      <section class="question-section" id="q1-book">
-        <div class="question-section-header">
-          <div class="q-badge-and-title">
-            <div class="q-number-box">1</div>
-            <div>
-              <div class="q-title-text">What is the book worth?</div>
-              <div class="q-desc-text">Each deal at a value you can back. Opportunity ceilings separated from confirmed revenue and unbacked claims.</div>
-            </div>
-          </div>
-          <div class="q-header-right-meta" id="q1HeaderMeta">
-            Ceiling: $2,300,000 · Confirmed: $0
-          </div>
-        </div>
-        <div class="grid-2col" id="dealsGrid"></div>
-      </section>
+      <!-- DYNAMIC QUESTION CONTENT CONTAINER -->
+      <div id="activePageContent"></div>
 
-      <!-- 2. Who holds the power? -->
-      <section class="question-section" id="q2-power">
-        <div class="question-section-header">
-          <div class="q-badge-and-title">
-            <div class="q-number-box">2</div>
-            <div>
-              <div class="q-title-text">Who holds the power?</div>
-              <div class="q-desc-text">For each deal: who decides, who pays, who uses it, who could block it, and their stance with you.</div>
-            </div>
-          </div>
-          <div class="q-header-right-meta" id="q2HeaderMeta">
-            5 Stakeholders Mapped
-          </div>
-        </div>
-        <div class="grid-3col" id="stakeholdersGrid"></div>
-      </section>
-
-      <!-- 3. What do you do first? -->
-      <section class="question-section" id="q3-moves">
-        <div class="question-section-header">
-          <div class="q-badge-and-title">
-            <div class="q-number-box">3</div>
-            <div>
-              <div class="q-title-text">What do you do first?</div>
-              <div class="q-desc-text">The first three strategic moves, ranked, each with an owner, target window inside deadlines, and the deal it moves.</div>
-            </div>
-          </div>
-          <div class="q-header-right-meta" style="color:#10b981;">
-            Ranked 1 → 2 → 3
-          </div>
-        </div>
-        <div class="moves-list" id="movesListContainer"></div>
-      </section>
-
-      <!-- 4. What is about to go wrong? -->
-      <section class="question-section" id="q4-threats">
-        <div class="question-section-header">
-          <div class="q-badge-and-title">
-            <div class="q-number-box">4</div>
-            <div>
-              <div class="q-title-text">What is about to go wrong?</div>
-              <div class="q-desc-text">Evidence-backed threats: deadlines at risk, people going cold, stuck blockers, and exact turnaround dates.</div>
-            </div>
-          </div>
-          <div class="q-header-right-meta" style="color:#ef4444;">
-            Threat Radar
-          </div>
-        </div>
-        <div class="grid-2col" id="threatsGrid"></div>
-      </section>
-
-      <!-- 5. What do you still not know? -->
-      <section class="question-section" id="q5-missing">
-        <div class="question-section-header">
-          <div class="q-badge-and-title">
-            <div class="q-number-box">5</div>
-            <div>
-              <div class="q-title-text">What do you still not know?</div>
-              <div class="q-desc-text">The blindspots your plan rests on, why they matter, impact rating, and exactly who can fill each one.</div>
-            </div>
-          </div>
-          <div class="q-header-right-meta">
-            Blindspots Ledger
-          </div>
-        </div>
-        <div class="ledger-table-wrap">
-          <table class="ledger-table">
-            <thead>
-              <tr>
-                <th style="width:26%;">INFORMATION GAP</th>
-                <th style="width:40%;">WHY IT MATTERS &amp; CONSEQUENCE</th>
-                <th style="width:14%;">IMPACT</th>
-                <th style="width:20%;">WHO CAN FILL IT</th>
-              </tr>
-            </thead>
-            <tbody id="blindspotsTableBody"></tbody>
-          </table>
-        </div>
-      </section>
-
-    </div><!-- /page-body -->
+    </div><!-- /content-stage -->
   </main>
-</div><!-- /app-layout -->
+</div><!-- /app-shell -->
 
 <!-- Write Account Note Modal -->
 <div class="modal-backdrop hidden" id="writeNoteModal" onclick="if(event.target===this)closeNoteModal()">
-  <div class="modal-dialog">
-    <div class="modal-title-bar">
-      <div class="modal-title-text">Write Account Note (MCP)</div>
-      <button class="modal-close-x" onclick="closeNoteModal()">×</button>
+  <div class="modal-box">
+    <div class="modal-header">
+      <span>📝 Log Account Note (MCP write_note)</span>
+      <button style="background:none;border:none;color:var(--dsc);font-size:20px;cursor:pointer;" onclick="closeNoteModal()">✕</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:12px;">
+    <div class="modal-body">
       <div>
-        <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Account</label>
-        <select id="modalNoteAccount" style="width:100%;margin-top:4px;padding:8px 10px;border-radius:6px;border:1px solid #cbd5e1;font-size:13px;"></select>
+        <label style="font-size:11px;font-weight:700;color:var(--dsc);text-transform:uppercase;">Account</label>
+        <select id="modalNoteAccount" style="width:100%;margin-top:6px;padding:10px;border-radius:6px;background:var(--de);color:white;border:1px solid var(--db);"></select>
       </div>
       <div>
-        <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Note Kind</label>
-        <select id="modalNoteKind" style="width:100%;margin-top:4px;padding:8px 10px;border-radius:6px;border:1px solid #cbd5e1;font-size:13px;">
+        <label style="font-size:11px;font-weight:700;color:var(--dsc);text-transform:uppercase;">Note Kind</label>
+        <select id="modalNoteKind" style="width:100%;margin-top:6px;padding:10px;border-radius:6px;background:var(--de);color:white;border:1px solid var(--db);">
           <option value="note">General Note</option>
-          <option value="action">Action Item</option>
+          <option value="task">Action Item / Task</option>
           <option value="risk">Risk Flag</option>
-          <option value="win">Win / Milestone</option>
+          <option value="next_step">Next Step</option>
         </select>
       </div>
       <div>
-        <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Note Content</label>
-        <textarea id="modalNoteText" rows="4" placeholder="Enter note content..." style="width:100%;margin-top:4px;padding:10px;border-radius:6px;border:1px solid #cbd5e1;font-size:13px;resize:vertical;"></textarea>
+        <label style="font-size:11px;font-weight:700;color:var(--dsc);text-transform:uppercase;">Content</label>
+        <textarea id="modalNoteText" rows="5" placeholder="Enter notes, observations, or action plan..." style="width:100%;margin-top:6px;padding:12px;border-radius:6px;background:var(--de);color:white;border:1px solid var(--db);resize:vertical;"></textarea>
       </div>
-      <div id="modalNoteStatus" style="font-size:12px;display:none;"></div>
-      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;">
-        <button class="btn-white" onclick="closeNoteModal()">Cancel</button>
-        <button class="btn-blue" id="modalSubmitNoteBtn" onclick="submitNoteViaMcp()">Submit Note</button>
+      <div id="modalNoteStatus" class="hidden" style="padding:10px;border-radius:6px;font-size:13px;"></div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button class="btn" onclick="closeNoteModal()">Cancel</button>
+        <button class="btn btn-orange" id="modalSubmitBtn" onclick="submitMcpNote()">Submit to Server</button>
       </div>
     </div>
   </div>
@@ -1363,25 +1069,26 @@
 
 <!-- Raw Record Modal -->
 <div class="modal-backdrop hidden" id="rawRecordModal" onclick="if(event.target===this)closeRecordModal()">
-  <div class="modal-dialog">
-    <div class="modal-title-bar">
-      <div class="modal-title-text" id="rawRecordTitle">Raw Record Viewer</div>
-      <button class="modal-close-x" onclick="closeRecordModal()">×</button>
+  <div class="modal-box" style="max-width:680px;">
+    <div class="modal-header">
+      <span id="rawRecordTitle">Record Inspection</span>
+      <button style="background:none;border:none;color:var(--dsc);font-size:20px;cursor:pointer;" onclick="closeRecordModal()">✕</button>
     </div>
-    <pre id="rawRecordContent" style="background:#0f172a;color:#f8fafc;padding:14px;border-radius:8px;font-size:12px;line-height:1.5;overflow-x:auto;white-space:pre-wrap;font-family:'JetBrains Mono',monospace;"></pre>
+    <pre id="rawRecordText" style="background:#0f1012;color:#93c5fd;padding:16px;border-radius:8px;font-size:12px;overflow-x:auto;max-height:65vh;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;line-height:1.5;"></pre>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// COMPLETE MASTER DOSSIER DATA FOR THE 5 QUESTIONS
-// ═══════════════════════════════════════════════════════════════
-const ACCOUNT_DOSSIERS = {
+// ════════════════════════════════════════════════════════════════════════
+// MASTER DOSSIERS FOR ALL 3+ ACCOUNTS (FLYTEBASE CS INTELLIGENCE)
+// ════════════════════════════════════════════════════════════════════════
+const DOSSIERS = {
+  // ── ACCOUNT A: Eastern Counties Police Alliance ──
   "A": {
     id: "A",
     name: "Eastern Counties Police Alliance",
     typePill: "Multi-Force Alliance",
-    baselineSub: "Evidence Baseline · 23 verified source records · 4 pipeline items",
+    baseline: "Evidence Baseline · 23 verified source records · 4 pipeline items",
     officialStory: '"Rollout under way. 4 forces, 35 docks, 300-dock framework tender in preparation."',
     groundTruth: 'Only Westmere & Metro Central fly operationally (14/18 docks active last month). Tarn Valley has never flown a live mission due to 4-month blocked DPIA; Norwold only trains. Alliance has no pooled budget — each force CFO must sign off individually.',
     groundTruthPills: ['rc_appetite_2', 'km_usage_1', 'rc_funding_2', 'fo_dpia_2'],
@@ -1389,13 +1096,11 @@ const ACCOUNT_DOSSIERS = {
       ceiling: '$2,300,000',
       ceilingSub: '4 opportunities',
       confirmed: '$0',
-      confirmedSub: 'No pooled budget; unrenewed',
       flight: '14 / 18 active',
-      flightSub: 'Westmere & Metro Central operational',
+      flightSub: 'Westmere & Metro Central',
       flightPills: ['km_usage_1', 'flight_log_force_month'],
       stakeholders: '5'
     },
-    // Q1: What is the book worth?
     deals: [
       {
         id: "a_renewal",
@@ -1440,7 +1145,6 @@ const ACCOUNT_DOSSIERS = {
         evidence: ["rc_tender_2", "hd_weights_1", "hd_window_2", "hd_calloff_2", "rc_funding_2", "eb_sign_2", "draft_tender_spec", "clarification_template", "km_staff_2"]
       }
     ],
-    // Q2: Who holds the power?
     stakeholders: [
       {
         name: "Rhys Calder",
@@ -1498,7 +1202,6 @@ const ACCOUNT_DOSSIERS = {
         evidence: ["fo_dpia_2", "fo_needs_3", "pj_ticket"]
       }
     ],
-    // Q3: What do you do first?
     moves: [
       {
         rank: 1,
@@ -1506,7 +1209,7 @@ const ACCOUNT_DOSSIERS = {
         desc: "Engineering lead committed to completing flows, retention periods, storage location, and access controls in 7 days. Hand-deliver the pack to Fatima Osei to resolve the 4-month unassigned ticket (pj_ticket) and trigger her 3-week review window. Norwold is waiting to mirror this sign-off.",
         owner: "CSM (FlytBase) + Engineering Lead",
         deal: "a_tarn · Tarn Valley & Norwold Go-Live ($200k)",
-        window: "Within 7 business days (Engineering delivery commitment)",
+        window: "Within 7 business days (Engineering commitment)",
         evidence: ["pj_ticket", "srv_dataflow", "fo_dpia_2", "fo_needs_3"]
       },
       {
@@ -1528,7 +1231,6 @@ const ACCOUNT_DOSSIERS = {
         evidence: ["hd_weights_1", "hd_window_2", "hd_silence_3", "rc_tender_2", "clarification_template"]
       }
     ],
-    // Q4: What is about to go wrong?
     threats: [
       {
         title: "Tarn Valley DPIA Deadlock (4 Months Stalled)",
@@ -1559,7 +1261,6 @@ const ACCOUNT_DOSSIERS = {
         evidence: ["hd_silence_3", "hd_window_2"]
       }
     ],
-    // Q5: What do you still not know?
     blindspots: [
       {
         gap: "Exact drone operator overtime split & cost per flight denominator",
@@ -1600,19 +1301,19 @@ const ACCOUNT_DOSSIERS = {
     ]
   },
 
+  // ── ACCOUNT B: Aldermoor Industrial Group ──
   "B": {
     id: "B",
     name: "Aldermoor Industrial Group",
     typePill: "Enterprise Industrial",
-    baselineSub: "Evidence Baseline · 18 verified source records · 3 pipeline items",
+    baseline: "Evidence Baseline · 18 verified source records · 3 pipeline items",
     officialStory: '"ROI proven. 15 plants, 14 docks installed, 13 flying. Case study for 40-plant sister company."',
-    groundTruth: 'Weekly usage shows 3 docks that flew most nights suddenly went completely offline in mid-November (AD-01, AD-02, AD-05). Group finance cannot verify energy/inspection savings without audited cost per flight, and the IT network project risks severing dock cellular links.',
+    groundTruth: 'Weekly usage shows 3 docks that flew most nights suddenly went completely offline in mid-November (AD-01, AD-02, AD-05). Group finance cannot verify savings without audited cost per flight, and the IT network project risks severing dock cellular links.',
     groundTruthPills: ['usage_drop', 'sr_roll_2', 'ba_use_2', 'sr_roi_2'],
     kpi: {
       ceiling: '$320,000',
       ceilingSub: '3 opportunities',
       confirmed: '$0',
-      confirmedSub: 'Contract renewal pending finance verification',
       flight: '11 / 14 active',
       flightSub: '3 heavy docks silent since mid-Nov',
       flightPills: ['usage_weekly.csv', 'AD-01', 'AD-02', 'AD-05'],
@@ -1792,34 +1493,312 @@ const ACCOUNT_DOSSIERS = {
         who: "Stefan Roy"
       }
     ]
+  },
+
+  // ── ACCOUNT H: Brindle Harbour Authority (THE 3RD ACCOUNT) ──
+  "H": {
+    id: "H",
+    name: "Brindle Harbour Authority",
+    typePill: "Port & Logistics",
+    baseline: "Evidence Baseline · 11 verified source records · 3 pipeline items",
+    officialStory: '"6 docks across three quays and a container yard. Saves about 400,000 a year. Ready to expand to two more harbours."',
+    groundTruth: 'Quays 1 and 2 fly every night, Quay 3 flies weekly, but the container yard dock has never flown due to vendor silence on data privacy requests. Finance director Priya Nair will not renew on unverified savings estimates, and Tom Reyes leaves next month with all rollout knowledge unrecorded.',
+    groundTruthPills: ['h_two_quays_z1a', 'h_finance_renewal_z1a', 'h_vendor_silent_z1a', 'h_contractor_leaving_z1a'],
+    kpi: {
+      ceiling: '$126,000',
+      ceilingSub: '3 opportunities',
+      confirmed: '$0',
+      flight: '5 / 6 active',
+      flightSub: 'Quays 1-3 active; Yard dock offline',
+      flightPills: ['h_two_quays_z1a', 'h_flight_log_z1a'],
+      stakeholders: '5'
+    },
+    deals: [
+      {
+        id: "h_renewal_z1a",
+        name: "Renew the six-dock contract",
+        stage: "qualified",
+        worth: "$96,000",
+        blocker: "Finance cannot see the saving the programme claims",
+        deadline: {
+          text: "Renewal decision date approaching — contract expires without audited savings",
+          badge: "Impending Decision"
+        },
+        evidence: ["h_saving_claim_z1a", "h_saving_basis_z1a", "h_finance_unseen_z1a", "h_finance_renewal_z1a", "h_two_quays_z1a", "h_flight_log_z1a"]
+      },
+      {
+        id: "h_yard_z1a",
+        name: "Get the container yard dock live",
+        stage: "qualified",
+        worth: "$30,000",
+        blocker: "The privacy assessment waits on documents the vendor never sent",
+        deadline: null,
+        evidence: ["h_yard_blocked_z1a", "h_vendor_silent_z1a", "h_dp_request_z1a"]
+      },
+      {
+        id: "h_harbours_z1a",
+        name: "Docks for two more harbours",
+        stage: "identified",
+        worth: "$180,000",
+        blocker: "Expansion blocked until Quays 1-3 demonstrate certified ROI to board",
+        deadline: null,
+        evidence: ["h_expand_wish_z1a"]
+      }
+    ],
+    stakeholders: [
+      {
+        name: "Marcus Hale",
+        role: "Head of port operations",
+        temp: "ALLY",
+        decides: "Operations Lead",
+        pays: "No (Finance Director)",
+        uses: "Primary Sponsor",
+        blocks: "No",
+        quote: "Estimated £400k in replaced patrol hours, but lacks audited accounting documentation to prove it to finance.",
+        evidence: ["h_saving_claim_z1a", "h_saving_basis_z1a"]
+      },
+      {
+        name: "Priya Nair",
+        role: "Finance director",
+        temp: "GUARDED",
+        decides: "Financial Sign-off",
+        pays: "Sole Approver",
+        uses: "No",
+        blocks: "Hard Blocker (Renewal)",
+        quote: "Priya signs the renewal. She will not renew on a saving she cannot see directly in the port's official accounts.",
+        evidence: ["h_finance_renewal_z1a", "h_finance_unseen_z1a"]
+      },
+      {
+        name: "Elena Varga",
+        role: "Data protection lead",
+        temp: "NEUTRAL",
+        decides: "DPIA / Privacy Lead",
+        pays: "No",
+        uses: "No",
+        blocks: "Hard Blocker (Yard Go-Live)",
+        quote: "Asked the vendor in the spring for data retention and storage location details. Nobody ever replied.",
+        evidence: ["h_yard_blocked_z1a", "h_vendor_silent_z1a"]
+      },
+      {
+        name: "Tom Reyes",
+        role: "Rollout contractor",
+        temp: "WARM",
+        decides: "Technical Execution",
+        pays: "No",
+        uses: "Key Operator",
+        blocks: "Operational Risk",
+        quote: "Tom's contract ends next month. Launch steps, patrol routes, and alert rota are in his head; nothing is written down.",
+        evidence: ["h_contractor_leaving_z1a"]
+      },
+      {
+        name: "Sam Okoye",
+        role: "IT infrastructure manager",
+        temp: "NEUTRAL",
+        decides: "Network Infrastructure",
+        pays: "No",
+        uses: "No",
+        blocks: "Network Risk",
+        quote: "IT was not involved in installs. All yard devices move to a new segmented network in autumn, risking dock cut-off.",
+        evidence: ["h_it_not_involved_z1a", "h_segmentation_z1a"]
+      }
+    ],
+    moves: [
+      {
+        rank: 1,
+        title: "Deliver Data-Flow & Retention Pack to Elena Varga for Yard DPIA",
+        desc: "Overcome months of vendor silence by immediately hand-delivering complete telemetry architecture, video retention specs, and cloud storage compliance files to Elena Varga to unlock the $30k container yard dock.",
+        owner: "CSM (FlytBase) + Compliance Engineer",
+        deal: "h_yard_z1a · Container Yard Go-Live ($30k)",
+        window: "Within 5 business days (Urgent vendor remediation)",
+        evidence: ["h_yard_blocked_z1a", "h_vendor_silent_z1a", "h_dp_request_z1a"]
+      },
+      {
+        rank: 2,
+        title: "Build Reconciled Patrol Cost-Per-Hour Model for Priya Nair",
+        desc: "Collaborate with Marcus Hale to convert Quays 1 & 2 flight logs into verified guard patrol shift reductions. Deliver transparent accounting schedule to Priya Nair ahead of the £96k contract renewal deadline.",
+        owner: "CSM + Marcus Hale + Priya Nair",
+        deal: "h_renewal_z1a · Six-Dock Contract Renewal ($96k)",
+        window: "Within 10 business days (Before decision cutoff)",
+        evidence: ["h_saving_basis_z1a", "h_finance_unseen_z1a", "h_finance_renewal_z1a"]
+      },
+      {
+        rank: 3,
+        title: "Execute Knowledge Transfer & SOP Codification with Tom Reyes",
+        desc: "Conduct structured daily recording sessions with Tom Reyes to document all patrol flight paths, weather abort criteria, emergency override steps, and dock maintenance rotas before his contract concludes next month.",
+        owner: "CSM + Tom Reyes + Marcus Hale",
+        deal: "Port Operations Continuity & Harbours Expansion",
+        window: "Within 14 business days (Before contractor contract ends)",
+        evidence: ["h_contractor_leaving_z1a", "h_two_quays_z1a"]
+      }
+    ],
+    threats: [
+      {
+        title: "Tom Reyes Departure & Unwritten Operational Knowledge Loss",
+        severity: "CRITICAL",
+        desc: "Tom Reyes's contract ends next month. Launch protocols, alert triage, and quay routes are completely unwritten.",
+        consequence: "Turns bad in 3 weeks: Contractor leaves, operations freeze, and flight volume drops to zero.",
+        evidence: ["h_contractor_leaving_z1a"]
+      },
+      {
+        title: "Priya Nair Finance Renewal Veto",
+        severity: "CRITICAL",
+        desc: "Priya Nair has formal veto power and refuses to sign the £96,000 contract renewal on Marcus's unbacked £400k claims.",
+        consequence: "Turns bad at renewal decision: Six docks powered down across Quays 1, 2, and 3.",
+        evidence: ["h_finance_renewal_z1a", "h_finance_unseen_z1a"]
+      },
+      {
+        title: "Autumn Port Network Segmentation Disconnect",
+        severity: "MEDIUM",
+        desc: "Sam Okoye's IT department is migrating all container yard hardware to an isolated segmented network without dock configurations.",
+        consequence: "Turns bad at autumn cutover: Docks lose telemetry and trigger automated fail-safe grounding.",
+        evidence: ["h_segmentation_z1a", "h_it_not_involved_z1a"]
+      },
+      {
+        title: "Vendor Silence Reputational Debt with Elena Varga",
+        severity: "MEDIUM",
+        desc: "FlytBase support ignored Elena's spring data retention inquiries for months, creating compliance resistance.",
+        consequence: "Turns bad immediately: Data protection office blocks any expansion to adjacent harbours.",
+        evidence: ["h_vendor_silent_z1a", "h_dp_request_z1a"]
+      }
+    ],
+    blindspots: [
+      {
+        gap: "Exact security patrol contractor invoicing and hourly rates for Priya Nair",
+        why: "Priya requires official ledger receipts showing replaced security patrol costs to sign the renewal.",
+        impact: "High (Blocks $96k renewal)",
+        who: "Priya Nair (Finance) + Port Procurement"
+      },
+      {
+        gap: "Exact calendar expiration date of Tom Reyes's contract",
+        why: "Workback schedule for SOP documentation must be completed prior to Tom's last day.",
+        impact: "High (Prevents operational shutdown)",
+        who: "Marcus Hale + Tom Reyes"
+      },
+      {
+        gap: "Port IT firewall and VLAN architecture for Sam Okoye's autumn segmentation",
+        why: "Network credentials and ports must be pre-configured before yard devices move to new subnet.",
+        impact: "Medium",
+        who: "Sam Okoye (IT Infrastructure)"
+      },
+      {
+        gap: "Elena Varga's compliance review turnaround time after receiving data-flow pack",
+        why: "Container yard dock cannot fly until formal written sign-off is returned.",
+        impact: "Medium",
+        who: "Elena Varga (DPO)"
+      }
+    ]
+  },
+
+  // ── ACCOUNT K: Kestrel Estates ──
+  "K": {
+    id: "K",
+    name: "Kestrel Estates",
+    typePill: "Residential & Commercial Estates",
+    baseline: "Evidence Baseline · 6 verified source records · 2 pipeline items",
+    officialStory: '"1 dock paid, 0 flying. Waiting on go-live."',
+    groundTruth: 'North entrance dock installed and paid for, but waiting on nighttime perimeter flight sign-off and local resident notification clearances.',
+    groundTruthPills: ['k_golive_z1a', 'k_south_z1a'],
+    kpi: {
+      ceiling: "$14,000",
+      ceilingSub: "2 opportunities",
+      confirmed: "$14,000",
+      flight: "0 / 1 active",
+      flightSub: "Awaiting nighttime go-live",
+      flightPills: ["k_golive_z1a"],
+      stakeholders: "3"
+    },
+    deals: [
+      {
+        id: "k_golive_z1a",
+        name: "Get the north-entrance dock flying night patrols",
+        stage: "qualified",
+        worth: "$14,000",
+        blocker: "Resident council notification and night flight permit pending",
+        deadline: null,
+        evidence: ["k_golive_z1a"]
+      },
+      {
+        id: "k_south_z1a",
+        name: "Second dock for the south entrance",
+        stage: "identified",
+        worth: "$14,000",
+        blocker: "North entrance must complete 30 days of incident-free night patrol first",
+        deadline: null,
+        evidence: ["k_south_z1a"]
+      }
+    ],
+    stakeholders: [
+      {
+        name: "Estate Operations Lead",
+        role: "Head of Estate Security",
+        temp: "ALLY",
+        decides: "Operational Lead",
+        pays: "Estate Board",
+        uses: "Primary",
+        blocks: "No",
+        quote: "Eager to get automated perimeter rounds active to deter recurring trespassers.",
+        evidence: []
+      }
+    ],
+    moves: [
+      {
+        rank: 1,
+        title: "Finalize Resident Notice & Night Patrol Schedule",
+        desc: "Issue flight timetable and noise certification to council to clear operational objections.",
+        owner: "CSM + Operations",
+        deal: "k_golive_z1a ($14k)",
+        window: "Within 7 business days",
+        evidence: []
+      }
+    ],
+    threats: [
+      {
+        title: "Resident Council Noise Complaint Delays",
+        severity: "MEDIUM",
+        desc: "Without proactive acoustic data, night flights could face local municipal pushback.",
+        consequence: "Turns bad in 2 weeks: Night operations restricted to daytime only.",
+        evidence: []
+      }
+    ],
+    blindspots: [
+      {
+        gap: "Municipal night flight permit turnaround timeline",
+        why: "Determines exact date dock can initiate automated patrols.",
+        impact: "Medium",
+        who: "Estate Operations Lead"
+      }
+    ]
   }
 };
 
-// ═══════════════════════════════════════════════════════════════
-// APP STATE & RENDERING ENGINE
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════════════
+// STATE MANAGEMENT & CONTROLLERS (NO LOGIN REQUIRED)
+// ════════════════════════════════════════════════════════════════════════
 let currentAccountId = "A";
-let availableAccounts = ["A", "B"];
+let currentPage = 1; // 1, 2, 3, 4, 5, or 'signals'
+let availableAccounts = ["A", "B", "H", "K"];
 let signalsList = [];
 let lastMcpTimestamp = Date.now();
 let readSignalsSet = new Set();
 
-// Load read notifications
+// Load read notifications from localStorage
 try {
-  const stored = localStorage.getItem("questathon_read_signals");
+  const stored = localStorage.getItem("flytbase_read_signals");
   if (stored) readSignalsSet = new Set(JSON.parse(stored));
 } catch {}
 
-// Initialize on page load (NO LOGIN REQUIRED)
+// Initialize on page load
 window.addEventListener("DOMContentLoaded", async () => {
-  await fetchDashboard();
-  renderCurrentAccount();
-  startRelativeTimer();
-  startHeartbeat();
+  await loadServerData();
+  renderAccountPills();
+  renderHeroCard();
+  switchPage(1);
+  startSyncTimer();
+  startBackgroundHeartbeat();
 });
 
-// Relative timer for "mcpLastSyncRelative"
-function startRelativeTimer() {
+// Relative timer updates
+function startSyncTimer() {
   setInterval(() => {
     const el = document.getElementById("mcpLastSyncRelative");
     if (!el) return;
@@ -1827,75 +1806,62 @@ function startRelativeTimer() {
     if (diff < 60000) el.textContent = "Just now";
     else if (diff < 3600000) el.textContent = `${Math.floor(diff / 60000)}m ago`;
     else el.textContent = `${Math.floor(diff / 3600000)}h ago`;
-  }, 2000);
+  }, 2500);
 }
 
-// Background polling for new signals / accounts
-function startHeartbeat() {
+// Background polling for server updates
+function startBackgroundHeartbeat() {
   setInterval(async () => {
     try {
       const res = await fetch("/api/status");
       const st = await res.json();
       if (st.lastMcpSyncTime) lastMcpTimestamp = st.lastMcpSyncTime;
       if (st.totalAccounts && st.totalAccounts > availableAccounts.length) {
-        await syncAllAccounts();
+        await syncAccountsRemote(true);
       }
     } catch {}
-  }, 20000);
+  }, 25000);
 }
 
 // Fetch dashboard from server
-async function fetchDashboard() {
+async function loadServerData() {
   try {
     const res = await fetch("/api/dashboard");
     const json = await res.json();
     if (json.lastMcpSyncTime) lastMcpTimestamp = json.lastMcpSyncTime;
     signalsList = json.signals || [];
 
-    // Check accounts in export
     if (json.accounts && Array.isArray(json.accounts)) {
-      availableAccounts = json.accounts.map(a => a.id);
       json.accounts.forEach(a => {
-        if (!ACCOUNT_DOSSIERS[a.id]) {
-          ACCOUNT_DOSSIERS[a.id] = createDynamicDossier(a);
+        if (!availableAccounts.includes(a.id)) availableAccounts.push(a.id);
+        if (!DOSSIERS[a.id]) {
+          DOSSIERS[a.id] = createDynamicDossier(a);
         }
       });
     }
 
-    // Check if new accounts arrive in signals
-    signalsList.forEach(s => {
-      if (s.account && !availableAccounts.includes(s.account)) {
-        availableAccounts.push(s.account);
-        if (!ACCOUNT_DOSSIERS[s.account]) {
-          ACCOUNT_DOSSIERS[s.account] = createDynamicDossier({ id: s.account, name: `Account ${s.account}` });
-        }
-      }
-    });
-
-    renderAccountDropdown();
     renderNotifications();
+    renderUrgentSignalsBanner();
   } catch (e) {
-    console.error("Dashboard load failed:", e);
+    console.error("Dashboard error:", e);
   }
 }
 
-// Render dynamic dossier for 3rd account or unknown accounts
 function createDynamicDossier(acc) {
   const opps = acc.opportunities || [];
-  const ceilingNum = opps.reduce((s, o) => s + (o.worth_up_to || 0), 0);
+  const ceiling = opps.reduce((s, o) => s + (o.worth_up_to || 0), 0);
   return {
     id: acc.id,
-    name: acc.name || `Customer Account ${acc.id}`,
+    name: acc.name || `Account ${acc.id}`,
     typePill: "Live Discovered Account",
-    baselineSub: `Evidence Baseline · ${(acc.facts||[]).length} source records · ${opps.length} pipeline items`,
+    baseline: `Evidence Baseline · ${(acc.facts||[]).length} source records · ${opps.length} pipeline items`,
     officialStory: acc.official_story || "New account provisioned on Questathon live server.",
-    groundTruth: `Active live account monitored through MCP get_signals. Contains ${opps.length} opportunities with total pipeline potential of $${ceilingNum.toLocaleString()}.`,
-    groundTruthPills: (acc.facts || []).slice(0, 4).map(f => f.id || 'fact'),
+    groundTruth: `Active live account monitored through MCP get_signals. Contains ${opps.length} opportunities.`,
+    groundTruthPills: (acc.facts || []).slice(0, 4).map(f => f.id),
     kpi: {
-      ceiling: `$${ceilingNum.toLocaleString()}`,
+      ceiling: `$${ceiling.toLocaleString()}`,
       ceilingSub: `${opps.length} opportunities`,
       confirmed: "$0",
-      confirmedSub: "Verification in progress",
       flight: "Active",
       flightSub: "Live signals received",
       flightPills: ["live_signal"],
@@ -1906,7 +1872,7 @@ function createDynamicDossier(acc) {
       name: o.title || o.name || o.id,
       stage: o.stage || "qualified",
       worth: `$${(o.worth_up_to||0).toLocaleString()}`,
-      blocker: typeof o.blocker === 'object' ? o.blocker.text : (o.blocker || "Open deal qualification required"),
+      blocker: typeof o.blocker === 'object' ? o.blocker.text : (o.blocker || "Open qualification required"),
       deadline: o.deadline ? { text: typeof o.deadline === 'object' ? o.deadline.text : o.deadline, badge: null } : null,
       evidence: o.evidence || []
     })),
@@ -1925,28 +1891,10 @@ function createDynamicDossier(acc) {
       {
         rank: 1,
         title: `Initiate CSM Kickoff with ${acc.name}`,
-        desc: "Schedule introductory alignment with account stakeholders to establish communication rhythms, verify budget authority, and document security requirements.",
+        desc: "Schedule introductory alignment with account stakeholders to establish operational rhythms.",
         owner: "CSM (FlytBase)",
         deal: `Account ${acc.id} Pipeline`,
         window: "Within 48 hours",
-        evidence: []
-      },
-      {
-        rank: 2,
-        title: "Audit Deployed Telemetry & Dock Readiness",
-        desc: "Verify dock connectivity, operator certifications, and active patrol coverage across all assigned sites.",
-        owner: "CSM + Solutions Engineer",
-        deal: "Operational Onboarding",
-        window: "Within 7 business days",
-        evidence: []
-      },
-      {
-        rank: 3,
-        title: "Formulate Joint Success Plan & Financial Milestones",
-        desc: "Construct quarterly milestone timeline with explicit sign-off criteria for finance gatekeepers.",
-        owner: "CSM + Account Director",
-        deal: "Contract Finalization",
-        window: "Within 14 business days",
         evidence: []
       }
     ],
@@ -1954,223 +1902,101 @@ function createDynamicDossier(acc) {
       {
         title: "Stakeholder Alignment Gap",
         severity: "CRITICAL",
-        desc: "New account requires immediate executive contact before competitor vendors engage.",
+        desc: "New account requires immediate executive contact.",
         consequence: "Turns bad in 2 weeks: Account goes dormant without proactive outreach.",
-        evidence: []
-      },
-      {
-        title: "Technical Integration Timeline Uncertainty",
-        severity: "MEDIUM",
-        desc: "Data-flow requirements and network architecture not yet verified.",
-        consequence: "Turns bad at rollout: Operational go-live pushed back.",
         evidence: []
       }
     ],
     blindspots: [
       {
         gap: "Primary budget owner and procurement timeline",
-        why: "Essential to forecast closing window and resource allocation.",
+        why: "Essential to forecast closing window.",
         impact: "High",
         who: "Account Executive / CSM"
-      },
-      {
-        gap: "Hardware delivery and local site permits",
-        why: "Deployment cannot begin without FAA / local flight authorizations.",
-        impact: "Medium",
-        who: "Operations Lead"
       }
     ]
   };
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════════════
 // RENDERING FUNCTIONS
-// ═══════════════════════════════════════════════════════════════
-function renderCurrentAccount() {
-  const dossier = ACCOUNT_DOSSIERS[currentAccountId] || ACCOUNT_DOSSIERS["A"];
+// ════════════════════════════════════════════════════════════════════════
+function renderAccountPills() {
+  const bar = document.getElementById("accountSelectorBar");
+  bar.innerHTML = availableAccounts.map(id => {
+    const d = DOSSIERS[id] || { name: `Account ${id}`, kpi: { ceiling: "" } };
+    const isActive = id === currentAccountId;
+    return `
+      <button class="account-toggle-btn ${isActive ? 'active' : ''}" onclick="selectAccount('${id}')">
+        <span>${d.name}</span>
+        <span class="acc-pill-badge">${d.kpi?.ceiling || id}</span>
+      </button>
+    `;
+  }).join("");
 
-  // Header and Title
-  document.getElementById("topHeaderAccountName").textContent = dossier.name;
-  document.getElementById("accHeroName").textContent = dossier.name;
-  document.getElementById("accHeroSub").textContent = dossier.baselineSub;
-  document.getElementById("accTypePill").textContent = dossier.typePill;
-
-  // Official Story & Ground Truth
-  document.getElementById("accOfficialStory").textContent = dossier.officialStory;
-  document.getElementById("accGroundTruth").textContent = dossier.groundTruth;
-  document.getElementById("accGroundTruthPills").innerHTML = (dossier.groundTruthPills || [])
-    .map(p => `<span class="source-pill"><span class="section-sign">§</span> ${p}</span>`).join("");
-
-  // KPIs
-  document.getElementById("kpiCeiling").textContent = dossier.kpi.ceiling;
-  document.getElementById("kpiOppCount").textContent = dossier.kpi.ceilingSub;
-  document.getElementById("kpiConfirmed").textContent = dossier.kpi.confirmed;
-  document.getElementById("kpiConfirmedSub").textContent = dossier.kpi.confirmedSub;
-  document.getElementById("kpiFlight").textContent = dossier.kpi.flight;
-  document.getElementById("kpiFlightSub").textContent = dossier.kpi.flightSub;
-  document.getElementById("kpiFlightPills").innerHTML = (dossier.kpi.flightPills || [])
-    .map(p => `<span class="source-pill"><span class="section-sign">§</span> ${p}</span>`).join("");
-  document.getElementById("kpiStakeholders").textContent = dossier.kpi.stakeholders;
-
-  // Sidebar Button
-  document.getElementById("currentAccountPickerName").textContent = dossier.name;
-  document.getElementById("currentAccountPickerBadge").textContent = dossier.kpi.ceiling;
-
-  // Q1: Deals
-  document.getElementById("q1HeaderMeta").textContent = `Ceiling: ${dossier.kpi.ceiling} · Confirmed: ${dossier.kpi.confirmed}`;
-  document.getElementById("dealsGrid").innerHTML = dossier.deals.map(d => `
-    <div class="deal-card">
-      <div class="deal-top">
-        <div>
-          <div class="deal-name">${d.name}</div>
-          <div class="deal-id-stage">Stage: ${d.stage} · ID: ${d.id}</div>
-        </div>
-        <div>
-          <div class="deal-ceiling-number">≤ ${d.worth}</div>
-          <div class="deal-ceiling-label">Opportunity Ceiling</div>
-        </div>
-      </div>
-      ${d.blocker ? `
-        <div class="core-blocker-box">
-          <div class="core-blocker-title">Core Blocker (Open)</div>
-          <div class="core-blocker-text">${d.blocker}</div>
-        </div>
-      ` : ''}
-      ${d.deadline ? `
-        <div class="deadline-looming-box">
-          <span>⏰ <strong>Deadline Looming:</strong> ${d.deadline.text}</span>
-          ${d.deadline.badge ? `<span class="deadline-tag-badge">${d.deadline.badge}</span>` : ''}
-        </div>
-      ` : ''}
-      ${d.evidence && d.evidence.length > 0 ? `
-        <div style="margin-top:auto;padding-top:10px;">
-          <div style="font-size:11px;color:#64748b;margin-bottom:6px;">Supporting Evidence Records:</div>
-          <div class="pills-wrap">
-            ${d.evidence.map(e => `<span class="source-pill"><span class="section-sign">§</span> ${e}</span>`).join("")}
-          </div>
-        </div>
-      ` : ''}
-    </div>
-  `).join("");
-
-  // Q2: Stakeholders
-  document.getElementById("q2HeaderMeta").textContent = `${dossier.stakeholders.length} Stakeholders Mapped`;
-  document.getElementById("stakeholdersGrid").innerHTML = dossier.stakeholders.map(s => `
-    <div class="stakeholder-card">
-      <div class="stk-head">
-        <div>
-          <div class="stk-name">${s.name}</div>
-          <div class="stk-role">${s.role}</div>
-        </div>
-        <span class="stk-temp-badge ${s.temp === 'NEUTRAL' ? 'neutral' : ''}">${s.temp}</span>
-      </div>
-      <div class="stk-quad-table">
-        <div>
-          <div class="stk-col-label">Decides</div>
-          <div class="stk-col-val">${s.decides}</div>
-        </div>
-        <div>
-          <div class="stk-col-label">Pays</div>
-          <div class="stk-col-val">${s.pays}</div>
-        </div>
-        <div>
-          <div class="stk-col-label">Uses</div>
-          <div class="stk-col-val">${s.uses}</div>
-        </div>
-        <div>
-          <div class="stk-col-label">Blocks</div>
-          <div class="stk-col-val ${s.blocks !== 'No' ? 'blocker' : ''}">${s.blocks}</div>
-        </div>
-      </div>
-      <div class="stk-quote-box">"${s.quote}"</div>
-      ${s.evidence && s.evidence.length > 0 ? `
-        <div class="pills-wrap">
-          ${s.evidence.map(e => `<span class="source-pill"><span class="section-sign">§</span> ${e}</span>`).join("")}
-        </div>
-      ` : ''}
-    </div>
-  `).join("");
-
-  // Q3: Moves
-  document.getElementById("movesListContainer").innerHTML = dossier.moves.map(m => `
-    <div class="move-card">
-      <div class="move-rank-box">${m.rank}</div>
-      <div class="move-content">
-        <div class="move-title">${m.title}</div>
-        <div class="move-desc">${m.desc}</div>
-        <div class="move-tags-row">
-          <span class="move-tag owner">👤 Owner: ${m.owner}</span>
-          <span class="move-tag deal">🎯 Deal: ${m.deal}</span>
-          <span class="move-tag window">🏆 Window: ${m.window}</span>
-        </div>
-        ${m.evidence && m.evidence.length > 0 ? `
-          <div class="pills-wrap">
-            ${m.evidence.map(e => `<span class="source-pill"><span class="section-sign">§</span> ${e}</span>`).join("")}
-          </div>
-        ` : ''}
-      </div>
-    </div>
-  `).join("");
-
-  // Q4: Threats
-  document.getElementById("threatsGrid").innerHTML = dossier.threats.map(t => `
-    <div class="threat-card ${t.severity.toLowerCase()}">
-      <div class="threat-head">
-        <div class="threat-name">${t.title}</div>
-        <span class="threat-badge ${t.severity.toLowerCase()}">${t.severity}</span>
-      </div>
-      <div class="threat-body">${t.desc}</div>
-      <div class="threat-consequence-box">
-        <span class="threat-consequence-label">Timeline Consequence:</span> ${t.consequence}
-      </div>
-      ${t.evidence && t.evidence.length > 0 ? `
-        <div class="pills-wrap">
-          ${t.evidence.map(e => `<span class="source-pill"><span class="section-sign">§</span> ${e}</span>`).join("")}
-        </div>
-      ` : ''}
-    </div>
-  `).join("");
-
-  // Q5: Blindspots
-  document.getElementById("blindspotsTableBody").innerHTML = dossier.blindspots.map(b => `
-    <tr>
-      <td class="gap-title-col">${b.gap}</td>
-      <td class="gap-why-col">${b.why}</td>
-      <td class="gap-impact-col ${b.impact.toLowerCase().includes('high') ? 'high' : 'medium'}">${b.impact}</td>
-      <td class="gap-who-col">${b.who}</td>
-    </tr>
-  `).join("");
-
-  // Live Signals for this account
-  renderLiveSignals();
+  // Populate modal account selector
+  const select = document.getElementById("modalNoteAccount");
+  select.innerHTML = availableAccounts.map(id => {
+    const d = DOSSIERS[id] || { name: `Account ${id}` };
+    return `<option value="${id}">${d.name} (${id})</option>`;
+  }).join("");
 }
 
-// Render Live Signals red box at top
-function renderLiveSignals() {
+function selectAccount(accId) {
+  currentAccountId = accId;
+  renderAccountPills();
+  renderHeroCard();
+  renderUrgentSignalsBanner();
+  switchPage(currentPage);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderHeroCard() {
+  const d = DOSSIERS[currentAccountId] || DOSSIERS["A"];
+  document.getElementById("accHeroTitle").textContent = d.name;
+  document.getElementById("accHeroBaseline").textContent = d.baseline;
+  document.getElementById("accHeroTag").textContent = d.typePill;
+
+  document.getElementById("accHeroOfficialStory").textContent = d.officialStory;
+  document.getElementById("accHeroGroundTruth").textContent = d.groundTruth;
+  document.getElementById("accHeroGroundTruthPills").innerHTML = (d.groundTruthPills || [])
+    .map(p => `<span class="source-pill" onclick="showEvidenceDetail('${p}')">${p}</span>`).join("");
+
+  document.getElementById("kpiHeroCeiling").textContent = d.kpi.ceiling;
+  document.getElementById("kpiHeroCeilingSub").textContent = d.kpi.ceilingSub;
+  document.getElementById("kpiHeroConfirmed").textContent = d.kpi.confirmed;
+  document.getElementById("kpiHeroFlight").textContent = d.kpi.flight;
+  document.getElementById("kpiHeroFlightSub").textContent = d.kpi.flightSub;
+  document.getElementById("kpiHeroFlightPills").innerHTML = (d.kpi.flightPills || [])
+    .map(p => `<span class="source-pill" onclick="showEvidenceDetail('${p}')">${p}</span>`).join("");
+  document.getElementById("kpiHeroStakeholders").textContent = d.kpi.stakeholders;
+}
+
+function renderUrgentSignalsBanner() {
   const filtered = signalsList.filter(s => !s.account || s.account === currentAccountId);
-  document.getElementById("signalsBoxTitle").textContent = `Live Account Signals (${filtered.length})`;
+  document.getElementById("signalsBannerCount").textContent = `Live Account Signals (${filtered.length})`;
 
   if (filtered.length === 0) {
-    document.getElementById("liveSignalsCardsList").innerHTML = `
-      <div style="font-size:13px;color:#64748b;font-style:italic;text-align:center;padding:12px;">
-        No pending operational alarms for this account. System is monitoring MCP get_signals...
+    document.getElementById("urgentSignalsList").innerHTML = `
+      <div style="font-size:13px;color:var(--dsc);font-style:italic;">
+        No active operational alerts for this account. FlytBase autonomous monitoring active.
       </div>
     `;
     return;
   }
 
-  document.getElementById("liveSignalsCardsList").innerHTML = filtered.map(s => `
-    <div class="signal-card">
-      <div class="signal-card-top">
-        <div class="signal-card-title">${s.title}</div>
-        <div class="signal-card-date">${s.dated || new Date(s.receivedAt||Date.now()).toISOString().split('T')[0]}</div>
+  document.getElementById("urgentSignalsList").innerHTML = filtered.slice(0, 2).map(s => `
+    <div class="sig-item-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+        <span style="font-weight:700;color:var(--white);font-size:14px;">${s.title}</span>
+        <span class="sig-date-badge">${s.dated || 'Active'}</span>
       </div>
-      <div class="signal-card-body">${s.summary}</div>
-      <div class="signal-btn-row">
-        <button class="btn-inspect" onclick='viewRawRecord(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
+      <div style="font-size:13px;color:var(--dsc);line-height:1.5;">${s.summary}</div>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="btn" style="font-size:11px;padding:5px 12px;" onclick='openRawRecordModal(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
           📄 Inspect Raw Record (${(s.records && s.records[0] && s.records[0].kind) || 'email'})
         </button>
-        <button class="btn-act" onclick="openNoteModalForSignal('${currentAccountId}', '${(s.title||'').replace(/'/g, "\\'")}')">
+        <button class="btn btn-orange" style="font-size:11px;padding:5px 14px;" onclick="openNoteModalForSignal('${currentAccountId}', '${(s.title||'').replace(/'/g, "\\'")}')">
           ✏️ Act &amp; Write Note Back
         </button>
       </div>
@@ -2178,59 +2004,310 @@ function renderLiveSignals() {
   `).join("");
 }
 
-// Render Account Switcher Dropdown
-function renderAccountDropdown() {
-  const dd = document.getElementById("accountMenuDropdown");
-  dd.innerHTML = availableAccounts.map(id => {
-    const d = ACCOUNT_DOSSIERS[id] || { name: `Account ${id}`, kpi: { ceiling: "" } };
-    const isActive = id === currentAccountId;
-    return `
-      <div class="account-option ${isActive ? 'active' : ''}" onclick="switchAccount('${id}')">
-        <span>${d.name}</span>
-        <span style="font-size:11px;font-weight:700;color:#94a3b8;">${d.kpi?.ceiling || ''}</span>
+// ════════════════════════════════════════════════════════════════════════
+// 5 DEDICATED QUESTION PAGES (SWITCHER)
+// ════════════════════════════════════════════════════════════════════════
+function switchPage(page) {
+  currentPage = page;
+
+  // Sidebar active tab state
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.getElementById(`tabBtn${i}`);
+    if (btn) btn.classList.toggle("active", i === page);
+  }
+  const sigBtn = document.getElementById("tabBtnSignals");
+  if (sigBtn) sigBtn.classList.toggle("active", page === "signals");
+
+  const d = DOSSIERS[currentAccountId] || DOSSIERS["A"];
+  const container = document.getElementById("activePageContent");
+
+  if (page === 1) renderPage1Deals(d, container);
+  else if (page === 2) renderPage2Power(d, container);
+  else if (page === 3) renderPage3Moves(d, container);
+  else if (page === 4) renderPage4Threats(d, container);
+  else if (page === 5) renderPage5Blindspots(d, container);
+  else if (page === "signals") renderPageSignals(d, container);
+}
+
+// Page 1: What is the book worth?
+function renderPage1Deals(d, el) {
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="page-title-eyebrow">QUESTION 1 · DEALS &amp; CEILINGS</div>
+        <h2>What is the book worth?</h2>
+        <div class="page-desc">
+          Each deal at a value you can back. Opportunity ceilings separated from confirmed revenue and unbacked claims.
+        </div>
       </div>
-    `;
-  }).join("");
-
-  // Populate note modal account select
-  const select = document.getElementById("modalNoteAccount");
-  select.innerHTML = availableAccounts.map(id => {
-    const d = ACCOUNT_DOSSIERS[id] || { name: `Account ${id}` };
-    return `<option value="${id}">${d.name} (${id})</option>`;
-  }).join("");
+      <div style="font-family:'Manrope',sans-serif;font-size:18px;font-weight:800;color:var(--orange);">
+        Ceiling: ${d.kpi.ceiling} · Confirmed: ${d.kpi.confirmed}
+      </div>
+    </div>
+    <div class="card-grid-2" style="margin-top:20px;">
+      ${d.deals.map(deal => `
+        <div class="card deal-card">
+          <div class="deal-top">
+            <div>
+              <div class="deal-title">${deal.name}</div>
+              <div style="font-size:12px;color:var(--dm);font-family:'JetBrains Mono',monospace;margin-top:2px;">
+                Stage: ${deal.stage} · ID: ${deal.id}
+              </div>
+            </div>
+            <div>
+              <div class="deal-val">≤ ${deal.worth}</div>
+              <div style="font-size:10px;font-weight:700;color:var(--dm);text-transform:uppercase;text-align:right;">Ceiling</div>
+            </div>
+          </div>
+          ${deal.blocker ? `
+            <div class="deal-blocker-box">
+              <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:#f43f5e;margin-bottom:3px;">
+                Core Blocker (Open)
+              </div>
+              <div>${deal.blocker}</div>
+            </div>
+          ` : ''}
+          ${deal.deadline ? `
+            <div class="deal-deadline-box">
+              <span>⏰ <strong>Deadline Looming:</strong> ${deal.deadline.text}</span>
+              ${deal.deadline.badge ? `<span class="badge badge-red" style="margin-left:auto;">${deal.deadline.badge}</span>` : ''}
+            </div>
+          ` : ''}
+          ${deal.evidence && deal.evidence.length > 0 ? `
+            <div style="margin-top:auto;padding-top:8px;">
+              <div style="font-size:11px;color:var(--dm);font-weight:700;margin-bottom:6px;">Supporting Evidence Records:</div>
+              <div class="source-list">
+                ${deal.evidence.map(e => `<span class="source-pill" onclick="showEvidenceDetail('${e}')">${e}</span>`).join("")}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
-// Switch Active Account
-function switchAccount(accId) {
-  currentAccountId = accId;
-  document.getElementById("accountMenuDropdown").classList.add("hidden");
-  renderAccountDropdown();
-  renderCurrentAccount();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+// Page 2: Who holds the power?
+function renderPage2Power(d, el) {
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="page-title-eyebrow">QUESTION 2 · STAKEHOLDER MATRIX</div>
+        <h2>Who holds the power?</h2>
+        <div class="page-desc">
+          For each deal: who decides, who pays, who uses it, who could block it, and their stance with you.
+        </div>
+      </div>
+      <div style="font-family:'Manrope',sans-serif;font-size:18px;font-weight:800;color:var(--orange);">
+        ${d.stakeholders.length} Stakeholders Mapped
+      </div>
+    </div>
+    <div class="card-grid-3" style="margin-top:20px;">
+      ${d.stakeholders.map(s => `
+        <div class="card stakeholder-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+            <div>
+              <div style="font-family:'Manrope',sans-serif;font-size:16px;font-weight:800;color:var(--white);">${s.name}</div>
+              <div style="font-size:12px;color:var(--dsc);">${s.role}</div>
+            </div>
+            <span class="badge ${s.temp === 'ALLY' || s.temp === 'WARM' ? 'badge-green' : (s.temp === 'GUARDED' ? 'badge-red' : 'badge-gray')}">
+              ${s.temp}
+            </span>
+          </div>
+          <div class="power-matrix-table">
+            <div class="matrix-cell">
+              <b>Decides</b>
+              <span>${s.decides}</span>
+            </div>
+            <div class="matrix-cell">
+              <b>Pays</b>
+              <span>${s.pays}</span>
+            </div>
+            <div class="matrix-cell">
+              <b>Uses</b>
+              <span>${s.uses}</span>
+            </div>
+            <div class="matrix-cell ${s.blocks !== 'No' ? 'blocker' : ''}">
+              <b>Blocks</b>
+              <span>${s.blocks}</span>
+            </div>
+          </div>
+          <div style="font-size:12.5px;color:var(--dsc);line-height:1.45;font-style:italic;margin-bottom:8px;">
+            "${s.quote}"
+          </div>
+          ${s.evidence && s.evidence.length > 0 ? `
+            <div class="source-list" style="margin-top:auto;">
+              ${s.evidence.map(e => `<span class="source-pill" onclick="showEvidenceDetail('${e}')">${e}</span>`).join("")}
+            </div>
+          ` : ''}
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
-function toggleAccountMenu() {
-  document.getElementById("accountMenuDropdown").classList.toggle("hidden");
+// Page 3: What do you do first?
+function renderPage3Moves(d, el) {
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="page-title-eyebrow">QUESTION 3 · STRATEGIC PLAYBOOK</div>
+        <h2>What do you do first?</h2>
+        <div class="page-desc">
+          The first three strategic moves, ranked, each with an owner, target window inside deadlines, and the deal it moves.
+        </div>
+      </div>
+      <span class="badge badge-green" style="font-size:13px;padding:6px 14px;">Ranked 1 → 2 → 3</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;margin-top:20px;">
+      ${d.moves.map(m => `
+        <div class="move-card">
+          <div class="move-rank">${m.rank}</div>
+          <div class="move-info">
+            <h4>${m.title}</h4>
+            <p>${m.desc}</p>
+            <div class="move-tags">
+              <span class="badge badge-blue">👤 Owner: ${m.owner}</span>
+              <span class="badge badge-orange">🎯 Deal: ${m.deal}</span>
+              <span class="badge badge-green">🏆 Window: ${m.window}</span>
+            </div>
+            ${m.evidence && m.evidence.length > 0 ? `
+              <div class="source-list" style="margin-top:10px;">
+                ${m.evidence.map(e => `<span class="source-pill" onclick="showEvidenceDetail('${e}')">${e}</span>`).join("")}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
-// Sidebar Active Navigation styling
-function setActiveNav(el) {
-  document.querySelectorAll(".sidebar .nav-link").forEach(l => l.classList.remove("active"));
-  el.classList.add("active");
+// Page 4: What is about to go wrong?
+function renderPage4Threats(d, el) {
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="page-title-eyebrow">QUESTION 4 · THREAT RADAR</div>
+        <h2>What is about to go wrong?</h2>
+        <div class="page-desc">
+          Evidence-backed threats: deadlines at risk, people going cold, stuck blockers, and exact turnaround dates.
+        </div>
+      </div>
+      <span class="badge badge-red" style="font-size:13px;padding:6px 14px;">Threat Radar</span>
+    </div>
+    <div class="card-grid-2" style="margin-top:20px;">
+      ${d.threats.map(t => `
+        <div class="card threat-card ${t.severity.toLowerCase()}">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+            <div style="font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:var(--white);">${t.title}</div>
+            <span class="badge ${t.severity === 'CRITICAL' ? 'badge-red' : 'badge-blue'}">${t.severity}</span>
+          </div>
+          <div style="font-size:13px;color:var(--dsc);line-height:1.5;">${t.desc}</div>
+          <div class="threat-consequence">
+            <b>Timeline Consequence:</b> ${t.consequence}
+          </div>
+          ${t.evidence && t.evidence.length > 0 ? `
+            <div class="source-list" style="margin-top:auto;">
+              ${t.evidence.map(e => `<span class="source-pill" onclick="showEvidenceDetail('${e}')">${e}</span>`).join("")}
+            </div>
+          ` : ''}
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// NOTIFICATIONS & LIVE SIGNALS REFRESH
-// ═══════════════════════════════════════════════════════════════
+// Page 5: What do you still not know?
+function renderPage5Blindspots(d, el) {
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="page-title-eyebrow">QUESTION 5 · INFORMATION GAPS</div>
+        <h2>What do you still not know?</h2>
+        <div class="page-desc">
+          The blindspots your plan rests on, why they matter, impact rating, and exactly who can fill each one.
+        </div>
+      </div>
+      <span class="badge badge-blue" style="font-size:13px;padding:6px 14px;">Blindspots Ledger</span>
+    </div>
+    <div class="blindspot-table-box" style="margin-top:20px;">
+      <table class="flyt-table">
+        <thead>
+          <tr>
+            <th style="width:28%;">INFORMATION GAP</th>
+            <th style="width:38%;">WHY IT MATTERS &amp; CONSEQUENCE</th>
+            <th style="width:14%;">IMPACT</th>
+            <th style="width:20%;">WHO CAN FILL IT</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${d.blindspots.map(b => `
+            <tr>
+              <td style="font-weight:700;color:var(--white);">${b.gap}</td>
+              <td style="color:var(--dsc);">${b.why}</td>
+              <td>
+                <span class="badge ${b.impact.toLowerCase().includes('high') ? 'badge-red' : 'badge-blue'}">
+                  ${b.impact}
+                </span>
+              </td>
+              <td style="color:#e2e8f0;font-weight:600;">${b.who}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// Signals Live Feed View
+function renderPageSignals(d, el) {
+  const filtered = signalsList.filter(s => !s.account || s.account === currentAccountId);
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <div class="page-title-eyebrow">ACTIVITY · REAL-TIME EVENTS</div>
+        <h2>Live Signal Feed (${filtered.length})</h2>
+        <div class="page-desc">
+          Streaming operational signals polled from Questathon server MCP get_signals.
+        </div>
+      </div>
+      <button class="btn btn-orange" onclick="refreshSignalsMcp()">↻ Poll Server Now</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:20px;">
+      ${filtered.map(s => `
+        <div class="card" style="border-left:4px solid var(--orange);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+            <div style="font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:var(--white);">${s.title}</div>
+            <span class="sig-date-badge">${s.dated || 'Live Event'}</span>
+          </div>
+          <div style="font-size:13.5px;color:var(--dsc);line-height:1.5;">${s.summary}</div>
+          <div style="display:flex;gap:10px;margin-top:8px;">
+            <button class="btn" onclick='openRawRecordModal(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
+              📄 Inspect Record
+            </button>
+            <button class="btn btn-orange" onclick="openNoteModalForSignal('${currentAccountId}', '${(s.title||'').replace(/'/g, "\\'")}')">
+              ✏️ Act &amp; Write Note
+            </button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// NOTIFICATIONS & LIVE ACTIONS
+// ════════════════════════════════════════════════════════════════════════
 function renderNotifications() {
-  const badge = document.getElementById("notifBadge");
-  const list = document.getElementById("notifList");
+  const badge = document.getElementById("notifCountBadge");
+  const list = document.getElementById("notifDropdownList");
   const unread = signalsList.filter(s => !readSignalsSet.has(s.id || s.title));
 
   badge.textContent = unread.length > 0 ? unread.length : "";
 
   if (signalsList.length === 0) {
-    list.innerHTML = `<div style="padding:16px;text-align:center;font-size:12px;color:#94a3b8;">No notifications</div>`;
+    list.innerHTML = `<div style="padding:16px;text-align:center;font-size:12px;color:var(--dm);">No operational signals logged</div>`;
     return;
   }
 
@@ -2238,10 +2315,10 @@ function renderNotifications() {
     const key = s.id || s.title;
     const isUnread = !readSignalsSet.has(key);
     return `
-      <div class="notif-entry ${isUnread ? 'unread' : ''}" onclick='readAndOpenNotification(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
-        <div class="notif-entry-title">${s.title}</div>
-        <div class="notif-entry-body">${s.summary}</div>
-        <div class="notif-entry-time">${s.dated || "Today"} · Account ${s.account || 'Portfolio'}</div>
+      <div class="notif-drop-item ${isUnread ? 'unread' : ''}" onclick='readSignalClick(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
+        <div class="notif-drop-item-title">${s.title}</div>
+        <div class="notif-drop-item-sub">${s.summary}</div>
+        <div style="font-size:11px;color:var(--orange);margin-top:4px;">Account ${s.account || 'Portfolio'} · ${s.dated || 'Recent'}</div>
       </div>
     `;
   }).join("");
@@ -2251,68 +2328,66 @@ function toggleNotifDropdown() {
   document.getElementById("notificationDropdown").classList.toggle("hidden");
 }
 
-function markAllNotificationsRead() {
+function markAllRead() {
   signalsList.forEach(s => readSignalsSet.add(s.id || s.title));
-  localStorage.setItem("questathon_read_signals", JSON.stringify([...readSignalsSet]));
+  localStorage.setItem("flytbase_read_signals", JSON.stringify([...readSignalsSet]));
   renderNotifications();
 }
 
-function readAndOpenNotification(s) {
+function readSignalClick(s) {
   readSignalsSet.add(s.id || s.title);
-  localStorage.setItem("questathon_read_signals", JSON.stringify([...readSignalsSet]));
+  localStorage.setItem("flytbase_read_signals", JSON.stringify([...readSignalsSet]));
   renderNotifications();
-  if (s.account && s.account !== currentAccountId) {
-    switchAccount(s.account);
+  if (s.account && s.account !== currentAccountId && availableAccounts.includes(s.account)) {
+    selectAccount(s.account);
   }
   document.getElementById("notificationDropdown").classList.add("hidden");
-  viewRawRecord(s);
+  openRawRecordModal(s);
 }
 
-// Refresh Signals via MCP
-async function refreshSignalsNow() {
+// Refresh Live Signals via MCP call
+async function refreshSignalsMcp() {
   const btn = document.getElementById("refreshSignalsBtn");
-  const pill = document.getElementById("mcpLivePill");
-  const pillText = document.getElementById("mcpPillText");
+  const text = document.getElementById("mcpCooldownText");
 
   btn.disabled = true;
-  btn.innerHTML = `<span>⏳</span> Syncing...`;
-  pillText.textContent = "MCP Syncing...";
+  btn.textContent = "Syncing MCP...";
+  text.textContent = "Syncing...";
 
   try {
     const res = await fetch("/api/refresh", { method: "POST" });
     const data = await res.json();
 
     if (res.status === 429) {
-      showToastPopup(`⏳ MCP Rate Limited: Next sync in ${data.retryAfter || 60}s`);
+      showToast(`⏳ MCP Cooldown: Retry in ${data.retryAfter || 60}s`);
     } else if (data.ok) {
       signalsList = data.signals || signalsList;
       lastMcpTimestamp = data.lastMcpSyncTime || Date.now();
 
-      // Check if new accounts were discovered
       if (data.newAccountsDiscovered && data.newAccountsDiscovered.length > 0) {
         data.newAccountsDiscovered.forEach(acc => {
-          showToastPopup(`🚨 NEW ACCOUNT DISCOVERED: ${acc.name} (${acc.id})`);
+          showToast(`🚨 DISCOVERED: ${acc.name} (${acc.id})`);
           if (!availableAccounts.includes(acc.id)) availableAccounts.push(acc.id);
-          ACCOUNT_DOSSIERS[acc.id] = createDynamicDossier(acc);
+          DOSSIERS[acc.id] = createDynamicDossier(acc);
         });
-        renderAccountDropdown();
+        renderAccountPills();
       }
 
       renderNotifications();
-      renderLiveSignals();
-      showToastPopup(`✅ Live Signals updated! Total: ${signalsList.length} events`);
+      renderUrgentSignalsBanner();
+      showToast(`✓ Live Signals synchronized: ${signalsList.length} events logged`);
     }
   } catch (e) {
-    showToastPopup(`Error refreshing signals: ${e.message}`);
+    showToast(`Error: ${e.message}`);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = `<span>↻</span> Refresh Live Signals`;
-    pillText.textContent = "MCP Live Ready";
+    btn.textContent = "↻ Refresh Live Signals";
+    text.textContent = "MCP Live Ready";
   }
 }
 
-// Sync all accounts
-async function syncAllAccounts() {
+// Force Remote Account Sync
+async function syncAccountsRemote(silent = false) {
   try {
     const res = await fetch("/api/accounts/sync", { method: "POST" });
     const data = await res.json();
@@ -2320,32 +2395,31 @@ async function syncAllAccounts() {
       data.accounts.forEach(a => {
         if (!availableAccounts.includes(a.id)) {
           availableAccounts.push(a.id);
-          ACCOUNT_DOSSIERS[a.id] = createDynamicDossier(a);
-          showToastPopup(`🚨 New account added to CRM: ${a.name} (${a.id})`);
+          DOSSIERS[a.id] = createDynamicDossier(a);
         }
       });
-      renderAccountDropdown();
-      showToastPopup(`✅ Accounts synchronized (${availableAccounts.length} accounts total)`);
+      renderAccountPills();
+      if (!silent) showToast(`✓ Accounts synchronized (${availableAccounts.length} in portfolio)`);
     }
   } catch (e) {
-    showToastPopup(`Sync failed: ${e.message}`);
+    if (!silent) showToast(`Sync error: ${e.message}`);
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// MODAL CONTROLLERS
-// ═══════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════════════
+// MODALS
+// ════════════════════════════════════════════════════════════════════════
 function openNoteModal() {
   document.getElementById("modalNoteAccount").value = currentAccountId;
   document.getElementById("modalNoteText").value = "";
-  document.getElementById("modalNoteStatus").style.display = "none";
+  document.getElementById("modalNoteStatus").classList.add("hidden");
   document.getElementById("writeNoteModal").classList.remove("hidden");
 }
 
-function openNoteModalForSignal(accId, sigTitle) {
+function openNoteModalForSignal(accId, title) {
   document.getElementById("modalNoteAccount").value = accId;
-  document.getElementById("modalNoteText").value = `Regarding signal: "${sigTitle}"\n\nCSM Strategic Action Plan:\n`;
-  document.getElementById("modalNoteStatus").style.display = "none";
+  document.getElementById("modalNoteText").value = `Regarding event: "${title}"\n\nCSM Strategy Action Plan:\n`;
+  document.getElementById("modalNoteStatus").classList.add("hidden");
   document.getElementById("writeNoteModal").classList.remove("hidden");
 }
 
@@ -2353,22 +2427,23 @@ function closeNoteModal() {
   document.getElementById("writeNoteModal").classList.add("hidden");
 }
 
-async function submitNoteViaMcp() {
+async function submitMcpNote() {
   const account = document.getElementById("modalNoteAccount").value;
   const kind = document.getElementById("modalNoteKind").value;
   const text = document.getElementById("modalNoteText").value.trim();
   const statusEl = document.getElementById("modalNoteStatus");
-  const btn = document.getElementById("modalSubmitNoteBtn");
+  const btn = document.getElementById("modalSubmitBtn");
 
   if (!text) {
     statusEl.textContent = "Please enter note content.";
-    statusEl.style.color = "#dc2626";
-    statusEl.style.display = "block";
+    statusEl.style.background = "var(--status-error-bg)";
+    statusEl.style.color = "#fda4af";
+    statusEl.classList.remove("hidden");
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = "Writing via MCP...";
+  btn.textContent = "Saving to MCP...";
 
   try {
     const res = await fetch("/api/notes", {
@@ -2378,30 +2453,32 @@ async function submitNoteViaMcp() {
     });
     const json = await res.json();
     if (json.ok) {
-      statusEl.textContent = "✓ Note successfully written to Questathon server via MCP!";
-      statusEl.style.color = "#10b981";
-      statusEl.style.display = "block";
+      statusEl.textContent = "✓ Note written to Questathon server via MCP write_note!";
+      statusEl.style.background = "var(--eucalyptus-light)";
+      statusEl.style.color = "var(--eucalyptus-text)";
+      statusEl.classList.remove("hidden");
       setTimeout(() => closeNoteModal(), 1200);
-      showToastPopup("📝 Note logged to account timeline via MCP write_note");
+      showToast("📝 Note successfully committed to account history");
     } else {
-      throw new Error(json.error || "Save note failed");
+      throw new Error(json.error || "Save failed");
     }
   } catch (e) {
     statusEl.textContent = `Error: ${e.message}`;
-    statusEl.style.color = "#dc2626";
-    statusEl.style.display = "block";
+    statusEl.style.background = "var(--status-error-bg)";
+    statusEl.style.color = "#fda4af";
+    statusEl.classList.remove("hidden");
   } finally {
     btn.disabled = false;
-    btn.textContent = "Submit Note";
+    btn.textContent = "Submit to Server";
   }
 }
 
-function viewRawRecord(signal) {
+function openRawRecordModal(signal) {
   document.getElementById("rawRecordTitle").textContent = signal.title;
   let text = "";
   if (signal.records && signal.records.length > 0) {
     signal.records.forEach((r, idx) => {
-      text += `--- RECORD [${idx+1}] (${r.kind || 'file'}) ---\n`;
+      text += `=== RECORD ${idx + 1} (${r.kind || 'raw'}) ===\n`;
       if (r.path) text += `Path: ${r.path}\n`;
       if (r.note) text += `Note: ${r.note}\n`;
       if (r.text) text += `\n${r.text}\n\n`;
@@ -2409,7 +2486,7 @@ function viewRawRecord(signal) {
   } else {
     text = JSON.stringify(signal, null, 2);
   }
-  document.getElementById("rawRecordContent").textContent = text;
+  document.getElementById("rawRecordText").textContent = text;
   document.getElementById("rawRecordModal").classList.remove("hidden");
 }
 
@@ -2417,14 +2494,18 @@ function closeRecordModal() {
   document.getElementById("rawRecordModal").classList.add("hidden");
 }
 
-function showToastPopup(msg) {
+function showEvidenceDetail(id) {
+  showToast(`Evidence cited: § ${id}`);
+}
+
+function showToast(msg) {
   const existing = document.querySelector(".toast-popup");
   if (existing) existing.remove();
   const t = document.createElement("div");
   t.className = "toast-popup";
-  t.textContent = msg;
+  t.innerHTML = `<span>⚡</span> <span>${msg}</span>`;
   document.body.appendChild(t);
-  setTimeout(() => { if (t.parentElement) t.remove(); }, 4000);
+  setTimeout(() => { if (t.parentElement) t.remove(); }, 3500);
 }
 </script>
 </body>

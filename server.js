@@ -68,13 +68,42 @@ function getMcpCooldown() {
   return remaining > 0 ? Math.ceil(remaining / 1000) : 0;
 }
 
+function mergeDropsIntoAccounts(accountsList) {
+  if (!Array.isArray(accountsList)) return accountsList;
+  const existingIds = new Set(accountsList.map(a => a.id));
+  const dropFiles = ["drop_H.json", "drop_K.json"];
+  for (const file of dropFiles) {
+    const dropPath = path.join(DATA_DIR, file);
+    if (fs.existsSync(dropPath)) {
+      try {
+        const dropData = JSON.parse(fs.readFileSync(dropPath, "utf8"));
+        if (Array.isArray(dropData.accounts)) {
+          for (const acc of dropData.accounts) {
+            if (!existingIds.has(acc.id)) {
+              accountsList.push(acc);
+              existingIds.add(acc.id);
+            }
+          }
+        }
+      } catch {}
+    }
+  }
+  return accountsList;
+}
+
 async function getExport() {
-  if (snapshot) return snapshot;
+  if (snapshot) {
+    mergeDropsIntoAccounts(snapshot.accounts);
+    return snapshot;
+  }
 
   // 1. Check local file store first
   if (fs.existsSync(EXPORT_PATH)) {
     try {
       snapshot = JSON.parse(fs.readFileSync(EXPORT_PATH, "utf8"));
+      if (snapshot && Array.isArray(snapshot.accounts)) {
+        mergeDropsIntoAccounts(snapshot.accounts);
+      }
       return snapshot;
     } catch (e) {
       console.warn("Corrupt local export, refetching...", e.message);
@@ -89,6 +118,9 @@ async function getExport() {
     throw new Error(`Export request failed (${r.status}). Check server token.`);
   }
   snapshot = await r.json();
+  if (snapshot && Array.isArray(snapshot.accounts)) {
+    mergeDropsIntoAccounts(snapshot.accounts);
+  }
   fs.writeFileSync(EXPORT_PATH, JSON.stringify(snapshot, null, 2), "utf8");
   return snapshot;
 }

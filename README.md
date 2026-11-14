@@ -1,117 +1,118 @@
-# Questathon Customer Success Intelligence CRM
+# FlytBase CS Intelligence CRM
 
-An evidence-led, executive-grade Customer Success CRM built for **Eastern Counties Police Alliance** and **Aldermoor Industrial Group**. Built for Questathon, it reads live data via the Questathon MCP API, separates verified operating signals from champion claims, and answers the five critical account questions for Monday management review.
-
----
-
-## The 5 Core Questions Answered (For Both Accounts)
-
-### 1. What is the book worth?
-- **Distinction between Ceilings and Confirmed Revenue:** Clearly separates confirmed/booked revenue from qualified pipeline ceilings.
-  - **Eastern Counties Police Alliance:** **$2.30M** total opportunity ceiling across 4 deals (`a_renewal`: $350k, `a_tarn`: $200k, `a_westmere`: $250k, `a_tender`: $1.5M). Confirmed revenue is **$0** (each force funds separately; no pooled budget `rc_funding_2`, `hd_calloff_2`).
-  - **Aldermoor Industrial Group:** **$320,000** opportunity ceiling across 2 priced deals (`b_renewal`: $140k, `b_idle`: $180k) + 1 unpriced case study (`b_sister`). Confirmed revenue is **$0** (contract is up for renewal; the claimed €1.2M annual savings was verified as a theoretical spreadsheet with $0 booked by Finance `sr_roi_2`).
-- **Source Traceability:** Every deal and valuation bridges directly to verified source IDs and file records.
-
-### 2. Who holds the power?
-- **Deal-by-deal power mapping:** Explicitly categorizes each stakeholder into **Decider**, **Payer**, **User**, and **Blocker** roles with relationship stances (*Ally*, *Warm*, *Neutral*, *Cold/Disengaged*).
-  - **Eastern Counties:** Identifies force CFOs as actual budget payers (`hd_calloff_2`), Fatima Osei as DPIA blocker (`fo_dpia_2`), Insp. Karen Mbeki as primary operational user (`km_usage_1`), Ewan Brooks as financial gatekeeper (`eb_sign_2`), and flags Hannah Doyle going cold (`hd_silence_3`).
-  - **Aldermoor Industrial:** Identifies Nadia Rahman (Finance) as the ultimate payer/decider demanding hard ROI (`sr_roi_2`), Stefan Roy as champion (`sr_roi_0`), Owen Fitch as IT network blocker (`b_idle`), and Beatriz Alonso as operational user receiving nocturnal alerts on her personal phone (`ba_use_2`).
-
-### 3. What do you do first?
-- **Top 3 Priority Moves Ranked 1 → 2 → 3:**
-  - Each action has an explicit **Owner**, **Target Window** inside real deadlines, and the specific **Deal Moved**, backed by source IDs.
-  - **Eastern Counties:**
-    1. *Rank 1:* Deliver engineering data-flow pack to Fatima Osei within 7 business days to unblock 4-month stalled DPIA ticket `pj_ticket` for Tarn Valley and Norwold go-live (`a_tarn`).
-    2. *Rank 2:* Reconcile operator overtime with Ewan Brooks and Insp. Karen Mbeki to produce cost-per-flight vs £1,500/hr helicopter benchmark before autumn budget round closes (`a_westmere`).
-    3. *Rank 3:* Submit formal written clarification and 300-dock operating model proposal to Hannah Doyle within 14 days (inside 25 moves remaining before spec lock) (`a_tender`).
-  - **Aldermoor Industrial:**
-    1. *Rank 1:* Capture rollout playbook before Stefan's deputy leaves (`ba_deputy_0`, `sr_repl_2`) to prevent complete loss of deployment knowledge (`b_idle`).
-    2. *Rank 2:* Amend third-party guard contractor SLA so guards respond to drone alerts rather than routing notifications to Beatriz Alonso's personal phone (`b_renewal`).
-    3. *Rank 3:* Map IT network dependencies with Owen Fitch to avoid docks being severed by plant network upgrade, and audit credible savings with Nadia Rahman (`b_renewal`, `b_idle`).
-
-### 4. What is about to go wrong?
-- **Evidence-Backed Threat Radar:**
-  - Pinpoints looming deadlines, stalled tickets, disengaged contacts, and exact turnaround dates.
-  - Highlights critical blockers: 4-month unanswered DPIA ticket (`pj_ticket`), 25 moves left before 300-dock tender specification locks (`moves_left: 25`), departure of Stefan's deputy without written documentation (`ba_deputy_0`), and plant manager resentment over security budget levies (`sr_plants_2`).
-
-### 5. What do you still not know?
-- **Blindspots Ledger:**
-  - Transparent inventory of missing information: the gap description, why it matters to the forecast, severity impact rating, and the specific person who can fill it.
+A real-time Customer Success intelligence and portfolio management platform built for the **Questathon** competition. The application integrates with the Questathon Model Context Protocol (MCP) server to monitor autonomous drone deployments, track live operational events, bridge customer claims against ground-truth telemetry, and log strategic account notes.
 
 ---
 
-## Live MCP Integration & 1-Call-Per-Minute Architecture
+## Overview
 
-- **Strict Server-Side Rate Limiting:** Questathon limits MCP calls to 1 per minute per token. The server enforces a 60-second cooldown, providing the client with remaining cooldown seconds for UI countdown timers and disabling write-backs during cooldowns.
-- **Persistent Data Store:** Snapshot data (`data/questathon_export.json`), live signals (`data/signals.json`), and user-written notes (`data/notes.json`) are stored locally on the server (git-ignored) so server reboots do not discard state or consume unnecessary API calls.
-- **Two-Way Live Synchronization:**
-  - `POST /api/refresh` invokes the MCP tool `get_signals` to ingest live events (such as urgent ticket FB-11206 or stakeholder departure notices).
-  - `POST /api/notes` invokes the MCP tool `write_note` to write back notes, next steps, risks, and tasks directly to the Questathon live account.
+The FlytBase CS Intelligence CRM is designed for Customer Success Managers (CSMs) and enterprise account teams overseeing autonomous drone docking stations. It provides a single operational cockpit to:
+
+- **Monitor Multi-Account Portfolios:** Track enterprise customer accounts, opportunity pipelines, operational flight health, and stakeholder networks.
+- **Surface Real-Time Signals:** Automatically ingest live operational alerts, incoming customer tickets, and organizational changes via Questathon MCP tools (`get_signals`).
+- **Bridge Claims vs. Ground Truth:** Compare official champion narratives against verified telemetry and source records.
+- **Execute Account Action Plans:** Log action items, risk flags, and strategic notes back to the live server via MCP (`write_note`).
+- **Handle Server Drops Dynamically:** Detect and integrate new accounts released during live evaluation rounds.
 
 ---
 
-## Getting Started Locally
+## Key Features
+
+- **FlytBase Official Design System:** A clean, dark-mode command center styled with FlytBase's brand identity (Charcoal base, Signal Orange accent, and Eucalyptus status indicators).
+- **Zero-Barrier Direct Workspace:** Instant access to portfolio analytics and account workspaces without friction.
+- **Multi-Account Support:** Seamless switching across all active customer accounts, with automated synchronization for newly released drops.
+- **5-Dimension Account Framework:** Structured analysis of pipeline valuation, stakeholder power dynamics, prioritized next steps, looming operational threats, and information blindspots.
+- **Autonomous MCP Synchronization:** Background polling, live event notifications, relative time tracking, and unread alert drawers.
+- **Rate Limit & Cooldown Engine:** Built-in safeguards respecting Questathon's 1-call-per-minute policy, featuring cooldown tracking and intelligent local caching.
+
+---
+
+## System Architecture
+
+```
+questathon-crm/
+├── server.js              # Express API server & Questathon MCP client
+├── public/
+│   └── index.html         # Single-page application with FlytBase UI & real-time engine
+├── data/                  # Local persistence (Export snapshots, signals, notes, drops)
+│   ├── questathon_export.json
+│   ├── signals.json
+│   └── notes.json
+├── test_app.js            # Automated verification & integration test suite
+├── package.json           # Node.js project manifest & scripts
+└── .env                   # Environment configuration (git-ignored)
+```
+
+---
+
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+ (tested on Node 18, 20, 22, 24)
-- npm or pnpm
+- **Node.js** (v18 or newer)
+- **npm** or **pnpm**
+- A valid **Questathon API Token** (`AQ_TOKEN`)
 
-### Installation & Run
+### Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/Jithin-PJK/questathon-crm.git
    cd questathon-crm
    ```
 
-2. Copy the environment template:
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Configure your Questathon token in `.env`:
+2. **Configure environment variables:**
+   Create a `.env` file in the root directory:
    ```bash
    AQ_TOKEN=your_questathon_api_token_here
    PORT=3000
    ```
 
-4. Install dependencies:
+3. **Install dependencies:**
    ```bash
    npm install
    ```
 
-5. Start the server:
+4. **Start the application:**
    ```bash
    npm start
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in any modern browser.
+5. **Open in browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000).
 
-### Automated Test Suite
+---
 
-Run the full integration test suite:
+## Verification & Testing
+
+To run the automated end-to-end test suite:
+
 ```bash
 node test_app.js
 ```
-The test verifies:
-- Server health and token verification
-- Cooldown tracking and rate-limit handling
-- Export data integrity and opportunity ceiling totals for both accounts
-- Live signal refresh via MCP
-- Frontend HTML delivery
+
+The test script validates:
+1. Server health and token verification (`/api/health`)
+2. Status and sync tracking (`/api/status`)
+3. Dashboard data integrity and account ceilings (`/api/dashboard`)
+4. Rate limit enforcement and MCP cooldown handling (`/api/refresh`)
+5. Authentication and credential validation (`/api/auth/login`)
+6. Account synchronization (`/api/accounts/sync`)
+7. Frontend delivery and UI asset integrity
 
 ---
 
-## Security & Secrets Management
+## Deployment
 
-- **No Secrets in Client-Side Code:** The Questathon API token (`AQ_TOKEN`) is consumed strictly on the server and is never sent to the browser or embedded in client assets.
-- **Clean Repository:** `.env`, `data/*.json`, and `questathon_export.json` are listed in `.gitignore` to prevent credential or private snapshot leaks.
-- **No Invented Metrics:** Financial metrics and operational statuses are sourced directly from the verified export snapshot or live MCP signals.
+The application is lightweight, uses standard Node.js without native C++ compilation, and is ready for one-click deployment:
+
+- **Render / Railway / Fly.io:**
+  - Build Command: `npm install`
+  - Start Command: `npm start`
+  - Environment Variable: Add `AQ_TOKEN` with your Questathon API token.
+- **Production Mode:** Set `NODE_ENV=production` and configure your preferred `PORT`.
 
 ---
 
-## Deployment Ready
+## License
 
-The project contains no native binary dependencies and is ready for one-click deployment to any standard platform:
-- **Render / Railway / Fly.io / Heroku:** Set `AQ_TOKEN` in the platform environment variables and run `npm start`.
-- **Node.js Production:** Set `NODE_ENV=production` and `PORT=8080`.
+MIT License. Built for Questathon by FlytBase Customer Success.
