@@ -1,0 +1,2131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Questathon CS CRM | Evidence-Led Account Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --panel-alt: #f1f5f9;
+      --ink: #0f172a;
+      --ink-muted: #64748b;
+      --ink-subtle: #94a3b8;
+      --line: #e2e8f0;
+      --line-subtle: #edf2f7;
+      --brand: #2563eb;
+      --brand-light: #eff6ff;
+      --brand-dark: #1d4ed8;
+      --navy: #0b1329;
+      --navy-light: #162444;
+      --green: #10b981;
+      --green-light: #ecfdf5;
+      --green-text: #065f46;
+      --amber: #f59e0b;
+      --amber-light: #fffbeb;
+      --amber-text: #92400e;
+      --red: #ef4444;
+      --red-light: #fef2f2;
+      --red-text: #991b1b;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select, textarea { font-family: inherit; }
+
+    /* Layout */
+    .app-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--navy);
+      color: #cbd5e1;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+    }
+    .brand-text h1 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+    }
+    .brand-text p {
+      font-size: 10px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-weight: 600;
+    }
+
+    .nav-group-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      padding-left: 10px;
+    }
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      color: #94a3b8;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .nav-link:hover {
+      background: var(--navy-light);
+      color: #ffffff;
+    }
+    .nav-link.active {
+      background: #1e293b;
+      color: #ffffff;
+      font-weight: 600;
+      border-left: 3px solid var(--brand);
+    }
+    .nav-badge {
+      margin-left: auto;
+      background: #334155;
+      color: #cbd5e1;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    .sidebar-footer b { color: #94a3b8; }
+
+    /* Main Area */
+    .main-area {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Topbar */
+    .topbar {
+      height: 70px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .breadcrumb {
+      font-size: 13px;
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .breadcrumb b { color: var(--ink); }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .cooldown-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: var(--panel-alt);
+      color: var(--ink-muted);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cooldown-pill.ready {
+      background: var(--green-light);
+      color: var(--green-text);
+      border-color: #a7f3d0;
+    }
+    .dot-indicator {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background: var(--panel-alt);
+      border-color: #cbd5e1;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-primary {
+      background: var(--brand);
+      color: #ffffff;
+      border-color: var(--brand);
+    }
+    .btn-primary:hover {
+      background: var(--brand-dark);
+      border-color: var(--brand-dark);
+    }
+
+    /* Content Area */
+    .content {
+      padding: 28px 32px 60px;
+      max-width: 1560px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Account Switcher Header */
+    .account-switcher-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .page-title-box h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.6px;
+      margin-bottom: 4px;
+    }
+    .page-title-box p {
+      color: var(--ink-muted);
+      font-size: 13px;
+      max-width: 740px;
+    }
+
+    /* Tab Switcher */
+    .account-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+    .acc-tab-btn {
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s ease;
+    }
+    .acc-tab-btn:hover {
+      background: var(--panel-alt);
+      color: var(--ink);
+    }
+    .acc-tab-btn.active {
+      background: var(--navy);
+      color: #ffffff;
+      border-color: var(--navy);
+      box-shadow: var(--shadow-sm);
+    }
+    .acc-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.2);
+    }
+    .acc-tab-btn:not(.active) .acc-badge {
+      background: var(--panel-alt);
+      color: var(--ink-muted);
+    }
+
+    /* Executive Context Banner */
+    .urgent-signals-banner {
+      background: linear-gradient(135deg, #fff7ed, #fffbeb);
+      border: 1px solid #fed7aa;
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      margin-bottom: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);
+      border-left: 5px solid var(--amber);
+    }
+    .urgent-signals-banner.critical {
+      background: linear-gradient(135deg, #fef2f2, #fff1f2);
+      border-color: #fecdd3;
+      border-left-color: var(--red);
+    }
+    .sig-banner-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .sig-banner-title {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sig-item-card {
+      background: #ffffff;
+      border: 1px solid #fde68a;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .urgent-signals-banner.critical .sig-item-card {
+      border-color: #fecdd3;
+    }
+    .sig-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .sig-item-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .sig-date-badge {
+      font-size: 11px;
+      font-weight: 700;
+      background: #fef3c7;
+      color: #92400e;
+      padding: 2px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .urgent-signals-banner.critical .sig-date-badge {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .sig-summary {
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.45;
+    }
+    .sig-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .context-banner {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .banner-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .account-meta h3 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .account-meta p {
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-top: 2px;
+    }
+    .story-versus {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      background: var(--panel-alt);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      border: 1px solid var(--line-subtle);
+    }
+    .story-item b {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      color: var(--ink-muted);
+      margin-bottom: 4px;
+    }
+    .story-item p {
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    .story-item.verified p {
+      color: #065f46;
+      font-weight: 500;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+    }
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+    .kpi-val {
+      font-family: 'Manrope', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.5px;
+    }
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kpi-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    .kpi-tag.ceiling { background: #eff6ff; color: #1d4ed8; }
+    .kpi-tag.confirmed { background: #fef2f2; color: #b91c1c; }
+    .kpi-tag.signal { background: #ecfdf5; color: #047857; }
+
+    /* Core 5 Questions Section Layout */
+    .section-block {
+      margin-bottom: 30px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--navy);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+      font-family: 'Manrope', sans-serif;
+    }
+    .section-title-wrap h3 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .section-desc {
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-top: 2px;
+    }
+
+    /* Cards & Grids */
+    .card-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .card-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .content-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.15s ease;
+    }
+    .content-card:hover {
+      border-color: #cbd5e1;
+    }
+
+    /* Deals / Book Value */
+    .deal-card {
+      position: relative;
+      border-left: 4px solid var(--brand);
+    }
+    .deal-card.unpriced {
+      border-left-color: #94a3b8;
+    }
+    .deal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .deal-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .deal-amount {
+      text-align: right;
+    }
+    .deal-val {
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .deal-type-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+    }
+
+    .deal-blocker-box {
+      background: #fff1f2;
+      border: 1px solid #ffe4e6;
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #9f1239;
+    }
+    .deal-blocker-box b {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 2px;
+      color: #be123c;
+    }
+
+    .deal-deadline-box {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .deadline-countdown-badge {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    /* Source ID pills */
+    .source-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 8px;
+    }
+    .source-pill {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 3px 7px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .source-pill:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #94a3b8;
+      transform: translateY(-1px);
+    }
+    .source-pill::before {
+      content: "§";
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    /* Stakeholders / Power Dynamics */
+    .stakeholder-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sh-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .sh-name {
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .sh-role {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+    .badge-power {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .badge-power.ally { background: var(--green-light); color: var(--green-text); }
+    .badge-power.warm { background: var(--brand-light); color: var(--brand-dark); }
+    .badge-power.neutral { background: var(--panel-alt); color: #475569; }
+    .badge-power.cold { background: var(--red-light); color: var(--red-text); }
+
+    .power-roles-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: var(--panel-alt);
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      font-size: 10px;
+      text-align: center;
+    }
+    .power-role-cell b {
+      display: block;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .power-role-cell span {
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .power-role-cell.yes span { color: var(--brand); }
+    .power-role-cell.block span { color: var(--red); }
+
+    .sh-notes {
+      font-size: 12px;
+      color: var(--ink);
+      line-height: 1.45;
+      background: #fafaf9;
+      border-left: 3px solid #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    /* Actions / Ranked Moves */
+    .action-card {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px 20px;
+    }
+    .action-rank {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--navy);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .action-details h4 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .action-details p {
+      font-size: 13px;
+      color: var(--ink-muted);
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+    .action-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      font-size: 11px;
+    }
+    .meta-tag {
+      background: var(--panel-alt);
+      color: #334155;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .meta-tag.owner { background: #eff6ff; color: #1e40af; }
+    .meta-tag.deal { background: #fdf2f8; color: #9d174d; }
+    .meta-tag.window { background: #fef3c7; color: #92400e; }
+
+    /* Threat Radar */
+    .threat-card {
+      border-left: 4px solid var(--amber);
+    }
+    .threat-card.critical { border-left-color: var(--red); }
+    .threat-card.medium { border-left-color: var(--brand); }
+    .threat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .threat-head h4 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .threat-card p {
+      font-size: 13px;
+      color: var(--ink-muted);
+      line-height: 1.45;
+    }
+    .threat-consequence {
+      background: #f8fafc;
+      border-left: 3px solid #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 12px;
+      color: #334155;
+    }
+    .threat-consequence b {
+      color: #0f172a;
+    }
+
+    /* Blindspots Ledger */
+    .blindspot-table-wrap {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    .data-table th {
+      background: #f8fafc;
+      padding: 12px 18px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--ink-muted);
+      border-bottom: 1px solid var(--line);
+    }
+    .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line-subtle);
+      color: var(--ink);
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #fafaf9; }
+
+    /* Live Signals Feed & Notes Drawer */
+    .live-feed-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+    .feed-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid var(--line-subtle);
+    }
+    .feed-item:first-child { border-top: none; }
+    .feed-text { font-size: 13px; color: var(--ink); }
+    .feed-time { font-size: 11px; color: var(--ink-muted); white-space: nowrap; }
+
+    /* Modal / Drawer */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: grid;
+      place-items: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-box {
+      background: #ffffff;
+      border-radius: var(--radius-xl);
+      max-width: 560px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--ink-muted);
+    }
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      color: var(--ink);
+      background: #ffffff;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .modal-footer {
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Evidence Drawer Detail */
+    .evidence-detail-box {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ev-meta-line {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+    .ev-quote {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--ink);
+      border-left: 3px solid var(--brand);
+      padding-left: 12px;
+      line-height: 1.5;
+    }
+
+    /* Toast */
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--navy);
+      color: #ffffff;
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastSlideUp 0.25s ease-out;
+    }
+    @keyframes toastSlideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .hidden { display: none !important; }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .card-grid-3 { grid-template-columns: 1fr; }
+      .card-grid-2 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 850px) {
+      .app-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .topbar { padding: 0 16px; }
+      .content { padding: 18px 16px 40px; }
+      .story-versus { grid-template-columns: 1fr; }
+      .action-card { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-box">
+      <div class="brand-icon">Q</div>
+      <div class="brand-text">
+        <h1>Questathon CRM</h1>
+        <p>Evidence-Led CS Suite</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="nav-group-title">ACCOUNTS</div>
+      <div class="nav-list">
+        <div class="nav-link active" id="navAccA" onclick="switchAccount('A')">
+          <span>🏛️</span> Eastern Counties
+          <span class="nav-badge">$2.3M</span>
+        </div>
+        <div class="nav-link" id="navAccB" onclick="switchAccount('B')">
+          <span>🏭</span> Aldermoor Group
+          <span class="nav-badge">$320k</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="nav-group-title">THE 5 QUESTIONS</div>
+      <div class="nav-list">
+        <a class="nav-link" href="#q1-book"><span>1.</span> Book Worth & Value</a>
+        <a class="nav-link" href="#q2-power"><span>2.</span> Stakeholder Power</a>
+        <a class="nav-link" href="#q3-moves"><span>3.</span> Top 3 First Moves</a>
+        <a class="nav-link" href="#q4-threats"><span>4.</span> Looming Threats</a>
+        <a class="nav-link" href="#q5-gaps"><span>5.</span> Missing Information</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="nav-group-title">ACTIVITY</div>
+      <div class="nav-list">
+        <a class="nav-link" href="#live-console"><span>⚡</span> Live Signal Feed</a>
+        <a class="nav-link" onclick="openNoteModal()"><span>📝</span> Write Account Note</a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <p><b>MONDAY-READY CS CRM</b></p>
+      <p>Every metric backed by verified source IDs. Unbacked champion claims isolated. 1 MCP call/min enforced.</p>
+    </div>
+  </aside>
+
+  <!-- Main Area -->
+  <main class="main-area">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="breadcrumb">
+        <span>Portfolio</span> / <span id="topAccountBreadcrumb">Eastern Counties Police Alliance</span>
+      </div>
+
+      <div class="top-actions">
+        <div class="cooldown-pill" id="cooldownIndicator">
+          <span class="dot-indicator"></span>
+          <span id="cooldownText">Checking MCP...</span>
+        </div>
+        <button class="btn" id="btnRefreshSignals" onclick="refreshSignals()">
+          <span>↻</span> Refresh Live Signals
+        </button>
+        <button class="btn btn-primary" onclick="openNoteModal()">
+          <span>＋</span> Write Account Note
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Title & Switcher -->
+      <div class="account-switcher-wrap">
+        <div class="page-title-box">
+          <h2 id="viewAccountName">Eastern Counties Police Alliance</h2>
+          <p id="viewAccountSub">Executive customer success brief answering the five core questions for Monday review.</p>
+        </div>
+
+        <div class="account-tabs">
+          <button class="acc-tab-btn active" id="tabBtnA" onclick="switchAccount('A')">
+            <span>Eastern Counties Police Alliance</span>
+            <span class="acc-badge">Account A</span>
+          </button>
+          <button class="acc-tab-btn" id="tabBtnB" onclick="switchAccount('B')">
+            <span>Aldermoor Industrial Group</span>
+            <span class="acc-badge">Account B</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Signals Alert Banner for Active Account -->
+      <div id="accountSignalsBanner"></div>
+
+      <!-- Context Banner: Official Story vs Verified Reality -->
+      <div class="context-banner" id="contextBanner">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- KPI Summary Grid -->
+      <div class="kpi-grid" id="kpiGrid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- QUESTION 1: WHAT IS THE BOOK WORTH? -->
+      <section class="section-block" id="q1-book">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <div class="section-num">1</div>
+            <div>
+              <h3>What is the book worth?</h3>
+              <div class="section-desc">Each deal at a value you can back. Opportunity ceilings separated from confirmed revenue and unbacked claims.</div>
+            </div>
+          </div>
+          <span class="kpi-tag ceiling" id="q1TotalTag">Ceiling: $2.30M · Confirmed: $0</span>
+        </div>
+        <div class="card-grid-2" id="q1DealsGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- QUESTION 2: WHO HOLDS THE POWER? -->
+      <section class="section-block" id="q2-power">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <div class="section-num">2</div>
+            <div>
+              <h3>Who holds the power?</h3>
+              <div class="section-desc">For each deal: who decides, who pays, who uses it, who could block it, and their stance with you.</div>
+            </div>
+          </div>
+          <span class="kpi-tag ceiling" id="q2CountTag">5 Mapped Stakeholders</span>
+        </div>
+        <div class="card-grid-3" id="q2StakeholdersGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- QUESTION 3: WHAT DO YOU DO FIRST? -->
+      <section class="section-block" id="q3-moves">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <div class="section-num">3</div>
+            <div>
+              <h3>What do you do first?</h3>
+              <div class="section-desc">The first three strategic moves, ranked, each with an owner, target window inside deadlines, and the deal it moves.</div>
+            </div>
+          </div>
+          <span class="kpi-tag signal">Ranked 1 → 2 → 3</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;" id="q3ActionsList">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- QUESTION 4: WHAT IS ABOUT TO GO WRONG? -->
+      <section class="section-block" id="q4-threats">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <div class="section-num">4</div>
+            <div>
+              <h3>What is about to go wrong?</h3>
+              <div class="section-desc">Evidence-backed threats: deadlines at risk, people going cold, stuck blockers, and exact turnaround dates.</div>
+            </div>
+          </div>
+          <span class="kpi-tag confirmed">Threat Radar</span>
+        </div>
+        <div class="card-grid-2" id="q4ThreatsGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- QUESTION 5: WHAT DO YOU STILL NOT KNOW? -->
+      <section class="section-block" id="q5-gaps">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <div class="section-num">5</div>
+            <div>
+              <h3>What do you still not know?</h3>
+              <div class="section-desc">The blindspots your plan rests on, why they matter, impact rating, and exactly who can fill each one.</div>
+            </div>
+          </div>
+          <span class="kpi-tag ceiling">Blindspots Ledger</span>
+        </div>
+        <div class="blindspot-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:25%">Information Gap</th>
+                <th style="width:35%">Why It Matters & Consequence</th>
+                <th style="width:15%">Impact</th>
+                <th style="width:25%">Who Can Fill It</th>
+              </tr>
+            </thead>
+            <tbody id="q5GapsTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- LIVE CONSOLE & SIGNALS -->
+      <section class="section-block" id="live-console">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <div class="section-num">⚡</div>
+            <div>
+              <h3>Live Pulse & Write-Back Ledger</h3>
+              <div class="section-desc">Signals received via MCP get_signals and notes written back to Questathon live records.</div>
+            </div>
+          </div>
+          <button class="btn" onclick="openNoteModal()">＋ Add Account Note</button>
+        </div>
+        <div class="card-grid-2">
+          <!-- Signals card -->
+          <div class="content-card">
+            <h4 style="font-family:'Manrope';font-weight:700">Incoming Live Signals (MCP)</h4>
+            <div id="signalsFeedList" style="max-height: 280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Notes written back -->
+          <div class="content-card">
+            <h4 style="font-family:'Manrope';font-weight:700">Notes & Tasks Written Back</h4>
+            <div id="notesFeedList" style="max-height: 280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- Evidence Inspector Modal -->
+<div class="modal-backdrop hidden" id="evidenceModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="evModalTitle">Evidence Record §fo_dpia_2</h3>
+      <button class="modal-close" onclick="closeEvidenceModal()">✕</button>
+    </div>
+    <div class="modal-body" id="evModalBody">
+      <!-- Injected -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeEvidenceModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Write Note Modal -->
+<div class="modal-backdrop hidden" id="noteModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Write Back to Questathon Account</h3>
+      <button class="modal-close" onclick="closeNoteModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Target Account</label>
+        <select class="form-select" id="inputNoteAccount">
+          <option value="A">Eastern Counties Police Alliance (Account A)</option>
+          <option value="B">Aldermoor Industrial Group (Account B)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Note Kind</label>
+        <select class="form-select" id="inputNoteKind">
+          <option value="next_step">Next step (Priority move)</option>
+          <option value="risk">Risk (Threat / Blocker)</option>
+          <option value="task">Task (Actionable to-do)</option>
+          <option value="note">General Note (Factual update)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Title / Headline (optional)</label>
+        <input class="form-input" id="inputNoteTitle" placeholder="e.g. Data-flow pack expedited to Fatima">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Note Content *</label>
+        <textarea class="form-textarea" id="inputNoteText" placeholder="Write the factual update, next action or verified blocker to commit to the live account..."></textarea>
+      </div>
+
+      <div style="font-size:11px;color:var(--ink-muted);line-height:1.4">
+        ⚠️ <b>Rate Limit Notice:</b> This triggers a live MCP tool call (<code>write_note</code>) which respects the 1-call-per-minute server cooldown.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeNoteModal()">Cancel</button>
+      <button class="btn btn-primary" id="btnSubmitNote" onclick="submitNote()">Save to Live Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Box -->
+<div class="toast-box hidden" id="toast">
+  <span id="toastMsg">Notification message</span>
+</div>
+
+<script>
+// State Management
+let currentAccount = "A";
+let dashboardData = null;
+let signals = [];
+let notes = [];
+let cooldownSeconds = 0;
+let cooldownInterval = null;
+
+// Currency & formatting helpers
+function formatUSD(num) {
+  if (num == null) return "Unpriced / Case study";
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(num);
+}
+function escapeHtml(str) {
+  return String(str ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// Render source pill with click handler
+function renderSources(sourceIds) {
+  if (!sourceIds || !sourceIds.length) return "";
+  return sourceIds.map(id => `<span class="source-pill" onclick="inspectEvidence('${escapeHtml(id)}')">${escapeHtml(id)}</span>`).join("");
+}
+
+// Look up fact or file in current data
+function findEvidenceItem(id) {
+  if (!dashboardData) return null;
+  for (const acc of dashboardData.accounts) {
+    const f = acc.facts?.find(x => x.id === id);
+    if (f) return { ...f, accountId: acc.id, accountName: acc.name, type: "fact" };
+  }
+  const file = dashboardData.files?.find(x => x.id === id);
+  if (file) return { ...file, type: "file" };
+  return null;
+}
+
+// Inspect Evidence Modal
+function inspectEvidence(id) {
+  const item = findEvidenceItem(id);
+  const modal = document.getElementById("evidenceModal");
+  const title = document.getElementById("evModalTitle");
+  const body = document.getElementById("evModalBody");
+
+  title.textContent = `Evidence Record §${id}`;
+
+  if (!item) {
+    body.innerHTML = `<div style="color:var(--ink-muted);padding:14px;">Source ID <b>${escapeHtml(id)}</b> not found in current snapshot.</div>`;
+  } else if (item.type === "fact") {
+    body.innerHTML = `
+      <div class="evidence-detail-box">
+        <div class="ev-meta-line">
+          <span><b>Account:</b> ${escapeHtml(item.accountName)} (${item.accountId})</span>
+          <span><b>Status:</b> <span class="kpi-tag ${item.status==='verified'?'signal':item.status==='claim'?'confirmed':'ceiling'}">${escapeHtml(item.status)}</span></span>
+        </div>
+        <div class="ev-meta-line">
+          <span><b>Said By:</b> ${escapeHtml(item.said_by || "Not specified")}</span>
+          ${item.verified_by ? `<span><b>Verified By File:</b> <code>${escapeHtml(item.verified_by)}</code></span>` : ""}
+          ${item.learned_at_minute != null ? `<span><b>Minute:</b> ${item.learned_at_minute}</span>` : ""}
+        </div>
+        <div class="ev-quote">“${escapeHtml(item.text)}”</div>
+      </div>
+      <div style="font-size:12px;color:var(--ink-muted);line-height:1.4">
+        This record is part of the verified Questathon export snapshot. It is referenced as factual backing for deal ceilings, power roles, and operational risks.
+      </div>
+    `;
+  } else if (item.type === "file") {
+    body.innerHTML = `
+      <div class="evidence-detail-box">
+        <div class="ev-meta-line">
+          <span><b>File ID:</b> ${escapeHtml(item.id)}</span>
+          <span><b>Title:</b> ${escapeHtml(item.title)}</span>
+        </div>
+        <div class="ev-meta-line">
+          <span><b>Target Path:</b> <code>${escapeHtml(item.path)}</code></span>
+          <span><b>Account:</b> ${escapeHtml(item.account)}</span>
+        </div>
+        <div style="font-size:13px;color:var(--ink);margin-top:6px;">
+          Referenced document backing quantitative metrics in the account export.
+        </div>
+      </div>
+    `;
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function closeEvidenceModal() {
+  document.getElementById("evidenceModal").classList.add("hidden");
+}
+
+function viewSignalRecords(sigId) {
+  const sig = signals.find(s => s.id === sigId);
+  if (!sig || !sig.records || !sig.records.length) return;
+  const rec = sig.records[0];
+  const modal = document.getElementById("evidenceModal");
+  document.getElementById("evModalTitle").textContent = `Signal Record: ${sig.title}`;
+  document.getElementById("evModalBody").innerHTML = `
+    <div class="evidence-detail-box">
+      <div class="ev-meta-line">
+        <span><b>Record Kind:</b> ${escapeHtml(rec.kind)}</span>
+        <span><b>Path:</b> <code>${escapeHtml(rec.path)}</code></span>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink-muted);margin-top:6px;">RAW RECORD CONTENT:</div>
+      <pre style="background:#0f172a;color:#f8fafc;padding:14px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;white-space:pre-wrap;line-height:1.5;overflow-x:auto;">${escapeHtml(rec.text)}</pre>
+    </div>
+  `;
+  modal.classList.remove("hidden");
+}
+
+function actOnSignal(sigId) {
+  const sig = signals.find(s => s.id === sigId);
+  if (!sig) return;
+  openNoteModal();
+  document.getElementById("inputNoteAccount").value = sig.account || currentAccount;
+  document.getElementById("inputNoteKind").value = "next_step";
+  document.getElementById("inputNoteTitle").value = `Response: ${sig.title.slice(0, 40)}`;
+  document.getElementById("inputNoteText").value = `Action plan for signal ${sig.id}: `;
+}
+
+// Account Switching
+function switchAccount(accId) {
+  currentAccount = accId;
+  document.getElementById("tabBtnA").classList.toggle("active", accId === "A");
+  document.getElementById("tabBtnB").classList.toggle("active", accId === "B");
+  document.getElementById("navAccA").classList.toggle("active", accId === "A");
+  document.getElementById("navAccB").classList.toggle("active", accId === "B");
+  document.getElementById("inputNoteAccount").value = accId;
+  renderDashboard();
+}
+
+// Main Render Function
+function renderDashboard() {
+  if (!dashboardData) return;
+  const acc = dashboardData.accounts.find(a => a.id === currentAccount);
+  if (!acc) return;
+
+  const isA = currentAccount === "A";
+
+  // Breadcrumb & Title
+  document.getElementById("topAccountBreadcrumb").textContent = acc.name;
+  document.getElementById("viewAccountName").textContent = acc.name;
+  document.getElementById("viewAccountSub").textContent = isA
+    ? "Four forces, 35 docks under contract, 300-dock framework preparation with multi-force finance barriers."
+    : "15 industrial plants, 14 docks installed, critical deputy departure and unbooked ROI claims.";
+
+  // Render Live Account Signals Banner
+  const accSignals = (signals || []).filter(s => s.account === currentAccount);
+  const bannerContainer = document.getElementById("accountSignalsBanner");
+  if (accSignals.length > 0) {
+    const hasUrgent = accSignals.some(s => s.id === "urgent_request" || (s.title && s.title.toLowerCase().includes("urgent")));
+    bannerContainer.innerHTML = `
+      <div class="urgent-signals-banner ${hasUrgent ? 'critical' : ''}">
+        <div class="sig-banner-head">
+          <div class="sig-banner-title">
+            <span>${hasUrgent ? '🚨' : '⚡'}</span>
+            <span>Live Account Signals (${accSignals.length})</span>
+          </div>
+          <span class="kpi-tag ${hasUrgent ? 'confirmed' : 'ceiling'}">Incoming Operational Event</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          ${accSignals.map(sig => `
+            <div class="sig-item-card">
+              <div class="sig-item-header">
+                <div class="sig-item-title">${escapeHtml(sig.title)}</div>
+                <span class="sig-date-badge">${escapeHtml(sig.dated || "Live")}</span>
+              </div>
+              <div class="sig-summary">${escapeHtml(sig.summary)}</div>
+              <div class="sig-actions-row">
+                ${sig.records && sig.records.length ? `
+                  <button class="btn" style="font-size:11px;padding:4px 10px;" onclick="viewSignalRecords('${sig.id}')">
+                    <span>📄</span> Inspect Raw Record (${sig.records[0].kind || 'file'})
+                  </button>
+                ` : ''}
+                <button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="actOnSignal('${sig.id}')">
+                  <span>✍️</span> Act & Write Note Back
+                </button>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  } else {
+    bannerContainer.innerHTML = "";
+  }
+
+  // Context Banner: Official Story vs Verified Reality
+  const verifiedReality = isA
+    ? "Only Westmere & Metro Central fly operationally (14/18 docks active last month). Tarn Valley has never flown a live mission due to 4-month blocked DPIA; Norwold only trains. Alliance has no pooled budget — each force CFO must sign off individually."
+    : "Only 4 plants fly regularly; 9 log test flights only; Plant 15 has no dock. €1.2M claimed savings is an unbooked spreadsheet of theoretical guard hours (no contracts reduced, $0 booked by Finance). Plant 7 alerts go to manager's personal phone.";
+  
+  const verifiedSources = isA ? ["rc_appetite_2", "km_usage_1", "rc_funding_2", "fo_dpia_2"] : ["sr_roll_2", "sr_roi_2", "ba_use_2"];
+
+  document.getElementById("contextBanner").innerHTML = `
+    <div class="banner-top">
+      <div class="account-meta">
+        <h3>${escapeHtml(acc.name)}</h3>
+        <p>Evidence Baseline · ${acc.facts.length} verified source records · ${acc.opportunities.length} pipeline items</p>
+      </div>
+      <div>
+        <span class="kpi-tag ${isA ? 'ceiling' : 'signal'}">${isA ? 'Multi-Force Alliance' : 'Industrial Group'}</span>
+      </div>
+    </div>
+    <div class="story-versus">
+      <div class="story-item">
+        <b>Official Story (Champion Claim)</b>
+        <p>“${escapeHtml(acc.official_story)}”</p>
+      </div>
+      <div class="story-item verified">
+        <b>Verified Operational Signal (Ground Truth)</b>
+        <p>${escapeHtml(verifiedReality)}</p>
+        <div class="source-list">${renderSources(verifiedSources)}</div>
+      </div>
+    </div>
+  `;
+
+  // KPI Grid
+  const oppCeilingTotal = acc.opportunities.reduce((s, o) => s + (o.worth_up_to || 0), 0);
+  const activeDocks = isA ? "14 / 18 active" : "4 / 15 active";
+  const activeSub = isA ? "Westmere & Metro Central operational" : "Regular patrols; 9 idle plants";
+  const activeSrc = isA ? ["km_usage_1", "flight_log_force_month"] : ["sr_roll_2", "flight_log_by_plant"];
+
+  document.getElementById("kpiGrid").innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Opportunity Ceilings</div>
+      <div class="kpi-val">${formatUSD(oppCeilingTotal)}</div>
+      <div class="kpi-sub">
+        <span class="kpi-tag ceiling">Pipeline Max</span>
+        <span>${acc.opportunities.length} opportunities</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Confirmed Revenue</div>
+      <div class="kpi-val">$0</div>
+      <div class="kpi-sub">
+        <span class="kpi-tag confirmed">Booked</span>
+        <span>${isA ? 'No pooled budget; unrenewed' : 'Unrenewed; Finance verified $0'}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Verified Flight Signal</div>
+      <div class="kpi-val" style="font-size:24px">${activeDocks}</div>
+      <div class="kpi-sub">
+        <span>${activeSub}</span>
+      </div>
+      <div class="source-list">${renderSources(activeSrc)}</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Stakeholder Coverage</div>
+      <div class="kpi-val">${acc.stakeholders.length}</div>
+      <div class="kpi-sub">
+        <span class="kpi-tag signal">Mapped</span>
+        <span>Power & blockers identified</span>
+      </div>
+    </div>
+  `;
+
+  // Q1: What is the book worth?
+  document.getElementById("q1TotalTag").textContent = `Ceiling: ${formatUSD(oppCeilingTotal)} · Confirmed: $0`;
+  document.getElementById("q1DealsGrid").innerHTML = acc.opportunities.map(opp => {
+    const isUnpriced = opp.worth_up_to == null;
+    return `
+      <div class="content-card deal-card ${isUnpriced ? 'unpriced' : ''}">
+        <div class="deal-header">
+          <div>
+            <div class="deal-title">${escapeHtml(opp.title)}</div>
+            <div style="font-size:12px;color:var(--ink-muted);margin-top:2px;">
+              Stage: <b>${escapeHtml(opp.stage)}</b> · ID: <code>${escapeHtml(opp.id)}</code>
+            </div>
+          </div>
+          <div class="deal-amount">
+            <div class="deal-val">${isUnpriced ? 'Unpriced' : `≤ ${formatUSD(opp.worth_up_to)}`}</div>
+            <div class="deal-type-label">${isUnpriced ? 'Qualitative' : 'Opportunity Ceiling'}</div>
+          </div>
+        </div>
+
+        ${opp.blocker ? `
+          <div class="deal-blocker-box">
+            <b>Core Blocker (${escapeHtml(opp.blocker.status)})</b>
+            ${escapeHtml(opp.blocker.text)}
+          </div>
+        ` : ''}
+
+        ${opp.deadline ? `
+          <div class="deal-deadline-box">
+            <span>⏰</span>
+            <div style="flex:1">
+              <b>Deadline Looming:</b> ${escapeHtml(opp.deadline.text)}
+            </div>
+            ${opp.deadline.moves_left != null ? `<span class="deadline-countdown-badge">${opp.deadline.moves_left} moves left</span>` : ''}
+          </div>
+        ` : ''}
+
+        <div style="margin-top:auto">
+          <div style="font-size:11px;color:var(--ink-muted);margin-bottom:4px;font-weight:600">Supporting Evidence Records:</div>
+          <div class="source-list">${renderSources(opp.evidence)}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  // Q2: Who holds the power?
+  document.getElementById("q2CountTag").textContent = `${acc.stakeholders.length} Stakeholders Mapped`;
+  
+  // Power profiles enriched from facts
+  const powerProfiles = isA ? {
+    "rhys_calder": { decider: "Alliance Lead", payer: "No (Force CFOs)", user: "Advocate", blocker: "No", quote: "Advocates for all 4 forces but lacks budget sign-off power; cannot commit individual force funds.", sources: ["rc_funding_2", "hd_calloff_2"] },
+    "karen_mbeki": { decider: "Unit Lead", payer: "Recommender", user: "Heavy (Westmere)", blocker: "No", quote: "14 of 18 docks flying in Westmere/Metro Central. Warns scaling needs 9 more operators and overtime cover.", sources: ["km_usage_1", "km_staff_2"] },
+    "hannah_doyle": { decider: "Tender Spec Lead", payer: "Procurement", user: "No", blocker: "High Risk (Cold)", quote: "Controls 300-dock tender spec (40% weight on cost model). Has heard nothing from FlytBase since pilot.", sources: ["hd_weights_1", "hd_silence_3", "hd_window_2"] },
+    "ewan_brooks": { decider: "Finance Gatekeeper", payer: "CFO Sign-off", user: "No", blocker: "Yes (Blocks Westmere)", quote: "CFO requires cost per flight benchmarked against £1,500/hr helicopter. Autumn finance bid window closing.", sources: ["eb_heli_1", "eb_drone_2", "eb_sign_2", "eb_window_2"] },
+    "fatima_osei": { decider: "DPO Sign-off", payer: "No", user: "No", blocker: "Hard Blocker (Tarn Valley)", quote: "Refuses to sign DPIA without data flows, retention periods and access controls requested 4 months ago.", sources: ["fo_dpia_2", "fo_needs_3", "pj_ticket"] }
+  } : {
+    "stefan_roy": { decider: "Security Sponsor", payer: "Central Security", user: "Champion", blocker: "No", quote: "Strong sponsor but overstates metrics (€1.2M ROI is theoretical spreadsheet; 9 plants idle).", sources: ["sr_roi_0", "sr_roi_2", "sr_roll_2"] },
+    "beatriz_alonso": { decider: "Plant 7 Manager", payer: "Plant Budget Levy", user: "Nightly Patrols", blocker: "Partial", quote: "Flies nightly but alerts go to her personal phone because guard contract does not cover response.", sources: ["ba_use_2", "ba_deputy_0"] },
+    "nadia_rahman": { decider: "Group Finance Controller", payer: "Primary Approver", user: "No", blocker: "Hard Blocker (Renewal)", quote: "Will not verify or renew contract based on theoretical guard savings. Requires confirmed audit numbers.", sources: ["b_renewal", "sr_roi_2"] },
+    "owen_fitch": { decider: "IT Infrastructure Lead", payer: "IT Infrastructure", user: "No", blocker: "Technical Blocker", quote: "Upcoming plant network upgrade project threatens to sever drone docks unless network scope aligned.", sources: ["b_idle", "sr_plants_2"] },
+    "julian_tate": { decider: "Insurance & Risk", payer: "Risk Reserve", user: "No", blocker: "Untapped Ally", quote: "No insurance savings currently established. Untapped potential to demonstrate risk reduction metrics.", sources: ["sr_roi_2"] }
+  };
+
+  document.getElementById("q2StakeholdersGrid").innerHTML = acc.stakeholders.map(sh => {
+    const prof = powerProfiles[sh.id] || { decider: "Unknown", payer: "Unknown", user: "Unknown", blocker: "Unknown", quote: sh.role, sources: [] };
+    const stanceClass = sh.relationship === "ally" ? "ally" : sh.relationship === "warm" ? "warm" : sh.relationship === "cold" ? "cold" : "neutral";
+
+    return `
+      <div class="content-card stakeholder-card">
+        <div class="sh-top">
+          <div>
+            <div class="sh-name">${escapeHtml(sh.name)}</div>
+            <div class="sh-role">${escapeHtml(sh.role)}</div>
+          </div>
+          <span class="badge-power ${stanceClass}">${escapeHtml(sh.relationship)}</span>
+        </div>
+
+        <div class="power-roles-grid">
+          <div class="power-role-cell"><b>Decides</b><span>${escapeHtml(prof.decider)}</span></div>
+          <div class="power-role-cell"><b>Pays</b><span>${escapeHtml(prof.payer)}</span></div>
+          <div class="power-role-cell"><b>Uses</b><span>${escapeHtml(prof.user)}</span></div>
+          <div class="power-role-cell ${prof.blocker.includes('Yes')||prof.blocker.includes('Hard')||prof.blocker.includes('Risk')?'block':''}"><b>Blocks</b><span>${escapeHtml(prof.blocker)}</span></div>
+        </div>
+
+        <div class="sh-notes">
+          “${escapeHtml(prof.quote)}”
+        </div>
+
+        <div style="margin-top:auto">
+          <div class="source-list">${renderSources(prof.sources)}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  // Q3: What do you do first? (Ranked 1 -> 3)
+  const rankedMoves = isA ? [
+    {
+      rank: 1,
+      title: "Deliver Engineering Data-Flow Pack to Fatima Osei & Schedule DPIA Sign-Off",
+      desc: "Engineering lead committed to completing flows, retention periods, storage location, and access controls in 7 days. Hand-deliver the pack to Fatima Osei to resolve the 4-month unassigned ticket (pj_ticket) and trigger her 3-week review window. Norwold is waiting to mirror this sign-off.",
+      owner: "CSM (FlytBase) + Engineering Lead",
+      deal: "a_tarn · Tarn Valley & Norwold Go-Live ($200k)",
+      window: "Within 7 business days (Engineering delivery commitment)",
+      sources: ["pj_ticket", "srv_dataflow", "fo_dpia_2", "fo_needs_3"]
+    },
+    {
+      rank: 2,
+      title: "Reconcile Operator Overtime & Build Cost-Per-Flight Helicopter Comparison",
+      desc: "Work with Ewan Brooks and Insp. Karen Mbeki to isolate operator overtime from general duties. Model the cost per flight against the verified £1,500/hr helicopter benchmark. Present to Metro Central CFO before the autumn finance bid window closes.",
+      owner: "CSM + Ewan Brooks + Insp. Karen Mbeki",
+      deal: "a_westmere ($250k) & a_renewal ($350k)",
+      window: "Within 10 business days (Before autumn finance window close)",
+      sources: ["eb_heli_1", "eb_drone_2", "eb_sign_2", "eb_window_2", "km_staff_2"]
+    },
+    {
+      rank: 3,
+      title: "Submit Written Clarification & 300-Dock Operating Model to Hannah Doyle",
+      desc: "Re-engage Hannah Doyle after months of silence using the formal clarification request template. Propose a fully costed 300-dock operating and staffing model to capture the 40% evaluation weighting before the specification locks.",
+      owner: "CSM + Bid Solution Architect + Hannah Doyle",
+      deal: "a_tender · 300-Dock Framework Tender ($1.5M)",
+      window: "Within 14 business days (Inside 25 moves remaining)",
+      sources: ["hd_weights_1", "hd_window_2", "hd_silence_3", "rc_tender_2", "clarification_template"]
+    }
+  ] : [
+    {
+      rank: 1,
+      title: "Capture & Codify Rollout Playbook Before Stefan's Deputy Departs",
+      desc: "Stefan's deputy holds the actual rollout know-how in his head (mounting specs, network setup, plant manager buy-in). Conduct structured exit interviews immediately to write the end-to-end playbook before his imminent departure.",
+      owner: "CSM + Stefan Roy + Departing Deputy",
+      deal: "b_idle · Bring Idle Plants into Regular Patrol ($180k)",
+      window: "Immediate (Prior to deputy final departure)",
+      sources: ["ba_deputy_0", "sr_repl_2", "sr_roll_2"]
+    },
+    {
+      rank: 2,
+      title: "Update Guard Contractor Scope & Automate Alert Dispatch for Plant 7",
+      desc: "Meet with Beatriz Alonso and security procurement to amend the third-party guard contract so security guards respond to drone alerts rather than routing notifications to Beatriz's personal phone at night.",
+      owner: "Stefan Roy + Beatriz Alonso + Security Procurement",
+      deal: "b_renewal · Aldermoor Contract Renewal ($140k)",
+      window: "Within 10 business days",
+      sources: ["ba_use_2", "ba_use_0", "b_renewal"]
+    },
+    {
+      rank: 3,
+      title: "Align Network Firewall Scope with Owen Fitch & Audit Hard Savings with Nadia Rahman",
+      desc: "Coordinate with Owen Fitch to map drone network dependencies before the group IT project severs dock connectivity. Meet with Nadia Rahman to replace the disproven €1.2M theoretical ROI with verified patrol audit reductions.",
+      owner: "CSM + Owen Fitch (IT) + Nadia Rahman (Finance)",
+      deal: "b_renewal ($140k) & b_idle ($180k)",
+      window: "Within 15 business days (Before IT project cutoff)",
+      sources: ["sr_roi_2", "sr_plants_2", "b_idle"]
+    }
+  ];
+
+  document.getElementById("q3ActionsList").innerHTML = rankedMoves.map(m => `
+    <div class="content-card action-card">
+      <div class="action-rank">${m.rank}</div>
+      <div class="action-details">
+        <h4>${escapeHtml(m.title)}</h4>
+        <p>${escapeHtml(m.desc)}</p>
+        <div class="action-meta-row">
+          <span class="meta-tag owner">👤 Owner: ${escapeHtml(m.owner)}</span>
+          <span class="meta-tag deal">🎯 Deal: ${escapeHtml(m.deal)}</span>
+          <span class="meta-tag window">⏳ Window: ${escapeHtml(m.window)}</span>
+        </div>
+      </div>
+      <div>
+        <div class="source-list">${renderSources(m.sources)}</div>
+      </div>
+    </div>
+  `).join("");
+
+  // Q4: What is about to go wrong?
+  const threats = isA ? [
+    {
+      title: "Tarn Valley DPIA Deadlock (4 Months Stalled)",
+      sev: "critical",
+      text: "Data-flow request ticket (pj_ticket) has sat unassigned in FlytBase support for 4 months. Tarn Valley cannot conduct live flights and Norwold refuses to begin until Tarn Valley signs.",
+      consequence: "Turns bad in 3 weeks: If pack is not delivered this week, both forces miss their operational deployment target and abandon the alliance initiative.",
+      sources: ["fo_dpia_2", "pj_ticket", "srv_dataflow", "fo_needs_3"]
+    },
+    {
+      title: "Tender Specification Lockout (25 Moves Remaining)",
+      sev: "critical",
+      text: "The 300-dock tender specification is locking soon (25 moves remaining). Cost per flight and operating model represent 40% of the evaluation criteria, yet no costed model exists.",
+      consequence: "Turns bad at move 0: Whatever is not locked into the spec is permanently excluded from the £1.5M framework.",
+      sources: ["rc_tender_2", "hd_weights_1", "moves_left: 25"]
+    },
+    {
+      title: "Autumn Finance Bid Window Closing at Metro Central",
+      sev: "medium",
+      text: "Ewan Brooks can only submit an expansion budget if drone cost per flight is benchmarked to helicopter rates (£1,500/hr). Overtime data is unseparated.",
+      consequence: "Turns bad when round closes: Westmere fleet scaling is deferred by 12 months if missed.",
+      sources: ["eb_sign_2", "eb_drone_2", "eb_window_2"]
+    },
+    {
+      title: "Procurement Lead Silence & Trust Debt",
+      sev: "medium",
+      text: "Hannah Doyle reports hearing nothing from FlytBase since the initial pilot. FlytBase risks missing the specification briefing window.",
+      consequence: "Turns bad immediately: Competitor vendors capture specification drafting influence.",
+      sources: ["hd_silence_3", "hd_window_2"]
+    }
+  ] : [
+    {
+      title: "Departure of Rollout Know-How with Stefan's Deputy",
+      sev: "critical",
+      text: "Stefan's deputy configured Plant 7 and the other active sites. The entire deployment template lives in his head and he is leaving soon with zero documentation.",
+      consequence: "Turns bad on deputy exit date: Adoption of the 9 idle plants becomes impossible without reverse-engineering setup.",
+      sources: ["ba_deputy_0", "sr_repl_2"]
+    },
+    {
+      title: "Group IT Network Project Will Sever Docks",
+      sev: "critical",
+      text: "Owen Fitch's group IT infrastructure overhaul will disconnect plant drone docks because docks lack documented network prerequisites and firewall exemptions.",
+      consequence: "Turns bad upon IT rollout: Operational docks across plants drop offline unannounced.",
+      sources: ["b_idle", "sr_plants_2"]
+    },
+    {
+      title: "Theoretical €1.2M ROI Claim Rejected by Finance Controller",
+      sev: "critical",
+      text: "Stefan's claim of €1.2M annual savings was verified as his own spreadsheet of guard hours. No contracts were cut and Nadia Rahman has booked $0 in savings.",
+      consequence: "Turns bad at renewal review: Finance committee will reject the $140k contract renewal if presented with fictitious savings.",
+      sources: ["sr_roi_0", "sr_roi_2", "b_renewal"]
+    },
+    {
+      title: "Plant Manager Rebellion Against Central Security Levy",
+      sev: "medium",
+      text: "Plant managers pay for drone docks from local plant security budgets. Several plant managers openly resent paying for idle equipment.",
+      consequence: "Turns bad at budget allocation: Managers demand dock de-installations.",
+      sources: ["sr_plants_2", "sr_roll_2"]
+    }
+  ];
+
+  document.getElementById("q4ThreatsGrid").innerHTML = threats.map(t => `
+    <div class="content-card threat-card ${t.sev}">
+      <div class="threat-head">
+        <h4>${escapeHtml(t.title)}</h4>
+        <span class="kpi-tag ${t.sev === 'critical' ? 'confirmed' : 'ceiling'}">${t.sev.toUpperCase()}</span>
+      </div>
+      <p>${escapeHtml(t.text)}</p>
+      <div class="threat-consequence">
+        <b>Timeline Consequence:</b> ${escapeHtml(t.consequence)}
+      </div>
+      <div style="margin-top:auto">
+        <div class="source-list">${renderSources(t.sources)}</div>
+      </div>
+    </div>
+  `).join("");
+
+  // Q5: What do you still not know?
+  const gaps = isA ? [
+    {
+      gap: "Exact drone operator overtime split & cost per flight denominator",
+      why: "Ewan Brooks requires this to prove cost efficiency against £1,500/hr helicopter benchmark; directly unlocks 40% tender score.",
+      impact: "High (Blocks $250k Westmere expansion & $1.5M tender)",
+      who: "Ewan Brooks (Metro Central Finance) + Insp. Karen Mbeki"
+    },
+    {
+      gap: "Force-by-force flight telemetry for Tarn Valley & Norwold",
+      why: "Procurement and force CFOs require verified mission usage logs before approving contract renewal call-offs.",
+      impact: "High (Required for $350k renewal)",
+      who: "Rhys Calder (Alliance Lead) + Flight Log Force Month reconciliation"
+    },
+    {
+      gap: "Named Chief Finance Officers for each individual force",
+      why: "Alliance has no pooled budget; each individual force CFO must sign off their specific call-off.",
+      impact: "High (Essential for forecast close probability)",
+      who: "Rhys Calder + Hannah Doyle (Alliance Procurement)"
+    },
+    {
+      gap: "Exact calendar cutoff dates for autumn finance round & tender lock",
+      why: "Move counter is at 25 moves, but exact calendar calendar dates are absent from the export.",
+      impact: "Medium (Dictates operational cadence)",
+      who: "Hannah Doyle & Ewan Brooks"
+    }
+  ] : [
+    {
+      gap: "Specific departure date of Stefan's deputy",
+      why: "Defines the hard deadline for rollout playbook interview and knowledge transfer.",
+      impact: "Critical (Risk of permanent capability loss)",
+      who: "Stefan Roy (Head of Security)"
+    },
+    {
+      gap: "IT infrastructure network project scope & rollout timeline",
+      why: "Necessary to prevent drone docks from being abruptly disconnected across industrial plants.",
+      impact: "High (Operational continuity)",
+      who: "Owen Fitch (Group IT Infrastructure Lead)"
+    },
+    {
+      gap: "Third-party guard contractor contract amendment cost",
+      why: "Docks cannot provide nighttime security value if ground contractors do not respond to alerts.",
+      impact: "High (Direct adoption blocker at Plant 7 and idle plants)",
+      who: "Beatriz Alonso + Security Procurement"
+    },
+    {
+      gap: "Audited financial benefit acceptable to Group Finance Controller",
+      why: "Must replace fictitious €1.2M model with verified perimeter incident avoidance or verified patrol audits.",
+      impact: "Critical (Governs $140k renewal and 40-plant case study)",
+      who: "Nadia Rahman (Group Finance) + Julian Tate (Insurance/Risk)"
+    }
+  ];
+
+  document.getElementById("q5GapsTableBody").innerHTML = gaps.map(g => `
+    <tr>
+      <td><b>${escapeHtml(g.gap)}</b></td>
+      <td>${escapeHtml(g.why)}</td>
+      <td><span class="kpi-tag ${g.impact.includes('Critical') || g.impact.includes('High') ? 'confirmed' : 'ceiling'}">${escapeHtml(g.impact)}</span></td>
+      <td><b>${escapeHtml(g.who)}</b></td>
+    </tr>
+  `).join("");
+
+  // Live Console & Feed
+  renderFeeds();
+}
+
+// Render Signals & Notes Feeds
+function renderFeeds() {
+  const sigList = document.getElementById("signalsFeedList");
+  if (!signals || !signals.length) {
+    sigList.innerHTML = `<div style="color:var(--ink-muted);font-size:12px;padding:12px;background:#f8fafc;border-radius:6px;">No live signals received yet. Click “Refresh Live Signals” above.</div>`;
+  } else {
+    sigList.innerHTML = signals.map(s => `
+      <div class="feed-item">
+        <div>
+          <div class="feed-text"><b>${escapeHtml(s.title || s.type || "Signal")}</b>: ${escapeHtml(s.text || s.description || JSON.stringify(s))}</div>
+          <div style="font-size:11px;color:var(--ink-muted);margin-top:2px;">ID: <code>${escapeHtml(s.id || "sig")}</code></div>
+        </div>
+        <div class="feed-time">${s.receivedAt ? new Date(s.receivedAt).toLocaleTimeString() : "Live"}</div>
+      </div>
+    `).join("");
+  }
+
+  const notesList = document.getElementById("notesFeedList");
+  if (!notes || !notes.length) {
+    notesList.innerHTML = `<div style="color:var(--ink-muted);font-size:12px;padding:12px;background:#f8fafc;border-radius:6px;">No notes written back in this session yet.</div>`;
+  } else {
+    notesList.innerHTML = notes.map(n => `
+      <div class="feed-item">
+        <div>
+          <div class="feed-text"><span class="kpi-tag ceiling">${escapeHtml(n.kind || "note")}</span> <b>Account ${escapeHtml(n.account)}</b> ${n.title ? `· <b>${escapeHtml(n.title)}</b>` : ''}</div>
+          <div style="font-size:12px;color:var(--ink);margin-top:3px;">${escapeHtml(n.text)}</div>
+        </div>
+        <div class="feed-time">${n.createdAt ? new Date(n.createdAt).toLocaleTimeString() : ""}</div>
+      </div>
+    `).join("");
+  }
+}
+
+// Cooldown Timer
+function updateCooldownUI() {
+  const pill = document.getElementById("cooldownIndicator");
+  const text = document.getElementById("cooldownText");
+  const btn = document.getElementById("btnRefreshSignals");
+
+  if (cooldownSeconds > 0) {
+    pill.classList.remove("ready");
+    text.textContent = `MCP Cooldown: ${cooldownSeconds}s`;
+    btn.disabled = true;
+    btn.title = `Questathon limits MCP calls to 1 per minute. Available in ${cooldownSeconds}s.`;
+  } else {
+    pill.classList.add("ready");
+    text.textContent = "MCP Live Ready";
+    btn.disabled = false;
+    btn.title = "Call get_signals via Questathon MCP";
+  }
+}
+
+function startCooldownTimer(seconds) {
+  cooldownSeconds = seconds;
+  updateCooldownUI();
+  if (cooldownInterval) clearInterval(cooldownInterval);
+  cooldownInterval = setInterval(() => {
+    cooldownSeconds--;
+    if (cooldownSeconds <= 0) {
+      cooldownSeconds = 0;
+      clearInterval(cooldownInterval);
+    }
+    updateCooldownUI();
+  }, 1000);
+}
+
+// Live Signal Refresh API
+async function refreshSignals() {
+  const btn = document.getElementById("btnRefreshSignals");
+  btn.disabled = true;
+  btn.textContent = "Refreshing…";
+
+  try {
+    const res = await fetch("/api/refresh", { method: "POST" });
+    const json = await res.json();
+    if (!res.ok) {
+      if (json.retryAfter) startCooldownTimer(json.retryAfter);
+      throw new Error(json.error || "Signal refresh failed");
+    }
+    signals = json.signals || [];
+    renderFeeds();
+    startCooldownTimer(60);
+    showToast("Live signals refreshed successfully.");
+  } catch (err) {
+    showToast(err.message);
+  } finally {
+    btn.textContent = "↻ Refresh Live Signals";
+    updateCooldownUI();
+  }
+}
+
+// Note Modal & Submission
+function openNoteModal() {
+  document.getElementById("noteModal").classList.remove("hidden");
+  document.getElementById("inputNoteAccount").value = currentAccount;
+}
+function closeNoteModal() {
+  document.getElementById("noteModal").classList.add("hidden");
+}
+
+async function submitNote() {
+  const account = document.getElementById("inputNoteAccount").value;
+  const kind = document.getElementById("inputNoteKind").value;
+  const title = document.getElementById("inputNoteTitle").value.trim();
+  const text = document.getElementById("inputNoteText").value.trim();
+
+  if (!text) {
+    alert("Please enter note content.");
+    return;
+  }
+
+  const btn = document.getElementById("btnSubmitNote");
+  btn.disabled = true;
+  btn.textContent = "Saving to Live Account…";
+
+  try {
+    const res = await fetch("/api/notes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ account, kind, title, text })
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      if (json.retryAfter) startCooldownTimer(json.retryAfter);
+      throw new Error(json.error || "Failed to write note");
+    }
+    notes = json.notes || [];
+    renderFeeds();
+    closeNoteModal();
+    document.getElementById("inputNoteText").value = "";
+    document.getElementById("inputNoteTitle").value = "";
+    startCooldownTimer(60);
+    showToast("Note written to Questathon live account.");
+  } catch (err) {
+    showToast(err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Save to Live Account";
+    updateCooldownUI();
+  }
+}
+
+// Toast helper
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  document.getElementById("toastMsg").textContent = msg;
+  t.classList.remove("hidden");
+  setTimeout(() => t.classList.add("hidden"), 4500);
+}
+
+// Initialize Application
+async function initApp() {
+  try {
+    const res = await fetch("/api/dashboard");
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Failed to load dashboard data");
+
+    dashboardData = json.data;
+    signals = json.signals || [];
+    notes = json.notes || [];
+
+    if (json.mcpCooldownRemaining > 0) {
+      startCooldownTimer(json.mcpCooldownRemaining);
+    } else {
+      updateCooldownUI();
+    }
+
+    renderDashboard();
+  } catch (err) {
+    document.querySelector(".content").innerHTML = `
+      <div style="background:#fee2e2;color:#991b1b;padding:24px;border-radius:12px;margin-top:20px;">
+        <h3>Unable to load CRM Dashboard</h3>
+        <p>${escapeHtml(err.message)}</p>
+      </div>
+    `;
+  }
+}
+
+initApp();
+</script>
+</body>
+</html>
