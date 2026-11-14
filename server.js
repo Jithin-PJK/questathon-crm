@@ -22,8 +22,10 @@ if (!fs.existsSync(FILES_DIR)) fs.mkdirSync(FILES_DIR, { recursive: true });
 
 let snapshot = null;
 let lastMcpCall = 0;
+let lastMcpSuccessTime = Date.now();
 let signals = [];
 let notes = [];
+const knownAccountIds = new Set(["A", "B"]);
 
 // Load persisted signals and notes
 try {
@@ -41,6 +43,16 @@ try {
 } catch (e) {
   console.warn("Could not read notes.json:", e.message);
 }
+
+// Pre-seed known accounts from existing export file if present
+try {
+  if (fs.existsSync(EXPORT_PATH)) {
+    const raw = JSON.parse(fs.readFileSync(EXPORT_PATH, "utf8"));
+    if (raw && Array.isArray(raw.accounts)) {
+      raw.accounts.forEach(a => knownAccountIds.add(a.id));
+    }
+  }
+} catch {}
 
 function token() {
   const t = process.env.AQ_TOKEN;
@@ -79,6 +91,58 @@ async function getExport() {
   snapshot = await r.json();
   fs.writeFileSync(EXPORT_PATH, JSON.stringify(snapshot, null, 2), "utf8");
   return snapshot;
+}
+
+async function syncAccountsFromExport(forceRemote = false) {
+  let freshSnapshot = null;
+  if (forceRemote) {
+    try {
+      const r = await fetch(EXPORT_URL, {
+        headers: { Authorization: `Bearer ${token()}` }
+      });
+      if (r.ok) {
+        freshSnapshot = await r.json();
+        snapshot = freshSnapshot;
+        fs.writeFileSync(EXPORT_PATH, JSON.stringify(snapshot, null, 2), "utf8");
+        lastMcpSuccessTime = Date.now();
+      }
+    } catch (e) {
+      console.warn("Could not re-fetch export from server:", e.message);
+    }
+  }
+
+  const currentData = snapshot || await getExport();
+  const newlyDiscovered = [];
+
+  if (currentData && Array.isArray(currentData.accounts)) {
+    for (const acc of currentData.accounts) {
+      if (!knownAccountIds.has(acc.id)) {
+        knownAccountIds.add(acc.id);
+        const oppCount = acc.opportunities?.length || 0;
+        const totalWorth = (acc.opportunities || []).reduce((s, o) => s + (o.worth_up_to || 0), 0);
+        const newSig = {
+          id: `new_account_${acc.id}`,
+          account: acc.id,
+          dated: new Date().toISOString().split("T")[0],
+          title: `🚨 NEW ACCOUNT DISCOVERED: ${acc.name} (${acc.id})`,
+          summary: `A new customer account "${acc.name}" (Account ID: ${acc.id}) has been added to Questathon! Contains ${oppCount} pipeline opportunities with a total ceiling of $${totalWorth.toLocaleString()}, ${acc.stakeholders?.length || 0} stakeholders, and ${acc.facts?.length || 0} verified facts. It has been automatically added to your CRM dashboard.`,
+          records: (acc.facts || []).slice(0, 3).map(f => f.id),
+          set_off_at: new Date().toISOString(),
+          receivedAt: new Date().toISOString(),
+          isNewAccount: true
+        };
+        if (!signals.some(s => s.id === newSig.id)) {
+          signals.unshift(newSig);
+          newlyDiscovered.push(acc);
+        }
+      }
+    }
+    if (newlyDiscovered.length > 0) {
+      fs.writeFileSync(SIGNALS_PATH, JSON.stringify(signals, null, 2), "utf8");
+    }
+  }
+
+  return { accounts: currentData?.accounts || [], newlyDiscovered };
 }
 
 async function callTool(name, args = {}) {
@@ -138,6 +202,8 @@ async function callTool(name, args = {}) {
     throw err;
   }
 
+  lastMcpSuccessTime = Date.now();
+
   const txt = result?.content?.find(x => x.type === "text")?.text;
   if (!txt) return result ?? payload;
   try {
@@ -151,13 +217,17 @@ async function callTool(name, args = {}) {
 app.get("/api/dashboard", async (req, res) => {
   try {
     const data = await getExport();
+    const syncRes = await syncAccountsFromExport(false);
     res.json({
       data,
       signals,
       notes,
       liveReady: true,
       worldClosed: !!data.world_closed,
-      mcpCooldownRemaining: getMcpCooldown()
+      mcpCooldownRemaining: getMcpCooldown(),
+      lastMcpSyncTime: lastMcpSuccessTime,
+      accounts: data.accounts || [],
+      newlyDiscovered: syncRes.newlyDiscovered
     });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -168,17 +238,53 @@ app.get("/api/status", (req, res) => {
   res.json({
     ok: true,
     mcpCooldownRemaining: getMcpCooldown(),
+    lastMcpSyncTime: lastMcpSuccessTime,
     totalSignals: signals.length,
     totalNotes: notes.length,
+    totalAccounts: snapshot?.accounts?.length || knownAccountIds.size || 2,
     tokenConfigured: !!process.env.AQ_TOKEN
   });
 });
 
+app.post("/api/accounts/sync", async (req, res) => {
+  try {
+    const syncRes = await syncAccountsFromExport(true);
+    res.json({
+      ok: true,
+      accounts: syncRes.accounts,
+      newlyDiscovered: syncRes.newlyDiscovered,
+      signals,
+      lastMcpSyncTime: lastMcpSuccessTime
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.post("/api/refresh", async (req, res) => {
   try {
-    const result = await callTool("get_signals", {});
-    const incoming = Array.isArray(result) ? result : (result.signals || result.events || [result]);
-    
+    // 1. Sync accounts to check if Questathon introduced a new account
+    const syncRes = await syncAccountsFromExport(true);
+
+    // 2. Poll MCP get_signals
+    let incoming = [];
+    try {
+      const result = await callTool("get_signals", {});
+      incoming = Array.isArray(result) ? result : (result.signals || result.events || [result]);
+      lastMcpSuccessTime = Date.now();
+    } catch (toolErr) {
+      if (toolErr.status === 429) {
+        return res.status(429).json({
+          error: toolErr.message,
+          retryAfter: toolErr.retryAfter,
+          signals,
+          lastMcpSyncTime: lastMcpSuccessTime,
+          newAccountsDiscovered: syncRes.newlyDiscovered
+        });
+      }
+      throw toolErr;
+    }
+
     // Merge new signals without duplicates
     const existingIds = new Set(signals.map(s => s.id || JSON.stringify(s)));
     for (const item of incoming) {
@@ -187,7 +293,13 @@ app.post("/api/refresh", async (req, res) => {
       }
     }
     fs.writeFileSync(SIGNALS_PATH, JSON.stringify(signals, null, 2), "utf8");
-    res.json({ ok: true, signals, lastSignalPoll: Date.now() });
+    res.json({
+      ok: true,
+      signals,
+      lastSignalPoll: Date.now(),
+      lastMcpSyncTime: lastMcpSuccessTime,
+      newAccountsDiscovered: syncRes.newlyDiscovered
+    });
   } catch (e) {
     res.status(e.status || 500).json({ error: e.message, retryAfter: e.retryAfter });
   }
@@ -197,7 +309,7 @@ app.post("/api/notes", async (req, res) => {
   try {
     const { text, account, kind = "note", title = "" } = req.body || {};
     if (!text || !account) {
-      return res.status(400).json({ error: "Note text and account ('A' or 'B') are required." });
+      return res.status(400).json({ error: "Note text and account ID are required." });
     }
     const result = await callTool("write_note", { text, account, kind, title });
     const noteEntry = {
@@ -211,7 +323,7 @@ app.post("/api/notes", async (req, res) => {
     };
     notes.unshift(noteEntry);
     fs.writeFileSync(NOTES_PATH, JSON.stringify(notes, null, 2), "utf8");
-    res.json({ ok: true, note: noteEntry, notes });
+    res.json({ ok: true, note: noteEntry, notes, lastMcpSyncTime: lastMcpSuccessTime });
   } catch (e) {
     res.status(e.status || 500).json({ error: e.message, retryAfter: e.retryAfter });
   }

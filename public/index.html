@@ -394,6 +394,82 @@
     .blink { animation: blink 1s step-start infinite; }
     @keyframes blink { 50% { opacity: 0; } }
 
+    /* Notification Bell & Dropdown Drawer */
+    .notif-wrapper {
+      position: relative;
+    }
+    .notif-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 400px;
+      max-width: 90vw;
+      background: var(--card);
+      border: var(--border-w) solid var(--ink);
+      box-shadow: 6px 6px 0 var(--ink);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      animation: notifDrop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes notifDrop {
+      from { transform: translateY(-8px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .notif-dropdown-header {
+      background: var(--espresso);
+      color: var(--gold);
+      padding: 12px 16px;
+      border-bottom: var(--border-w) solid var(--ink);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .notif-list-container {
+      max-height: 380px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .notif-item {
+      padding: 12px 14px;
+      border-bottom: 1px solid #dfd8cb;
+      background: #faf7ee;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      transition: background 0.1s;
+    }
+    .notif-item:hover {
+      background: #f4ede1;
+    }
+    .notif-item.unread {
+      background: #fff8e6;
+      border-left: 4px solid var(--gold);
+    }
+    .notif-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+    .notif-item-title {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--espresso);
+      line-height: 1.35;
+    }
+    .notif-item-snippet {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
     .hidden { display: none !important; }
 
     /* Responsive */
@@ -413,7 +489,33 @@
     <span style="font-size:11px;color:var(--text-muted);font-weight:700;">FlytBase Customer Success</span>
   </a>
 
-  <div style="display:flex;align-items:center;gap:14px;">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <!-- Live MCP Last Sync Tracker -->
+    <div id="mcpSyncHeaderBadge" class="panel-pixel" style="padding:4px 10px;display:flex;align-items:center;gap:8px;background:var(--card-alt);border:2px solid var(--ink);" title="Last successful data sync with Questathon MCP">
+      <span class="blink" style="color:var(--olive);font-size:10px;">●</span>
+      <span class="font-pixel" style="font-size:8px;color:var(--text-muted);">MCP SYNC:</span>
+      <span id="mcpLastSyncRelative" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:var(--espresso);">Just now</span>
+    </div>
+
+    <!-- Notification Bell with Counter -->
+    <div class="notif-wrapper" id="notifWrapper">
+      <button type="button" class="btn-pixel secondary" id="btnNotificationBell" onclick="toggleNotificationDrawer(event)" style="padding:6px 10px;font-size:11px;display:flex;align-items:center;gap:6px;" title="Latest Intelligence Notifications">
+        <span>🔔</span>
+        <span class="badge-pixel rust" id="bellUnreadCount" style="padding:1px 5px;font-size:9px;">0</span>
+      </button>
+
+      <!-- Dropdown Drawer -->
+      <div id="notificationDropdown" class="notif-dropdown hidden">
+        <div class="notif-dropdown-header">
+          <span class="font-pixel" style="font-size:9px;color:var(--gold);">NOTIFICATIONS (<span id="notifTotalCount">0</span>)</span>
+          <button type="button" class="btn-pixel" style="font-size:7px;padding:3px 6px;" onclick="markAllNotificationsAsRead(event)">Mark all read</button>
+        </div>
+        <div id="notificationList" class="notif-list-container">
+          <div style="padding:20px;text-align:center;color:var(--text-muted);font-size:11px;">Loading intelligence updates...</div>
+        </div>
+      </div>
+    </div>
+
     <span class="badge-pixel gold" id="headerDateBadge">Saturday 14 November</span>
     <div id="authHeaderBlock" class="hidden" style="display:flex;align-items:center;gap:10px;">
       <span class="badge-pixel olive" id="playerTagBadge">CSM-0168</span>
@@ -545,18 +647,16 @@
   <!-- Account Switcher Bar & Live Cooldown -->
   <div class="account-bar">
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-      <span class="font-pixel" style="font-size:11px;color:var(--espresso);">ACCOUNT:</span>
-      <div class="acc-btn-group">
-        <button class="acc-switch-btn active" id="btnAccA" onclick="switchAccount('A')">
-          🏛️ Eastern Counties Police Alliance
-        </button>
-        <button class="acc-switch-btn" id="btnAccB" onclick="switchAccount('B')">
-          🏭 Aldermoor Industrial Group
-        </button>
+      <span class="font-pixel" style="font-size:11px;color:var(--espresso);">ACCOUNTS:</span>
+      <div class="acc-btn-group" id="dynamicAccountBar">
+        <!-- Rendered dynamically by renderDynamicAccountBar() -->
       </div>
     </div>
 
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <button class="btn-pixel secondary" style="font-size:8px;padding:8px 12px;" onclick="syncAccounts()" id="btnSyncAccounts" title="Check for newly added Questathon accounts">
+        🔍 Sync Accounts
+      </button>
       <span class="badge-pixel gold" id="mcpCooldownBadge">
         <span class="blink" style="color:var(--rust);">●</span>
         <span id="cooldownText">MCP Ready (1 call/min)</span>
@@ -855,8 +955,15 @@ let signals = [];
 let notes = [];
 let cooldownSeconds = 0;
 let cooldownInterval = null;
+let lastMcpSyncTimestamp = Date.now();
+const clientKnownAccountIds = new Set();
+let readNotificationIds = new Set();
+try {
+  const savedRead = localStorage.getItem("quest_read_notifs");
+  if (savedRead) readNotificationIds = new Set(JSON.parse(savedRead));
+} catch {}
 
-// Helpers
+// Dynamic Helpers
 function formatUSD(num) {
   if (num == null) return "Unpriced / Case study";
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(num);
@@ -864,10 +971,270 @@ function formatUSD(num) {
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
-
 function renderSources(sourceIds) {
   if (!sourceIds || !sourceIds.length) return "";
   return sourceIds.map(id => `<span class="source-pill" onclick="inspectEvidence('${escapeHtml(id)}')">${escapeHtml(id)}</span>`).join("");
+}
+function getAccountName(accId) {
+  if (!dashboardData || !dashboardData.accounts) {
+    return accId === "B" ? "Aldermoor Industrial Group" : "Eastern Counties Police Alliance";
+  }
+  const found = dashboardData.accounts.find(a => a.id === accId);
+  return found ? found.name : `Account ${accId}`;
+}
+
+// Relative MCP Sync Time Display
+function updateMcpRelativeTime() {
+  if (!lastMcpSyncTimestamp) return;
+  const elapsedSec = Math.max(0, Math.floor((Date.now() - lastMcpSyncTimestamp) / 1000));
+  let text = "Just now";
+  if (elapsedSec < 15) {
+    text = "Just now";
+  } else if (elapsedSec < 60) {
+    text = `${elapsedSec}s ago`;
+  } else if (elapsedSec < 120) {
+    text = "1 min ago";
+  } else if (elapsedSec < 3600) {
+    const mins = Math.floor(elapsedSec / 60);
+    text = `${mins} mins ago`;
+  } else if (elapsedSec < 7200) {
+    text = "1 hr ago";
+  } else {
+    const hrs = Math.floor(elapsedSec / 3600);
+    text = `${hrs} hrs ago`;
+  }
+  const el = document.getElementById("mcpLastSyncRelative");
+  if (el) el.textContent = text;
+}
+setInterval(updateMcpRelativeTime, 3000);
+
+// Relative Notification Time Formatter
+function formatTimeAgo(isoOrDate) {
+  if (!isoOrDate) return "Just now";
+  const diffSec = Math.max(0, Math.floor((Date.now() - new Date(isoOrDate).getTime()) / 1000));
+  if (isNaN(diffSec)) return "Recently";
+  if (diffSec < 15) return "Just now";
+  if (diffSec < 60) return `${diffSec}s ago`;
+  if (diffSec < 120) return "1m ago";
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+  return `${Math.floor(diffSec / 86400)}d ago`;
+}
+
+// Notification Bell & Drawer Logic
+function getAllNotifications() {
+  const list = [];
+  (signals || []).forEach(sig => {
+    list.push({
+      id: sig.id || ('sig_' + Math.random()),
+      kind: sig.isNewAccount ? 'account' : 'signal',
+      account: sig.account || 'A',
+      title: sig.title || 'Live Signal Update',
+      summary: sig.summary || sig.text || '',
+      time: sig.receivedAt || sig.dated || new Date().toISOString(),
+      raw: sig
+    });
+  });
+
+  (notes || []).forEach(note => {
+    list.push({
+      id: note.id,
+      kind: 'note',
+      account: note.account || 'A',
+      title: note.title ? `Note: ${note.title}` : `CSM Action Note (${note.kind || 'update'})`,
+      summary: note.text || '',
+      time: note.createdAt || new Date().toISOString(),
+      raw: note
+    });
+  });
+
+  list.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+  return list;
+}
+
+function updateNotificationUI() {
+  const notifs = getAllNotifications();
+  const unreadCount = notifs.filter(n => !readNotificationIds.has(n.id)).length;
+  
+  const badge = document.getElementById("bellUnreadCount");
+  if (badge) {
+    badge.textContent = unreadCount;
+    badge.style.display = unreadCount > 0 ? "inline-block" : "none";
+  }
+
+  const countEl = document.getElementById("notifTotalCount");
+  if (countEl) countEl.textContent = notifs.length;
+
+  const listEl = document.getElementById("notificationList");
+  if (!listEl) return;
+
+  if (notifs.length === 0) {
+    listEl.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:11px;">No intelligence updates received yet.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = notifs.map(n => {
+    const isUnread = !readNotificationIds.has(n.id);
+    const timeAgo = formatTimeAgo(n.time);
+    const accLabel = n.account ? `[ACC ${n.account}]` : '';
+    const icon = n.kind === 'account' ? '🚨' : n.kind === 'note' ? '✍️' : '📡';
+
+    return `
+      <div class="notif-item ${isUnread ? 'unread' : ''}" onclick="handleNotificationClick('${escapeHtml(n.id)}')">
+        <div class="notif-item-header">
+          <span style="display:flex;align-items:center;gap:6px;">
+            <span>${icon}</span>
+            <span class="badge-pixel ${n.kind === 'account' ? 'rust' : n.kind === 'note' ? 'olive' : 'gold'}" style="padding:1px 5px;font-size:8px;">${escapeHtml(accLabel || n.kind)}</span>
+          </span>
+          <span style="font-size:10px;color:var(--text-muted);">${escapeHtml(timeAgo)}</span>
+        </div>
+        <div class="notif-item-title">${escapeHtml(n.title)}</div>
+        <div class="notif-item-snippet">${escapeHtml(n.summary)}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function toggleNotificationDrawer(e) {
+  if (e) e.stopPropagation();
+  const dd = document.getElementById("notificationDropdown");
+  if (dd) dd.classList.toggle("hidden");
+}
+
+function closeNotificationDrawer() {
+  const dd = document.getElementById("notificationDropdown");
+  if (dd && !dd.classList.contains("hidden")) dd.classList.add("hidden");
+}
+
+document.addEventListener("click", (e) => {
+  const wrapper = document.getElementById("notifWrapper");
+  if (wrapper && !wrapper.contains(e.target)) {
+    closeNotificationDrawer();
+  }
+});
+
+function markAllNotificationsAsRead(e) {
+  if (e) e.stopPropagation();
+  const notifs = getAllNotifications();
+  notifs.forEach(n => readNotificationIds.add(n.id));
+  try {
+    localStorage.setItem("quest_read_notifs", JSON.stringify(Array.from(readNotificationIds)));
+  } catch {}
+  updateNotificationUI();
+}
+
+function handleNotificationClick(notifId) {
+  readNotificationIds.add(notifId);
+  try {
+    localStorage.setItem("quest_read_notifs", JSON.stringify(Array.from(readNotificationIds)));
+  } catch {}
+  updateNotificationUI();
+  closeNotificationDrawer();
+
+  const notif = getAllNotifications().find(n => n.id === notifId);
+  if (!notif) return;
+
+  if (notif.kind === 'note') {
+    openNotePopup(notif.id);
+  } else {
+    openSignalPopup(notif.id);
+  }
+}
+
+// Dynamic Account Management
+function renderDynamicAccountBar() {
+  const bar = document.getElementById("dynamicAccountBar");
+  if (!bar || !dashboardData || !dashboardData.accounts) return;
+
+  const accounts = dashboardData.accounts;
+  const noteSelect = document.getElementById("inputNoteAccount");
+
+  if (noteSelect) {
+    noteSelect.innerHTML = accounts.map(a => `
+      <option value="${escapeHtml(a.id)}" ${a.id === currentAccount ? 'selected' : ''}>
+        ${escapeHtml(a.name)} (Account ${escapeHtml(a.id)})
+      </option>
+    `).join("");
+  }
+
+  let html = accounts.map((acc, idx) => {
+    const isAct = acc.id === currentAccount;
+    const icon = acc.id === "A" ? "🏛️" : acc.id === "B" ? "🏭" : "🏢";
+    const isNew = idx >= 2;
+    return `
+      <button class="acc-switch-btn ${isAct ? 'active' : ''}" onclick="switchAccount('${escapeHtml(acc.id)}')">
+        ${icon} ${escapeHtml(acc.name)}
+        ${isNew ? '<span class="badge-pixel gold blink" style="padding:1px 4px;font-size:7px;margin-left:4px;">NEW!</span>' : ''}
+      </button>
+    `;
+  }).join("");
+
+  if (accounts.length > 1) {
+    const isAll = currentAccount === "ALL";
+    html += `
+      <button class="acc-switch-btn ${isAll ? 'active' : ''}" onclick="switchAccount('ALL')" style="${isAll ? 'background:var(--gold);color:var(--espresso);font-weight:800;' : ''}">
+        🌐 All Accounts Overview
+      </button>
+    `;
+  }
+
+  bar.innerHTML = html;
+}
+
+function detectAndNotifyNewAccounts(accountsList) {
+  if (!Array.isArray(accountsList)) return;
+  const isFirstLoad = clientKnownAccountIds.size === 0;
+
+  accountsList.forEach(acc => {
+    if (!clientKnownAccountIds.has(acc.id)) {
+      clientKnownAccountIds.add(acc.id);
+      if (!isFirstLoad) {
+        showLiveFloatingNotification({
+          id: `new_acc_${acc.id}`,
+          account: acc.id,
+          title: `🚨 NEW ACCOUNT DISCOVERED: ${acc.name} (${acc.id})`,
+          summary: `Questathon just added a new customer account! Contains ${acc.opportunities?.length || 0} opportunities ($${(acc.opportunities || []).reduce((s,o)=>s+(o.worth_up_to||0),0).toLocaleString()} ceiling) and ${acc.stakeholders?.length || 0} stakeholders. It is now live in your CRM.`,
+          records: (acc.facts || []).slice(0, 3).map(f => f.id)
+        }, "account");
+      }
+    }
+  });
+
+  renderDynamicAccountBar();
+  updateNotificationUI();
+}
+
+async function syncAccounts() {
+  const btn = document.getElementById("btnSyncAccounts");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Syncing Accounts...";
+  }
+  try {
+    const res = await fetch("/api/accounts/sync", { method: "POST" });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Failed to sync accounts");
+    
+    if (json.accounts && dashboardData) {
+      dashboardData.accounts = json.accounts;
+      detectAndNotifyNewAccounts(json.accounts);
+      if (json.newlyDiscovered && json.newlyDiscovered.length > 0) {
+        alert(`🚨 Discovered ${json.newlyDiscovered.length} new account(s) added by Questathon!`);
+      }
+    }
+    if (json.lastMcpSyncTime) {
+      lastMcpSyncTimestamp = json.lastMcpSyncTime;
+      updateMcpRelativeTime();
+    }
+    renderCurrentView();
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "🔍 Sync Accounts";
+    }
+  }
 }
 
 // Authentication Functions
@@ -965,12 +1332,12 @@ function switchQuestionPage(pageNum) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// Account Switcher (A or B)
+// Dynamic Account Switcher
 function switchAccount(accId) {
   currentAccount = accId;
-  document.getElementById("btnAccA").classList.toggle("active", accId === "A");
-  document.getElementById("btnAccB").classList.toggle("active", accId === "B");
-  document.getElementById("inputNoteAccount").value = accId;
+  renderDynamicAccountBar();
+  const sel = document.getElementById("inputNoteAccount");
+  if (sel && accId !== "ALL") sel.value = accId;
   renderCurrentView();
 }
 
@@ -1035,14 +1402,20 @@ function closeEvidenceModal() {
 
 // Render Core CRM Workstation Views
 function renderCurrentView() {
-  if (!dashboardData) return;
-  const acc = dashboardData.accounts.find(a => a.id === currentAccount);
-  if (!acc) return;
+  if (!dashboardData || !dashboardData.accounts || dashboardData.accounts.length === 0) return;
+
+  const isAll = currentAccount === "ALL";
+  let acc = dashboardData.accounts.find(a => a.id === currentAccount);
+  if (!acc && !isAll) {
+    acc = dashboardData.accounts[0];
+    currentAccount = acc.id;
+  }
 
   const isA = currentAccount === "A";
+  const isB = currentAccount === "B";
 
-  // Live Alert Banner (for current account)
-  const accSignals = (signals || []).filter(s => s.account === currentAccount);
+  // Live Alert Banner (for current account or cross-account)
+  const accSignals = isAll ? (signals || []) : (signals || []).filter(s => s.account === currentAccount);
   const alertWrap = document.getElementById("liveSignalsAlertWrap");
   if (accSignals.length > 0) {
     alertWrap.innerHTML = `
@@ -1079,8 +1452,69 @@ function renderCurrentView() {
     alertWrap.innerHTML = "";
   }
 
+  // If All Accounts Overview mode
+  if (isAll) {
+    const allOpps = dashboardData.accounts.flatMap(a => a.opportunities || []);
+    const totalCeiling = allOpps.reduce((s, o) => s + (o.worth_up_to || 0), 0);
+    const totalStakeholders = dashboardData.accounts.flatMap(a => a.stakeholders || []).length;
+    const totalSignals = (signals || []).length;
+
+    document.getElementById("p1CeilingBadge").textContent = `Combined Ceiling: ${formatUSD(totalCeiling)}`;
+    document.getElementById("p1ConfirmedBadge").textContent = `Confirmed: $0 (All unrenewed)`;
+
+    document.getElementById("p1KpiStrip").innerHTML = `
+      <div class="panel-pixel">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Portfolio Ceiling</div>
+        <div class="font-pixel" style="font-size:20px;color:var(--espresso);margin:8px 0 4px;">${formatUSD(totalCeiling)}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${allOpps.length} opportunities across ${dashboardData.accounts.length} accounts</div>
+      </div>
+      <div class="panel-pixel">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Confirmed Bookings</div>
+        <div class="font-pixel" style="font-size:20px;color:var(--rust);margin:8px 0 4px;">$0</div>
+        <div style="font-size:11px;color:var(--text-muted);">All contracts require active renewal</div>
+      </div>
+      <div class="panel-pixel">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Monitored Accounts</div>
+        <div class="font-pixel" style="font-size:20px;color:var(--olive);margin:8px 0 4px;">${dashboardData.accounts.length} Live</div>
+        <div style="font-size:11px;color:var(--text-muted);">${totalStakeholders} mapped stakeholders</div>
+      </div>
+      <div class="panel-pixel">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Active Signals</div>
+        <div class="font-pixel" style="font-size:20px;color:var(--rust);margin:8px 0 4px;">${totalSignals} Signals</div>
+        <div style="font-size:11px;color:var(--text-muted);">Real-time MCP feed</div>
+      </div>
+    `;
+
+    document.getElementById("p1DealsGrid").innerHTML = dashboardData.accounts.map(a => {
+      const aCeiling = (a.opportunities || []).reduce((s, o) => s + (o.worth_up_to || 0), 0);
+      return `
+        <div class="panel-pixel" style="display:flex;flex-direction:column;gap:12px;border-top:6px solid var(--gold);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="font-pixel" style="font-size:13px;color:var(--espresso);">${escapeHtml(a.name)}</div>
+            <span class="badge-pixel olive">Account ${escapeHtml(a.id)}</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);">${(a.opportunities || []).length} opportunities · Ceiling: <b>${formatUSD(aCeiling)}</b></div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            ${(a.opportunities || []).map(o => `
+              <div style="font-size:11px;background:var(--card-alt);padding:6px 8px;border:1px solid var(--ink);display:flex;justify-content:space-between;">
+                <span>${escapeHtml(o.title)}</span>
+                <b>${formatUSD(o.worth_up_to)}</b>
+              </div>
+            `).join("")}
+          </div>
+          <button class="btn-pixel secondary" style="font-size:8px;padding:8px 12px;margin-top:auto;" onclick="switchAccount('${escapeHtml(a.id)}')">
+            Inspect Account ${escapeHtml(a.id)} →
+          </button>
+        </div>
+      `;
+    }).join("");
+
+    renderActivityFeeds();
+    return;
+  }
+
   // --- PAGE 1: WHAT IS THE BOOK WORTH? ---
-  const oppTotal = acc.opportunities.reduce((s, o) => s + (o.worth_up_to || 0), 0);
+  const oppTotal = (acc.opportunities || []).reduce((s, o) => s + (o.worth_up_to || 0), 0);
   document.getElementById("p1CeilingBadge").textContent = `Ceiling: ${formatUSD(oppTotal)}`;
   document.getElementById("p1ConfirmedBadge").textContent = `Confirmed: $0`;
 
@@ -1088,26 +1522,26 @@ function renderCurrentView() {
     <div class="panel-pixel">
       <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Opportunity Ceilings</div>
       <div class="font-pixel" style="font-size:20px;color:var(--espresso);margin:8px 0 4px;">${formatUSD(oppTotal)}</div>
-      <div style="font-size:11px;color:var(--text-muted);">${acc.opportunities.length} pipeline items</div>
+      <div style="font-size:11px;color:var(--text-muted);">${(acc.opportunities || []).length} pipeline items</div>
     </div>
     <div class="panel-pixel">
       <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Confirmed Revenue</div>
       <div class="font-pixel" style="font-size:20px;color:var(--rust);margin:8px 0 4px;">$0</div>
-      <div style="font-size:11px;color:var(--text-muted);">${isA ? 'No pooled budget; unrenewed' : 'Unrenewed; Finance booked $0'}</div>
+      <div style="font-size:11px;color:var(--text-muted);">${isA ? 'No pooled budget; unrenewed' : isB ? 'Unrenewed; Finance booked $0' : 'Unrenewed'}</div>
     </div>
     <div class="panel-pixel">
       <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Verified Flight Signal</div>
-      <div class="font-pixel" style="font-size:16px;color:var(--olive);margin:8px 0 4px;">${isA ? '14/18 active' : '4/15 active'}</div>
-      <div style="font-size:11px;color:var(--text-muted);">${isA ? 'Westmere & Metro operational' : 'Regular patrols; 9 idle'}</div>
+      <div class="font-pixel" style="font-size:16px;color:var(--olive);margin:8px 0 4px;">${isA ? '14/18 active' : isB ? '4/15 active' : `${(acc.facts || []).length} facts`}</div>
+      <div style="font-size:11px;color:var(--text-muted);">${isA ? 'Westmere & Metro operational' : isB ? 'Regular patrols; 9 idle' : 'Telemetry verified'}</div>
     </div>
     <div class="panel-pixel">
       <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Disproven Claim</div>
-      <div class="font-pixel" style="font-size:14px;color:var(--text-muted);margin:8px 0 4px;">${isA ? 'Pooled Budget' : '€1.2M ROI'}</div>
-      <div style="font-size:11px;color:var(--rust);font-weight:700;">${isA ? 'Contradicted by §rc_funding_2' : 'Spreadsheet only §sr_roi_2'}</div>
+      <div class="font-pixel" style="font-size:14px;color:var(--text-muted);margin:8px 0 4px;">${isA ? 'Pooled Budget' : isB ? '€1.2M ROI' : 'Assumed Budget'}</div>
+      <div style="font-size:11px;color:var(--rust);font-weight:700;">${isA ? 'Contradicted by §rc_funding_2' : isB ? 'Spreadsheet only §sr_roi_2' : 'Requires verification'}</div>
     </div>
   `;
 
-  document.getElementById("p1DealsGrid").innerHTML = acc.opportunities.map(opp => {
+  document.getElementById("p1DealsGrid").innerHTML = (acc.opportunities || []).map(opp => {
     const isUnpriced = opp.worth_up_to == null;
     return `
       <div class="panel-pixel" style="display:flex;flex-direction:column;gap:12px;">
@@ -1148,21 +1582,44 @@ function renderCurrentView() {
   }).join("");
 
   // --- PAGE 2: WHO HOLDS THE POWER? ---
-  const powerProfiles = isA ? {
-    "rhys_calder": { decider: "Alliance Lead", payer: "No (Force CFOs)", user: "Advocate", blocker: "No", quote: "Advocates for all 4 forces but lacks budget authority. Stepping down in January 2027.", sources: ["rc_funding_2", "hd_calloff_2"] },
-    "karen_mbeki": { decider: "Unit Lead", payer: "Recommender", user: "Heavy (Westmere)", blocker: "No", quote: "14 of 18 docks flying in Westmere/Metro Central. Needs 9 more trained operators for scale. Ticket FB-11206 logged.", sources: ["km_usage_1", "km_staff_2"] },
-    "hannah_doyle": { decider: "Tender Spec Lead", payer: "Procurement", user: "No", blocker: "High Risk (Cold)", quote: "Controls 300-dock tender spec (40% weight on cost model). Has heard nothing from FlytBase since pilot.", sources: ["hd_weights_1", "hd_silence_3", "hd_window_2"] },
-    "ewan_brooks": { decider: "Finance Gatekeeper", payer: "CFO Sign-off", user: "No", blocker: "Yes (Blocks Westmere)", quote: "CFO requires cost per flight benchmarked against £1,500/hr helicopter. Autumn finance bid window closing.", sources: ["eb_heli_1", "eb_drone_2", "eb_sign_2", "eb_window_2"] },
-    "fatima_osei": { decider: "DPO Sign-off", payer: "No", user: "No", blocker: "Hard Blocker (Tarn Valley)", quote: "Refuses to sign DPIA without data flows, retention periods and access controls requested 4 months ago.", sources: ["fo_dpia_2", "fo_needs_3", "pj_ticket"] }
-  } : {
-    "stefan_roy": { decider: "Security Sponsor", payer: "Central Security", user: "Champion", blocker: "No", quote: "Strong sponsor but overstates metrics (€1.2M ROI is theoretical spreadsheet; 9 plants idle).", sources: ["sr_roi_0", "sr_roi_2", "sr_roll_2"] },
-    "beatriz_alonso": { decider: "Plant 7 Manager", payer: "Plant Budget Levy", user: "Nightly Patrols", blocker: "Partial", quote: "Flies nightly but alerts go to her personal phone because guard contract does not cover response.", sources: ["ba_use_2", "ba_deputy_0"] },
-    "nadia_rahman": { decider: "Group Finance Controller", payer: "Primary Approver", user: "No", blocker: "Hard Blocker (Renewal)", quote: "Will not verify or renew contract based on theoretical guard savings. Requires confirmed audit numbers.", sources: ["b_renewal", "sr_roi_2"] },
-    "owen_fitch": { decider: "IT Infrastructure Lead", payer: "IT Infrastructure", user: "No", blocker: "Technical Blocker", quote: "Upcoming plant network upgrade project threatens to sever drone docks unless network scope aligned.", sources: ["b_idle", "sr_plants_2"] },
-    "julian_tate": { decider: "Insurance & Risk", payer: "Risk Reserve", user: "No", blocker: "Untapped Ally", quote: "No insurance savings currently established. Untapped potential to demonstrate risk reduction metrics.", sources: ["sr_roi_2"] }
-  };
+  let powerProfiles = {};
+  if (isA) {
+    powerProfiles = {
+      "rhys_calder": { decider: "Alliance Lead", payer: "No (Force CFOs)", user: "Advocate", blocker: "No", quote: "Advocates for all 4 forces but lacks budget authority. Stepping down in January 2027.", sources: ["rc_funding_2", "hd_calloff_2"] },
+      "karen_mbeki": { decider: "Unit Lead", payer: "Recommender", user: "Heavy (Westmere)", blocker: "No", quote: "14 of 18 docks flying in Westmere/Metro Central. Needs 9 more trained operators for scale. Ticket FB-11206 logged.", sources: ["km_usage_1", "km_staff_2"] },
+      "hannah_doyle": { decider: "Tender Spec Lead", payer: "Procurement", user: "No", blocker: "High Risk (Cold)", quote: "Controls 300-dock tender spec (40% weight on cost model). Has heard nothing from FlytBase since pilot.", sources: ["hd_weights_1", "hd_silence_3", "hd_window_2"] },
+      "ewan_brooks": { decider: "Finance Gatekeeper", payer: "CFO Sign-off", user: "No", blocker: "Yes (Blocks Westmere)", quote: "CFO requires cost per flight benchmarked against £1,500/hr helicopter. Autumn finance bid window closing.", sources: ["eb_heli_1", "eb_drone_2", "eb_sign_2", "eb_window_2"] },
+      "fatima_osei": { decider: "DPO Sign-off", payer: "No", user: "No", blocker: "Hard Blocker (Tarn Valley)", quote: "Refuses to sign DPIA without data flows, retention periods and access controls requested 4 months ago.", sources: ["fo_dpia_2", "fo_needs_3", "pj_ticket"] }
+    };
+  } else if (isB) {
+    powerProfiles = {
+      "stefan_roy": { decider: "Security Sponsor", payer: "Central Security", user: "Champion", blocker: "No", quote: "Strong sponsor but overstates metrics (€1.2M ROI is theoretical spreadsheet; 9 plants idle).", sources: ["sr_roi_0", "sr_roi_2", "sr_roll_2"] },
+      "beatriz_alonso": { decider: "Plant 7 Manager", payer: "Plant Budget Levy", user: "Nightly Patrols", blocker: "Partial", quote: "Flies nightly but alerts go to her personal phone because guard contract does not cover response.", sources: ["ba_use_2", "ba_deputy_0"] },
+      "nadia_rahman": { decider: "Group Finance Controller", payer: "Primary Approver", user: "No", blocker: "Hard Blocker (Renewal)", quote: "Will not verify or renew contract based on theoretical guard savings. Requires confirmed audit numbers.", sources: ["b_renewal", "sr_roi_2"] },
+      "owen_fitch": { decider: "IT Infrastructure Lead", payer: "IT Infrastructure", user: "No", blocker: "Technical Blocker", quote: "Upcoming plant network upgrade project threatens to sever drone docks unless network scope aligned.", sources: ["b_idle", "sr_plants_2"] },
+      "julian_tate": { decider: "Insurance & Risk", payer: "Risk Reserve", user: "No", blocker: "Untapped Ally", quote: "No insurance savings currently established. Untapped potential to demonstrate risk reduction metrics.", sources: ["sr_roi_2"] }
+    };
+  } else {
+    // Dynamically synthesize power profiles for newly discovered accounts
+    (acc.stakeholders || []).forEach(sh => {
+      const roleLow = (sh.role || "").toLowerCase();
+      const isLead = roleLow.includes("lead") || roleLow.includes("director") || roleLow.includes("head") || roleLow.includes("officer");
+      const isPayer = roleLow.includes("finance") || roleLow.includes("cfo") || roleLow.includes("procurement") || roleLow.includes("controller");
+      const isUser = roleLow.includes("manager") || roleLow.includes("security") || roleLow.includes("operator") || roleLow.includes("pilot");
+      const isBlocker = sh.relationship === "cold" ? "High Risk" : "No";
 
-  document.getElementById("p2StakeholdersGrid").innerHTML = acc.stakeholders.map(sh => {
+      powerProfiles[sh.id] = {
+        decider: isLead ? "Primary Decider" : "Influencer",
+        payer: isPayer ? "Budget Approver" : "No",
+        user: isUser ? "Active User" : "Indirect",
+        blocker: isBlocker,
+        quote: sh.role || "Key Stakeholder",
+        sources: (acc.facts || []).filter(f => f.said_by === sh.name || (f.text && f.text.includes(sh.name))).map(f => f.id)
+      };
+    });
+  }
+
+  document.getElementById("p2StakeholdersGrid").innerHTML = (acc.stakeholders || []).map(sh => {
     const prof = powerProfiles[sh.id] || { decider: "Unknown", payer: "Unknown", user: "Unknown", blocker: "Unknown", quote: sh.role, sources: [] };
     const stanceBadge = sh.relationship === "ally" ? "olive" : sh.relationship === "warm" ? "sky" : sh.relationship === "cold" ? "rust" : "gold";
 
@@ -1195,63 +1652,82 @@ function renderCurrentView() {
   }).join("");
 
   // --- PAGE 3: WHAT DO YOU DO FIRST? ---
-  const rankedMoves = isA ? [
-    {
-      rank: 1,
-      title: "Deliver Engineering Data-Flow Pack to Fatima Osei & Book DPIA Review",
-      desc: "Engineering confirmed the data-flow pack (flows, retention periods, video storage, access controls) can be delivered in 7 days. Hand-deliver the pack to Fatima Osei to resolve the 4-month unassigned ticket (pj_ticket) and book her 3-week review window. Norwold is waiting to copy this assessment.",
-      owner: "CSM (FlytBase) + Engineering Lead",
-      deal: "a_tarn · Tarn Valley & Norwold Go-Live ($200k)",
-      window: "Within 7 business days (Engineering commitment window)",
-      sources: ["pj_ticket", "srv_dataflow", "fo_dpia_2", "fo_needs_3"]
-    },
-    {
-      rank: 2,
-      title: "Reconcile Operator Overtime & Deliver Cost-Per-Flight Helicopter Comparison",
-      desc: "Work with Ewan Brooks and Insp. Karen Mbeki to isolate operator overtime from general duties. Compute the drone cost per flight against the verified £1,500/hr helicopter benchmark to secure Metro Central CFO signature before the Autumn finance bid window closes.",
-      owner: "CSM + Ewan Brooks + Insp. Karen Mbeki",
-      deal: "a_westmere ($250k) & a_renewal ($350k)",
-      window: "Within 10 business days (Prior to Autumn finance round close)",
-      sources: ["eb_heli_1", "eb_drone_2", "eb_sign_2", "eb_window_2", "km_staff_2"]
-    },
-    {
-      rank: 3,
-      title: "Submit Written Clarification & 300-Dock Operating Model to Hannah Doyle",
-      desc: "Re-engage Hannah Doyle using the formal clarification request template. Propose a fully costed 300-dock operating and staffing model to capture the 40% evaluation criteria weighting before the specification locks.",
-      owner: "CSM + Bid Solution Architect + Hannah Doyle",
-      deal: "a_tender · 300-Dock Framework Tender ($1.5M)",
-      window: "Within 14 business days (Inside 25 moves remaining)",
-      sources: ["hd_weights_1", "hd_window_2", "hd_silence_3", "rc_tender_2", "clarification_template"]
+  let rankedMoves = [];
+  if (isA) {
+    rankedMoves = [
+      {
+        rank: 1,
+        title: "Deliver Engineering Data-Flow Pack to Fatima Osei & Book DPIA Review",
+        desc: "Engineering confirmed the data-flow pack (flows, retention periods, video storage, access controls) can be delivered in 7 days. Hand-deliver the pack to Fatima Osei to resolve the 4-month unassigned ticket (pj_ticket) and book her 3-week review window. Norwold is waiting to copy this assessment.",
+        owner: "CSM (FlytBase) + Engineering Lead",
+        deal: "a_tarn · Tarn Valley & Norwold Go-Live ($200k)",
+        window: "Within 7 business days (Engineering commitment window)",
+        sources: ["pj_ticket", "srv_dataflow", "fo_dpia_2", "fo_needs_3"]
+      },
+      {
+        rank: 2,
+        title: "Reconcile Operator Overtime & Deliver Cost-Per-Flight Helicopter Comparison",
+        desc: "Work with Ewan Brooks and Insp. Karen Mbeki to isolate operator overtime from general duties. Compute the drone cost per flight against the verified £1,500/hr helicopter benchmark to secure Metro Central CFO signature before the Autumn finance bid window closes.",
+        owner: "CSM + Ewan Brooks + Insp. Karen Mbeki",
+        deal: "a_westmere ($250k) & a_renewal ($350k)",
+        window: "Within 10 business days (Prior to Autumn finance round close)",
+        sources: ["eb_heli_1", "eb_drone_2", "eb_sign_2", "eb_window_2", "km_staff_2"]
+      },
+      {
+        rank: 3,
+        title: "Submit Written Clarification & 300-Dock Operating Model to Hannah Doyle",
+        desc: "Re-engage Hannah Doyle using the formal clarification request template. Propose a fully costed 300-dock operating and staffing model to capture the 40% evaluation criteria weighting before the specification locks.",
+        owner: "CSM + Bid Solution Architect + Hannah Doyle",
+        deal: "a_tender · 300-Dock Framework Tender ($1.5M)",
+        window: "Within 14 business days (Inside 25 moves remaining)",
+        sources: ["hd_weights_1", "hd_window_2", "hd_silence_3", "rc_tender_2", "clarification_template"]
+      }
+    ];
+  } else if (isB) {
+    rankedMoves = [
+      {
+        rank: 1,
+        title: "Capture & Codify Rollout Playbook Before Stefan's Deputy Departs",
+        desc: "Stefan's deputy configured Plant 7 and holds the entire deployment template in his head. Conduct structured exit interviews immediately to write the end-to-end playbook before his departure leaves the 9 idle plants stranded.",
+        owner: "CSM + Stefan Roy + Departing Deputy",
+        deal: "b_idle · Bring Idle Plants into Regular Patrol ($180k)",
+        window: "Immediate (Prior to deputy final departure)",
+        sources: ["ba_deputy_0", "sr_repl_2", "sr_roll_2"]
+      },
+      {
+        rank: 2,
+        title: "Amend Third-Party Guard Contract & Automate Alert Dispatch for Plant 7",
+        desc: "Meet with Beatriz Alonso and security procurement to amend the third-party guard contract so ground guards respond to drone alerts rather than routing notifications to Beatriz's personal phone at night.",
+        owner: "Stefan Roy + Beatriz Alonso + Security Procurement",
+        deal: "b_renewal · Aldermoor Contract Renewal ($140k)",
+        window: "Within 10 business days",
+        sources: ["ba_use_2", "ba_use_0", "b_renewal"]
+      },
+      {
+        rank: 3,
+        title: "Align Network Scope with Owen Fitch & Audit Hard Savings with Nadia Rahman",
+        desc: "Coordinate with Owen Fitch to map drone network dependencies before the group IT project severs dock connectivity. Meet with Nadia Rahman to replace the disproven €1.2M theoretical ROI with verified patrol audit reductions.",
+        owner: "CSM + Owen Fitch (IT) + Nadia Rahman (Finance)",
+        deal: "b_renewal ($140k) & b_idle ($180k)",
+        window: "Within 15 business days (Before IT project cutoff)",
+        sources: ["sr_roi_2", "sr_plants_2", "b_idle"]
+      }
+    ];
+  } else {
+    // Dynamic synthesis of moves for any new account
+    rankedMoves = (acc.opportunities || []).slice(0, 3).map((opp, idx) => ({
+      rank: idx + 1,
+      title: `Resolve Blocker & Advance Opportunity: ${opp.title}`,
+      desc: opp.blocker ? `Intervene to resolve: ${opp.blocker.text}. Move stage ${opp.stage} towards closure.` : `Execute CSM engagement cadence for ${opp.stage} opportunity.`,
+      owner: "CSM (FlytBase) + Account Champion",
+      deal: `${opp.id} · ${opp.title} (${formatUSD(opp.worth_up_to)})`,
+      window: opp.deadline ? opp.deadline.text : "Within 14 business days",
+      sources: opp.evidence || []
+    }));
+    if (rankedMoves.length === 0) {
+      rankedMoves = [{ rank: 1, title: `Discovery Audit with ${acc.name}`, desc: "Establish baseline operating metrics and verified usage data.", owner: "Lead CSM", deal: "Account Onboarding", window: "Immediate", sources: [] }];
     }
-  ] : [
-    {
-      rank: 1,
-      title: "Capture & Codify Rollout Playbook Before Stefan's Deputy Departs",
-      desc: "Stefan's deputy configured Plant 7 and holds the entire deployment template in his head. Conduct structured exit interviews immediately to write the end-to-end playbook before his departure leaves the 9 idle plants stranded.",
-      owner: "CSM + Stefan Roy + Departing Deputy",
-      deal: "b_idle · Bring Idle Plants into Regular Patrol ($180k)",
-      window: "Immediate (Prior to deputy final departure)",
-      sources: ["ba_deputy_0", "sr_repl_2", "sr_roll_2"]
-    },
-    {
-      rank: 2,
-      title: "Amend Third-Party Guard Contract & Automate Alert Dispatch for Plant 7",
-      desc: "Meet with Beatriz Alonso and security procurement to amend the third-party guard contract so ground guards respond to drone alerts rather than routing notifications to Beatriz's personal phone at night.",
-      owner: "Stefan Roy + Beatriz Alonso + Security Procurement",
-      deal: "b_renewal · Aldermoor Contract Renewal ($140k)",
-      window: "Within 10 business days",
-      sources: ["ba_use_2", "ba_use_0", "b_renewal"]
-    },
-    {
-      rank: 3,
-      title: "Align Network Scope with Owen Fitch & Audit Hard Savings with Nadia Rahman",
-      desc: "Coordinate with Owen Fitch to map drone network dependencies before the group IT project severs dock connectivity. Meet with Nadia Rahman to replace the disproven €1.2M theoretical ROI with verified patrol audit reductions.",
-      owner: "CSM + Owen Fitch (IT) + Nadia Rahman (Finance)",
-      deal: "b_renewal ($140k) & b_idle ($180k)",
-      window: "Within 15 business days (Before IT project cutoff)",
-      sources: ["sr_roi_2", "sr_plants_2", "b_idle"]
-    }
-  ];
+  }
 
   document.getElementById("p3MovesList").innerHTML = rankedMoves.map(m => `
     <div class="panel-pixel" style="display:grid;grid-template-columns:50px 1fr auto;gap:20px;align-items:center;">
@@ -1277,65 +1753,81 @@ function renderCurrentView() {
   `).join("");
 
   // --- PAGE 4: WHAT IS ABOUT TO GO WRONG? ---
-  const threats = isA ? [
-    {
-      title: "Tarn Valley DPIA Deadlock (4 Months Stalled)",
-      sev: "critical",
-      text: "Data-flow request ticket (pj_ticket) has sat unassigned in FlytBase support for 4 months. Tarn Valley cannot conduct live flights and Norwold refuses to begin until Tarn Valley signs.",
-      consequence: "Turns bad in 3 weeks: If pack is not delivered this week, both forces miss their operational deployment target and abandon the alliance initiative.",
-      sources: ["fo_dpia_2", "pj_ticket", "srv_dataflow", "fo_needs_3"]
-    },
-    {
-      title: "Tender Specification Lockout (25 Moves Remaining)",
-      sev: "critical",
-      text: "The 300-dock tender specification is locking soon (25 moves remaining). Cost per flight and operating model represent 40% of the evaluation criteria, yet no costed model exists.",
-      consequence: "Turns bad at move 0: Whatever is not locked into the spec is permanently excluded from the £1.5M framework.",
-      sources: ["rc_tender_2", "hd_weights_1", "moves_left: 25"]
-    },
-    {
-      title: "Autumn Finance Bid Window Closing at Metro Central",
-      sev: "warning",
-      text: "Ewan Brooks can only submit an expansion budget if drone cost per flight is benchmarked to helicopter rates (£1,500/hr). Overtime data is unseparated.",
-      consequence: "Turns bad when round closes: Westmere fleet scaling is deferred by 12 months if missed.",
-      sources: ["eb_sign_2", "eb_drone_2", "eb_window_2"]
-    },
-    {
-      title: "Procurement Lead Silence & Trust Debt",
-      sev: "warning",
-      text: "Hannah Doyle reports hearing nothing from FlytBase since the initial pilot. FlytBase risks missing the specification briefing window.",
-      consequence: "Turns bad immediately: Competitor vendors capture specification drafting influence.",
-      sources: ["hd_silence_3", "hd_window_2"]
+  let threats = [];
+  if (isA) {
+    threats = [
+      {
+        title: "Tarn Valley DPIA Deadlock (4 Months Stalled)",
+        sev: "critical",
+        text: "Data-flow request ticket (pj_ticket) has sat unassigned in FlytBase support for 4 months. Tarn Valley cannot conduct live flights and Norwold refuses to begin until Tarn Valley signs.",
+        consequence: "Turns bad in 3 weeks: If pack is not delivered this week, both forces miss their operational deployment target and abandon the alliance initiative.",
+        sources: ["fo_dpia_2", "pj_ticket", "srv_dataflow", "fo_needs_3"]
+      },
+      {
+        title: "Tender Specification Lockout (25 Moves Remaining)",
+        sev: "critical",
+        text: "The 300-dock tender specification is locking soon (25 moves remaining). Cost per flight and operating model represent 40% of the evaluation criteria, yet no costed model exists.",
+        consequence: "Turns bad at move 0: Whatever is not locked into the spec is permanently excluded from the £1.5M framework.",
+        sources: ["rc_tender_2", "hd_weights_1", "moves_left: 25"]
+      },
+      {
+        title: "Autumn Finance Bid Window Closing at Metro Central",
+        sev: "warning",
+        text: "Ewan Brooks can only submit an expansion budget if drone cost per flight is benchmarked to helicopter rates (£1,500/hr). Overtime data is unseparated.",
+        consequence: "Turns bad when round closes: Westmere fleet scaling is deferred by 12 months if missed.",
+        sources: ["eb_sign_2", "eb_drone_2", "eb_window_2"]
+      },
+      {
+        title: "Procurement Lead Silence & Trust Debt",
+        sev: "warning",
+        text: "Hannah Doyle reports hearing nothing from FlytBase since the initial pilot. FlytBase risks missing the specification briefing window.",
+        consequence: "Turns bad immediately: Competitor vendors capture specification drafting influence.",
+        sources: ["hd_silence_3", "hd_window_2"]
+      }
+    ];
+  } else if (isB) {
+    threats = [
+      {
+        title: "Departure of Rollout Know-How with Stefan's Deputy",
+        sev: "critical",
+        text: "Stefan's deputy configured Plant 7 and the other active sites. The entire deployment template lives in his head and he is leaving soon with zero documentation.",
+        consequence: "Turns bad on deputy exit date: Adoption of the 9 idle plants becomes impossible without reverse-engineering setup.",
+        sources: ["ba_deputy_0", "sr_repl_2"]
+      },
+      {
+        title: "Group IT Network Project Will Sever Docks",
+        sev: "critical",
+        text: "Owen Fitch's group IT infrastructure overhaul will disconnect plant drone docks because docks lack documented network prerequisites and firewall exemptions.",
+        consequence: "Turns bad upon IT rollout: Operational docks across plants drop offline unannounced.",
+        sources: ["b_idle", "sr_plants_2"]
+      },
+      {
+        title: "Theoretical €1.2M ROI Claim Rejected by Finance Controller",
+        sev: "critical",
+        text: "Stefan's claim of €1.2M annual savings was verified as his own spreadsheet of guard hours. No contracts were cut and Nadia Rahman has booked $0 in savings.",
+        consequence: "Turns bad at renewal review: Finance committee will reject the $140k contract renewal if presented with fictitious savings.",
+        sources: ["sr_roi_0", "sr_roi_2", "b_renewal"]
+      },
+      {
+        title: "Plant Manager Rebellion Against Central Security Levy",
+        sev: "warning",
+        text: "Plant managers pay for drone docks from local plant security budgets. Several plant managers openly resent paying for idle equipment.",
+        consequence: "Turns bad at budget allocation: Managers demand dock de-installations.",
+        sources: ["sr_plants_2", "sr_roll_2"]
+      }
+    ];
+  } else {
+    threats = (acc.opportunities || []).filter(o => o.blocker).map(o => ({
+      title: `Blocker on ${o.title}: ${o.blocker.status || 'Active'}`,
+      sev: o.blocker.status === 'blocked' ? 'critical' : 'warning',
+      text: o.blocker.text,
+      consequence: o.deadline ? `Turns bad at deadline: ${o.deadline.text}` : 'Impairs deal advancement and relationship momentum.',
+      sources: o.evidence || []
+    }));
+    if (threats.length === 0) {
+      threats = [{ title: "Unverified Adoption & Usage Risk", sev: "warning", text: "New account requires baseline flight verification.", consequence: "Review at 30 days.", sources: [] }];
     }
-  ] : [
-    {
-      title: "Departure of Rollout Know-How with Stefan's Deputy",
-      sev: "critical",
-      text: "Stefan's deputy configured Plant 7 and the other active sites. The entire deployment template lives in his head and he is leaving soon with zero documentation.",
-      consequence: "Turns bad on deputy exit date: Adoption of the 9 idle plants becomes impossible without reverse-engineering setup.",
-      sources: ["ba_deputy_0", "sr_repl_2"]
-    },
-    {
-      title: "Group IT Network Project Will Sever Docks",
-      sev: "critical",
-      text: "Owen Fitch's group IT infrastructure overhaul will disconnect plant drone docks because docks lack documented network prerequisites and firewall exemptions.",
-      consequence: "Turns bad upon IT rollout: Operational docks across plants drop offline unannounced.",
-      sources: ["b_idle", "sr_plants_2"]
-    },
-    {
-      title: "Theoretical €1.2M ROI Claim Rejected by Finance Controller",
-      sev: "critical",
-      text: "Stefan's claim of €1.2M annual savings was verified as his own spreadsheet of guard hours. No contracts were cut and Nadia Rahman has booked $0 in savings.",
-      consequence: "Turns bad at renewal review: Finance committee will reject the $140k contract renewal if presented with fictitious savings.",
-      sources: ["sr_roi_0", "sr_roi_2", "b_renewal"]
-    },
-    {
-      title: "Plant Manager Rebellion Against Central Security Levy",
-      sev: "warning",
-      text: "Plant managers pay for drone docks from local plant security budgets. Several plant managers openly resent paying for idle equipment.",
-      consequence: "Turns bad at budget allocation: Managers demand dock de-installations.",
-      sources: ["sr_plants_2", "sr_roll_2"]
-    }
-  ];
+  }
 
   document.getElementById("p4ThreatsGrid").innerHTML = threats.map(t => `
     <div class="panel-pixel" style="border-left:8px solid ${t.sev === 'critical' ? 'var(--rust)' : 'var(--gold)'};display:flex;flex-direction:column;gap:12px;">
@@ -1354,57 +1846,77 @@ function renderCurrentView() {
   `).join("");
 
   // --- PAGE 5: WHAT DO YOU STILL NOT KNOW? ---
-  const gaps = isA ? [
-    {
-      gap: "Exact drone operator overtime split & cost per flight denominator",
-      why: "Ewan Brooks requires this to prove cost efficiency against £1,500/hr helicopter benchmark; directly unlocks 40% tender score.",
-      impact: "High (Blocks $250k Westmere expansion & $1.5M tender)",
-      who: "Ewan Brooks (Metro Central Finance) + Insp. Karen Mbeki"
-    },
-    {
-      gap: "Force-by-force flight telemetry for Tarn Valley & Norwold",
-      why: "Procurement and force CFOs require verified mission usage logs before approving contract renewal call-offs.",
-      impact: "High (Required for $350k renewal)",
-      who: "Rhys Calder (Alliance Lead) + Flight Log Force Month reconciliation"
-    },
-    {
-      gap: "Named Chief Finance Officers for each individual force",
-      why: "Alliance has no pooled budget; each individual force CFO must sign off their specific call-off.",
-      impact: "High (Essential for forecast close probability)",
-      who: "Rhys Calder + Hannah Doyle (Alliance Procurement)"
-    },
-    {
-      gap: "Exact calendar cutoff dates for autumn finance round & tender lock",
-      why: "Move counter is at 25 moves, but exact calendar dates are absent from the export.",
-      impact: "Medium (Dictates operational cadence)",
-      who: "Hannah Doyle & Ewan Brooks"
+  let gaps = [];
+  if (isA) {
+    gaps = [
+      {
+        gap: "Exact drone operator overtime split & cost per flight denominator",
+        why: "Ewan Brooks requires this to prove cost efficiency against £1,500/hr helicopter benchmark; directly unlocks 40% tender score.",
+        impact: "High (Blocks $250k Westmere expansion & $1.5M tender)",
+        who: "Ewan Brooks (Metro Central Finance) + Insp. Karen Mbeki"
+      },
+      {
+        gap: "Force-by-force flight telemetry for Tarn Valley & Norwold",
+        why: "Procurement and force CFOs require verified mission usage logs before approving contract renewal call-offs.",
+        impact: "High (Required for $350k renewal)",
+        who: "Rhys Calder (Alliance Lead) + Flight Log Force Month reconciliation"
+      },
+      {
+        gap: "Named Chief Finance Officers for each individual force",
+        why: "Alliance has no pooled budget; each individual force CFO must sign off their specific call-off.",
+        impact: "High (Essential for forecast close probability)",
+        who: "Rhys Calder + Hannah Doyle (Alliance Procurement)"
+      },
+      {
+        gap: "Exact calendar cutoff dates for autumn finance round & tender lock",
+        why: "Move counter is at 25 moves, but exact calendar dates are absent from the export.",
+        impact: "Medium (Dictates operational cadence)",
+        who: "Hannah Doyle & Ewan Brooks"
+      }
+    ];
+  } else if (isB) {
+    gaps = [
+      {
+        gap: "Specific departure date of Stefan's deputy",
+        why: "Defines the hard deadline for rollout playbook interview and knowledge transfer.",
+        impact: "Critical (Risk of permanent capability loss)",
+        who: "Stefan Roy (Head of Security)"
+      },
+      {
+        gap: "IT infrastructure network project scope & rollout timeline",
+        why: "Necessary to prevent drone docks from being abruptly disconnected across industrial plants.",
+        impact: "High (Operational continuity)",
+        who: "Owen Fitch (Group IT Infrastructure Lead)"
+      },
+      {
+        gap: "Third-party guard contractor contract amendment cost",
+        why: "Docks cannot provide nighttime security value if ground contractors do not respond to alerts.",
+        impact: "High (Direct adoption blocker at Plant 7 and idle plants)",
+        who: "Beatriz Alonso + Security Procurement"
+      },
+      {
+        gap: "Audited financial benefit acceptable to Group Finance Controller",
+        why: "Must replace fictitious €1.2M model with verified perimeter incident avoidance or verified patrol audits.",
+        impact: "Critical (Governs $140k renewal and 40-plant case study)",
+        who: "Nadia Rahman (Group Finance) + Julian Tate (Insurance/Risk)"
+      }
+    ];
+  } else {
+    gaps = (acc.facts || []).filter(f => f.status === 'claim').map(f => ({
+      gap: `Unverified Claim: "${f.text.slice(0, 60)}..."`,
+      why: `Made by ${f.said_by || 'stakeholder'}; lacks independent operational or financial audit evidence.`,
+      impact: "High (Requires Discovery Audit)",
+      who: f.said_by || "CSM Discovery"
+    }));
+    if (gaps.length === 0) {
+      gaps.push({
+        gap: `Baseline SLA and ROI verification for ${acc.name}`,
+        why: "Initial account discovery and stakeholder validation in progress.",
+        impact: "Medium",
+        who: "Lead CSM"
+      });
     }
-  ] : [
-    {
-      gap: "Specific departure date of Stefan's deputy",
-      why: "Defines the hard deadline for rollout playbook interview and knowledge transfer.",
-      impact: "Critical (Risk of permanent capability loss)",
-      who: "Stefan Roy (Head of Security)"
-    },
-    {
-      gap: "IT infrastructure network project scope & rollout timeline",
-      why: "Necessary to prevent drone docks from being abruptly disconnected across industrial plants.",
-      impact: "High (Operational continuity)",
-      who: "Owen Fitch (Group IT Infrastructure Lead)"
-    },
-    {
-      gap: "Third-party guard contractor contract amendment cost",
-      why: "Docks cannot provide nighttime security value if ground contractors do not respond to alerts.",
-      impact: "High (Direct adoption blocker at Plant 7 and idle plants)",
-      who: "Beatriz Alonso + Security Procurement"
-    },
-    {
-      gap: "Audited financial benefit acceptable to Group Finance Controller",
-      why: "Must replace fictitious €1.2M model with verified perimeter incident avoidance or verified patrol audits.",
-      impact: "Critical (Governs $140k renewal and 40-plant case study)",
-      who: "Nadia Rahman (Group Finance) + Julian Tate (Insurance/Risk)"
-    }
-  ];
+  }
 
   document.getElementById("p5GapsTableBody").innerHTML = gaps.map(g => `
     <tr style="border-bottom:2px solid var(--ink);">
@@ -1471,7 +1983,7 @@ function openSignalPopup(sigId) {
   document.getElementById("updModalBadge").textContent = "LIVE MCP SIGNAL";
   document.getElementById("updModalTitle").textContent = sig.title || "Signal Detail";
   
-  const accName = sig.account === "B" ? "Aldermoor Industrial Group" : "Eastern Counties Police Alliance";
+  const accName = getAccountName(sig.account || "A");
 
   let recordsHtml = "";
   if (sig.records && sig.records.length) {
@@ -1534,7 +2046,7 @@ function openNotePopup(noteId) {
   document.getElementById("updModalBadge").textContent = (note.kind || "NOTE").toUpperCase();
   document.getElementById("updModalTitle").textContent = note.title || "Account Note";
 
-  const accName = note.account === "B" ? "Aldermoor Industrial Group" : "Eastern Counties Police Alliance";
+  const accName = getAccountName(note.account || "A");
   const formattedTime = note.createdAt ? new Date(note.createdAt).toLocaleString() : "Just now";
 
   document.getElementById("updModalBody").innerHTML = `
@@ -1591,14 +2103,18 @@ function showLiveFloatingNotification(item, type = "signal") {
   if (!popup || !item) return;
 
   const isSignal = type === "signal";
-  document.getElementById("floatPopupBadge").textContent = isSignal ? "🚨 LIVE MCP SIGNAL" : "✍️ NOTE WRITTEN BACK";
-  document.getElementById("floatPopupTitle").textContent = item.title || (isSignal ? "New Account Signal" : "Note Written Back");
+  const isAccount = type === "account";
+  document.getElementById("floatPopupBadge").textContent = isAccount ? "🚨 NEW ACCOUNT DISCOVERED" : isSignal ? "🚨 LIVE MCP SIGNAL" : "✍️ NOTE WRITTEN BACK";
+  document.getElementById("floatPopupTitle").textContent = item.title || (isAccount ? "New Customer Account Added" : isSignal ? "New Account Signal" : "Note Written Back");
   document.getElementById("floatPopupSummary").textContent = (item.summary || item.text || "").slice(0, 130) + "...";
 
   const btn = document.getElementById("floatPopupViewBtn");
   btn.onclick = () => {
     closeFloatingNotification();
-    if (isSignal) {
+    if (isAccount) {
+      if (item.account) switchAccount(item.account);
+      switchQuestionPage(1);
+    } else if (isSignal) {
       openSignalPopup(item.id);
     } else {
       openNotePopup(item.id);
@@ -1682,8 +2198,16 @@ async function refreshSignals() {
       throw new Error(json.error || "Signal refresh failed");
     }
     signals = json.signals || [];
+    if (json.lastMcpSyncTime) {
+      lastMcpSyncTimestamp = json.lastMcpSyncTime;
+      updateMcpRelativeTime();
+    }
+    if (json.newAccountsDiscovered && json.newAccountsDiscovered.length > 0) {
+      detectAndNotifyNewAccounts(json.newAccountsDiscovered);
+    }
     startCooldownTimer(60);
     renderCurrentView();
+    updateNotificationUI();
     if (signals.length > 0) {
       showLiveFloatingNotification(signals[0], "signal");
     }
@@ -1698,7 +2222,7 @@ async function refreshSignals() {
 // Write Note
 function openNoteModal() {
   document.getElementById("noteModal").classList.remove("hidden");
-  document.getElementById("inputNoteAccount").value = currentAccount;
+  document.getElementById("inputNoteAccount").value = currentAccount === "ALL" ? "A" : currentAccount;
 }
 function closeNoteModal() {
   document.getElementById("noteModal").classList.add("hidden");
@@ -1731,12 +2255,17 @@ async function submitNote() {
       throw new Error(json.error || "Failed to write note");
     }
     notes = json.notes || [];
+    if (json.lastMcpSyncTime) {
+      lastMcpSyncTimestamp = json.lastMcpSyncTime;
+      updateMcpRelativeTime();
+    }
     const latestNote = json.note || notes[0];
     closeNoteModal();
     document.getElementById("inputNoteText").value = "";
     document.getElementById("inputNoteTitle").value = "";
     startCooldownTimer(60);
     renderCurrentView();
+    updateNotificationUI();
     if (latestNote) {
       showLiveFloatingNotification(latestNote, "note");
     }
@@ -1749,6 +2278,42 @@ async function submitNote() {
   }
 }
 
+// Background Auto-Polling Heartbeat (Checks every 20s for new signals & new accounts)
+let heartbeatInterval = null;
+function startHeartbeat() {
+  if (heartbeatInterval) clearInterval(heartbeatInterval);
+  heartbeatInterval = setInterval(async () => {
+    try {
+      const res = await fetch("/api/status");
+      if (!res.ok) return;
+      const st = await res.json();
+      
+      if (st.lastMcpSyncTime) {
+        lastMcpSyncTimestamp = st.lastMcpSyncTime;
+        updateMcpRelativeTime();
+      }
+
+      // Check if new signals arrived or new accounts were added
+      if (st.totalSignals > signals.length || (st.totalAccounts && st.totalAccounts > clientKnownAccountIds.size)) {
+        const dRes = await fetch("/api/dashboard");
+        if (dRes.ok) {
+          const dJson = await dRes.json();
+          dashboardData = dJson.data;
+          signals = dJson.signals || [];
+          notes = dJson.notes || [];
+          if (dashboardData && dashboardData.accounts) {
+            detectAndNotifyNewAccounts(dashboardData.accounts);
+          }
+          renderCurrentView();
+          updateNotificationUI();
+        }
+      }
+    } catch (e) {
+      // silent background check
+    }
+  }, 20000);
+}
+
 // App Initialization
 async function initApp() {
   try {
@@ -1759,6 +2324,15 @@ async function initApp() {
     dashboardData = json.data;
     signals = json.signals || [];
     notes = json.notes || [];
+    
+    if (json.lastMcpSyncTime) {
+      lastMcpSyncTimestamp = json.lastMcpSyncTime;
+    }
+    updateMcpRelativeTime();
+
+    if (dashboardData && Array.isArray(dashboardData.accounts)) {
+      detectAndNotifyNewAccounts(dashboardData.accounts);
+    }
 
     if (json.mcpCooldownRemaining > 0) {
       startCooldownTimer(json.mcpCooldownRemaining);
@@ -1767,11 +2341,15 @@ async function initApp() {
     }
 
     renderCurrentView();
+    updateNotificationUI();
+
     if (signals && signals.length > 0) {
       setTimeout(() => {
         showLiveFloatingNotification(signals[0], "signal");
       }, 700);
     }
+
+    startHeartbeat();
   } catch (err) {
     console.error("Dashboard error:", err);
   }

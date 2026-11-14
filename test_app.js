@@ -116,14 +116,22 @@ async function runTests() {
   }
   console.log("✓ Invalid credentials correctly rejected (401)");
 
-  // 6. Test Frontend HTML serving
-  console.log("\n6. Testing GET / (Frontend HTML)...");
+  // 6. Test Account Sync Endpoint
+  console.log("\n6. Testing POST /api/accounts/sync...");
+  const syncRes = await post("/api/accounts/sync", {});
+  if (syncRes.status !== 200 || !syncRes.data.ok || !Array.isArray(syncRes.data.accounts)) {
+    throw new Error("Account sync failed!");
+  }
+  console.log(`✓ Account sync PASSED: ${syncRes.data.accounts.length} active accounts monitored`);
+
+  // 7. Test Frontend HTML serving
+  console.log("\n7. Testing GET / (Frontend HTML)...");
   const html = await get("/");
   console.log(`Status: ${html.status}, Length: ${html.raw.length} bytes`);
-  if (html.status !== 200 || !html.raw.includes("Questathon CRM") || !html.raw.includes("Eastern Counties Police Alliance")) {
+  if (html.status !== 200 || !html.raw.includes("Questathon CRM") || !html.raw.includes("Eastern Counties Police Alliance") || !html.raw.includes("mcpLastSyncRelative") || !html.raw.includes("notificationDropdown")) {
     throw new Error("Frontend HTML serving failed!");
   }
-  console.log("✓ Frontend HTML delivery PASSED");
+  console.log("✓ Frontend HTML delivery PASSED (with MCP Sync relative time & Notification bell)");
 
   console.log("\n=== ALL SYSTEM TESTS PASSED SUCCESSFULLY! ===");
 }
