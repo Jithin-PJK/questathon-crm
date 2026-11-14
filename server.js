@@ -68,24 +68,37 @@ function getMcpCooldown() {
   return remaining > 0 ? Math.ceil(remaining / 1000) : 0;
 }
 
-function mergeDropsIntoAccounts(accountsList) {
+async function mergeDropsIntoAccounts(accountsList) {
   if (!Array.isArray(accountsList)) return accountsList;
   const existingIds = new Set(accountsList.map(a => a.id));
-  const dropFiles = ["drop_H.json", "drop_K.json"];
-  for (const file of dropFiles) {
-    const dropPath = path.join(DATA_DIR, file);
+  const dropIds = ["H", "K"];
+  for (const dropId of dropIds) {
+    const dropPath = path.join(DATA_DIR, `drop_${dropId}.json`);
+    let dropData = null;
     if (fs.existsSync(dropPath)) {
       try {
-        const dropData = JSON.parse(fs.readFileSync(dropPath, "utf8"));
-        if (Array.isArray(dropData.accounts)) {
-          for (const acc of dropData.accounts) {
-            if (!existingIds.has(acc.id)) {
-              accountsList.push(acc);
-              existingIds.add(acc.id);
-            }
-          }
+        dropData = JSON.parse(fs.readFileSync(dropPath, "utf8"));
+      } catch {}
+    }
+    // If not on disk, fetch from Questathon drops API
+    if (!dropData) {
+      try {
+        const r = await fetch(`https://questathon.aihackerscollective.com/api/public/v1/drops/${dropId}`, {
+          headers: { Authorization: `Bearer ${token()}` }
+        });
+        if (r.ok) {
+          dropData = await r.json();
+          fs.writeFileSync(dropPath, JSON.stringify(dropData, null, 2), "utf8");
         }
       } catch {}
+    }
+    if (dropData && Array.isArray(dropData.accounts)) {
+      for (const acc of dropData.accounts) {
+        if (!existingIds.has(acc.id)) {
+          accountsList.push(acc);
+          existingIds.add(acc.id);
+        }
+      }
     }
   }
   return accountsList;
@@ -93,7 +106,7 @@ function mergeDropsIntoAccounts(accountsList) {
 
 async function getExport() {
   if (snapshot) {
-    mergeDropsIntoAccounts(snapshot.accounts);
+    await mergeDropsIntoAccounts(snapshot.accounts);
     return snapshot;
   }
 
@@ -102,7 +115,7 @@ async function getExport() {
     try {
       snapshot = JSON.parse(fs.readFileSync(EXPORT_PATH, "utf8"));
       if (snapshot && Array.isArray(snapshot.accounts)) {
-        mergeDropsIntoAccounts(snapshot.accounts);
+        await mergeDropsIntoAccounts(snapshot.accounts);
       }
       return snapshot;
     } catch (e) {
@@ -119,7 +132,7 @@ async function getExport() {
   }
   snapshot = await r.json();
   if (snapshot && Array.isArray(snapshot.accounts)) {
-    mergeDropsIntoAccounts(snapshot.accounts);
+    await mergeDropsIntoAccounts(snapshot.accounts);
   }
   fs.writeFileSync(EXPORT_PATH, JSON.stringify(snapshot, null, 2), "utf8");
   return snapshot;

@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: questathon-crm
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: AQ_TOKEN
+        sync: false
