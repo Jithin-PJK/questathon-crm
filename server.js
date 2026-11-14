@@ -232,6 +232,33 @@ app.get("/api/file/:id", async (req, res) => {
   }
 });
 
+app.post("/api/auth/login", (req, res) => {
+  const { accessId, accessKey } = req.body || {};
+  const cleanId = String(accessId || "").trim().toUpperCase();
+  const cleanKey = String(accessKey || "").trim().toUpperCase().replace(/\s+/g, "");
+
+  // Authorized credentials
+  const validId = "CSM-0168";
+  const validKey = "XYPW-B67B-393G";
+
+  const keyMatch = cleanKey === validKey || cleanKey.replace(/-/g, "") === validKey.replace(/-/g, "");
+
+  if (cleanId === validId && keyMatch) {
+    return res.json({
+      ok: true,
+      accessId: validId,
+      role: "Lead Customer Success Manager",
+      authenticated: true,
+      sessionToken: "csm_session_" + Date.now()
+    });
+  }
+
+  res.status(401).json({
+    ok: false,
+    error: "Invalid Access ID or Access Key. Please check the credentials provided."
+  });
+});
+
 app.get("/api/health", (req, res) => {
   res.json({
     ok: true,

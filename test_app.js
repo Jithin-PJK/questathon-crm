@@ -102,8 +102,22 @@ async function runTests() {
   }
   console.log("✓ MCP Cooldown handling PASSED");
 
-  // 5. Test Frontend HTML serving
-  console.log("\n5. Testing GET / (Frontend HTML)...");
+  // 5. Test Authentication Endpoint
+  console.log("\n5. Testing POST /api/auth/login...");
+  const validAuth = await post("/api/auth/login", { accessId: "CSM-0168", accessKey: "XYPW-B67B-393G" });
+  if (validAuth.status !== 200 || !validAuth.data.ok || validAuth.data.accessId !== "CSM-0168") {
+    throw new Error("Valid authentication failed!");
+  }
+  console.log("✓ Valid login PASSED for player:", validAuth.data.accessId);
+
+  const invalidAuth = await post("/api/auth/login", { accessId: "CSM-9999", accessKey: "WRONG-KEY" });
+  if (invalidAuth.status !== 401) {
+    throw new Error("Invalid authentication did not reject!");
+  }
+  console.log("✓ Invalid credentials correctly rejected (401)");
+
+  // 6. Test Frontend HTML serving
+  console.log("\n6. Testing GET / (Frontend HTML)...");
   const html = await get("/");
   console.log(`Status: ${html.status}, Length: ${html.raw.length} bytes`);
   if (html.status !== 200 || !html.raw.includes("Questathon CRM") || !html.raw.includes("Eastern Counties Police Alliance")) {
