@@ -670,6 +670,17 @@
     </div>
   </div>
 
+  <!-- Master 5 Questions Dossier Action Bar -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;background:var(--card-alt);border:2px solid var(--ink);padding:10px 14px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="badge-pixel gold" style="font-size:9px;">COMPETITION DELIVERABLE</span>
+      <span class="font-pixel" style="font-size:10px;color:var(--espresso);">THE 5 CORE EVALUATION QUESTIONS</span>
+    </div>
+    <button class="btn-pixel" style="font-size:9px;padding:8px 14px;background:var(--gold);color:var(--espresso);border:var(--border-w) solid var(--ink);font-weight:800;" onclick="openFiveQuestionsDossierModal()">
+      📖 Master 5 Questions Hand-In Dossier (Both Accounts)
+    </button>
+  </div>
+
   <!-- The 5 Dedicated Questions Navigation Tabs -->
   <nav class="questions-nav">
     <button class="q-tab-btn active" id="tabQ1" onclick="switchQuestionPage(1)">
@@ -714,6 +725,9 @@
       </div>
     </div>
 
+    <!-- Executive Answer Brief Card for Question 1 -->
+    <div class="panel-pixel" id="p1ExecutiveAnswerBox" style="background:#fff;border-left:8px solid var(--gold);margin-bottom:20px;"></div>
+
     <!-- KPI Cards Strip -->
     <div class="grid-4" id="p1KpiStrip"></div>
 
@@ -738,6 +752,9 @@
       </p>
     </div>
 
+    <!-- Executive Answer Brief Card for Question 2 -->
+    <div class="panel-pixel" id="p2ExecutiveAnswerBox" style="background:#fff;border-left:8px solid var(--olive);margin-bottom:20px;"></div>
+
     <!-- Stakeholder Cards Grid -->
     <div class="grid-3" id="p2StakeholdersGrid"></div>
   </div>
@@ -755,6 +772,9 @@
         The first three strategic moves, ranked in priority (1 → 2 → 3), each with an explicit owner, a deadline window, and the exact deal it moves.
       </p>
     </div>
+
+    <!-- Executive Answer Brief Card for Question 3 -->
+    <div class="panel-pixel" id="p3ExecutiveAnswerBox" style="background:#fff;border-left:8px solid var(--sky-deep);margin-bottom:20px;"></div>
 
     <!-- Ranked Moves List -->
     <div style="display:flex;flex-direction:column;gap:18px;" id="p3MovesList"></div>
@@ -774,6 +794,9 @@
       </p>
     </div>
 
+    <!-- Executive Answer Brief Card for Question 4 -->
+    <div class="panel-pixel" id="p4ExecutiveAnswerBox" style="background:#fff;border-left:8px solid var(--rust);margin-bottom:20px;"></div>
+
     <!-- Threats Grid -->
     <div class="grid-2" id="p4ThreatsGrid"></div>
   </div>
@@ -791,6 +814,9 @@
         The blindspots ledger: critical gaps your plan rests on, why each matters to the forecast, severity impact rating, and who can fill it.
       </p>
     </div>
+
+    <!-- Executive Answer Brief Card for Question 5 -->
+    <div class="panel-pixel" id="p5ExecutiveAnswerBox" style="background:#fff;border-left:8px solid var(--espresso);margin-bottom:20px;"></div>
 
     <div class="panel-pixel" style="padding:0;overflow:hidden;">
       <table style="width:100%;border-collapse:collapse;text-align:left;font-size:13px;">
@@ -941,6 +967,28 @@
     <div style="padding:14px 20px;border-top:var(--border-w) solid var(--ink);background:var(--card-alt);display:flex;justify-content:flex-end;gap:10px;">
       <button class="btn-pixel secondary" style="font-size:8px;padding:8px 12px;" onclick="closeNoteModal()">Cancel</button>
       <button class="btn-pixel" style="font-size:8px;padding:8px 12px;" id="btnSubmitNote" onclick="submitNote()">Save to Live Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- Master 5 Questions Hand-In Dossier Modal -->
+<div class="modal-backdrop hidden" id="fiveQuestionsDossierModal">
+  <div class="modal-box" style="max-width:920px;">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge-pixel gold">HAND-IN DOSSIER</span>
+        <h3 class="font-pixel" style="font-size:11px;margin:0;">The 5 Core Question Answers (Both Accounts)</h3>
+      </div>
+      <button onclick="closeFiveQuestionsDossierModal()" style="background:none;border:none;color:var(--gold);font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <div class="modal-body" id="dossierModalBody" style="max-height:75vh;overflow-y:auto;display:flex;flex-direction:column;gap:20px;">
+      <!-- Populated dynamically by renderDossierModal() -->
+    </div>
+    <div style="padding:14px 20px;border-top:var(--border-w) solid var(--ink);background:var(--card-alt);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+      <span style="font-size:11px;color:var(--text-muted);">Verified against Questathon files, ground truth telemetry & live MCP signals.</span>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-pixel secondary" style="font-size:8px;padding:8px 12px;" onclick="closeFiveQuestionsDossierModal()">Close</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1400,6 +1448,428 @@ function closeEvidenceModal() {
   document.getElementById("evidenceModal").classList.add("hidden");
 }
 
+// =========================================================================
+// EXECUTIVE ANSWERS INJECTION FOR THE 5 COMPETITION QUESTIONS
+// =========================================================================
+function populateExecutiveAnswers(acc, isA, isB) {
+  const isAll = currentAccount === "ALL";
+
+  // Page 1 Answer Box (Book Worth)
+  const p1Box = document.getElementById("p1ExecutiveAnswerBox");
+  if (p1Box) {
+    if (isA) {
+      p1Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel gold">DEFINITIVE ANSWER · QUESTION 1</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">EASTERN COUNTIES: $2.30M CEILING VS $0 CONFIRMED</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>Qualified Opportunity Ceiling:</b> <code style="font-weight:800;font-size:14px;color:var(--espresso);">$2,300,000</code> across 4 deals (£1.5M 300-dock tender + £350k alliance renewal + £250k Westmere expansion + £200k Tarn Valley & Norwold go-live).<br>
+          • <b>Confirmed Revenue Today:</b> <b style="color:var(--rust);font-size:14px;">$0.00</b>. The alliance has <b>no pooled procurement budget</b> (§<code>rc_funding_2</code>, §<code>hd_calloff_2</code>). Each of the 4 independent force CFOs must approve individual call-off orders independently.<br>
+          • <b>Ground-Truth Flight Reality:</b> 14 of 18 docks are operational in Westmere & Metro Central (§<code>km_usage_1</code>). 4 docks in Tarn Valley & Norwold are installed but 100% idle awaiting an unsigned DPIA (§<code>km_staff_2</code>).<br>
+          • <b>Disproven Claim:</b> The assumption that "the alliance pool funds procurement" is disproven by §<code>rc_funding_2</code>.
+        </div>
+      `;
+    } else if (isB) {
+      p1Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel gold">DEFINITIVE ANSWER · QUESTION 1</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">ALDERMOOR: $320K CEILING VS $0 CONFIRMED</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>Qualified Opportunity Ceiling:</b> <code style="font-weight:800;font-size:14px;color:var(--espresso);">$320,000</code> across 3 deals ($140k contract renewal + $180k idle plant activation; 40-plant sister company case study is unpriced).<br>
+          • <b>Confirmed Revenue Today:</b> <b style="color:var(--rust);font-size:14px;">$0.00</b>. The initial contract expired without renewal; Group Finance has booked <b>$0 in confirmed savings</b> (§<code>b_renewal</code>, §<code>sr_roi_2</code>).<br>
+          • <b>Ground-Truth Flight Reality:</b> Only 4 of 15 plants fly regularly (Plant 7, etc.); 9 plants are completely idle; Plant 15 has no dock installed (§<code>sr_roll_2</code>).<br>
+          • <b>Disproven Claim:</b> Stefan Roy's claimed <b>€1.2M annual savings</b> is a theoretical spreadsheet calculation of guard hours; zero third-party guard contracts were cut (§<code>sr_roi_0</code>, §<code>sr_roi_2</code>).
+        </div>
+      `;
+    } else if (isAll) {
+      p1Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel gold">PORTFOLIO ANSWER · QUESTION 1</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">CROSS-ACCOUNT VALUATION: $2.62M TOTAL CEILING VS $0 CONFIRMED</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>Total Monitored Pipeline Ceiling:</b> <code style="font-weight:800;font-size:14px;color:var(--espresso);">$2,620,000</code> across 7 active opportunities in 2 enterprise accounts.<br>
+          • <b>Confirmed Revenue:</b> <b style="color:var(--rust);font-size:14px;">$0.00</b>. Both accounts suffer from unrenewed contracts and procurement gatekeeper blockers.<br>
+          • <b>Account A (Alliance):</b> $2,300,000 ceiling | 14/18 docks active | Blocker: DPIA deadlock & helicopter cost benchmark.<br>
+          • <b>Account B (Aldermoor):</b> $320,000 ceiling | 4/15 plants active | Blocker: Fictitious €1.2M savings rejected by Finance.
+        </div>
+      `;
+    } else {
+      const oppTotal = (acc.opportunities || []).reduce((s, o) => s + (o.worth_up_to || 0), 0);
+      p1Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel gold">DEFINITIVE ANSWER · QUESTION 1</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">${escapeHtml(acc.name)}: ${formatUSD(oppTotal)} CEILING</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>Pipeline Ceiling:</b> <code style="font-weight:800;font-size:14px;">${formatUSD(oppTotal)}</code> across ${(acc.opportunities || []).length} opportunities.<br>
+          • <b>Confirmed Revenue:</b> <b style="color:var(--rust);">$0.00</b> (Requires commercial renewal).<br>
+          • <b>Ground Truth Telemetry:</b> ${(acc.facts || []).length} verified facts backing deal milestones.
+        </div>
+      `;
+    }
+  }
+
+  // Page 2 Answer Box (Power Map)
+  const p2Box = document.getElementById("p2ExecutiveAnswerBox");
+  if (p2Box) {
+    if (isA) {
+      p2Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel olive">DEFINITIVE ANSWER · QUESTION 2</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">EASTERN COUNTIES POWER MAP: BUYERS, USERS & BLOCKERS</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>Who Decides:</b> <b>Hannah Doyle</b> controls the 300-dock tender specification (§<code>hd_weights_1</code>); individual force CFOs decide call-off spend. Rhys Calder advocates but has no spend authority.<br>
+          • <b>Who Pays:</b> Individual Force CFOs (e.g. Metro Central CFO via <b>Ewan Brooks</b>; Tarn Valley & Norwold CFOs).<br>
+          • <b>Who Uses:</b> <b>Insp. Karen Mbeki</b> (Unit Lead, operates 14/18 active docks daily; operational champion requiring 9 more trained operators).<br>
+          • <b>Who Blocks:</b><br>
+          &nbsp;&nbsp;1. <b>Fatima Osei (DPO):</b> Hard blocker on Tarn Valley & Norwold ($200k) refusing to sign DPIA due to unassigned 4-month support ticket §<code>pj_ticket</code>.<br>
+          &nbsp;&nbsp;2. <b>Ewan Brooks (Finance Gatekeeper):</b> Blocks Westmere ($250k) until drone cost is benchmarked against £1,500/hr helicopter (§<code>eb_heli_1</code>).<br>
+          &nbsp;&nbsp;3. <b>Hannah Doyle (Procurement Lead):</b> High risk; relationship cold; 40% criteria cost model unsubmitted (§<code>hd_silence_3</code>).
+        </div>
+      `;
+    } else if (isB) {
+      p2Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel olive">DEFINITIVE ANSWER · QUESTION 2</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">ALDERMOOR POWER MAP: SPONSORS, GATEKEEPERS & TECHNICAL RISKS</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>Who Decides:</b> <b>Stefan Roy</b> sets strategic program direction; <b>Nadia Rahman</b> (Group Finance Controller) decides commercial contract approval.<br>
+          • <b>Who Pays:</b> Central corporate security budget + local plant security operating levies.<br>
+          • <b>Who Uses:</b> <b>Beatriz Alonso</b> (Plant 7 Manager) flies nightly patrols (§<code>ba_use_2</code>).<br>
+          • <b>Who Blocks:</b><br>
+          &nbsp;&nbsp;1. <b>Nadia Rahman (Group Finance Controller):</b> Hard commercial blocker; will not renew on theoretical savings (§<code>sr_roi_2</code>).<br>
+          &nbsp;&nbsp;2. <b>Owen Fitch (Group IT Lead):</b> Technical blocker; upcoming plant network upgrade project threatens to sever drone docks (§<code>b_idle</code>).<br>
+          &nbsp;&nbsp;3. <b>Plant Managers:</b> Reluctant payers; openly resent central security levy for idle dock equipment (§<code>sr_plants_2</code>).
+        </div>
+      `;
+    } else {
+      p2Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel olive">DEFINITIVE ANSWER · QUESTION 2</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">${escapeHtml(acc.name)}: STAKEHOLDER POWER HIERARCHY</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          Mapped ${(acc.stakeholders || []).length} key stakeholders across deciders, economic payers, operational users, and commercial blockers.
+        </div>
+      `;
+    }
+  }
+
+  // Page 3 Answer Box (First Moves)
+  const p3Box = document.getElementById("p3ExecutiveAnswerBox");
+  if (p3Box) {
+    if (isA) {
+      p3Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel sky">DEFINITIVE ANSWER · QUESTION 3</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">EASTERN COUNTIES TOP 3 FIRST MOVES: TACTICAL PLAYBOOK</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>#1 Priority Move (Days 1–7):</b> Hand-deliver engineering data-flow pack to DPO Fatima Osei to resolve unassigned ticket §<code>pj_ticket</code> and book DPIA review. <b>Owner:</b> Lead CSM + Engineering. <b>Unlocks:</b> $200k Tarn Valley & Norwold.<br>
+          • <b>#2 Priority Move (Days 1–10):</b> Reconcile operator overtime with Insp. Karen Mbeki & Ewan Brooks to produce cost-per-flight helicopter benchmark (£1,500/hr) before Autumn finance round closes. <b>Owner:</b> Lead CSM + Ewan Brooks. <b>Secures:</b> $250k Westmere + $350k renewal.<br>
+          • <b>#3 Priority Move (Days 1–14):</b> Submit written clarification & fully costed 300-dock operating model to Hannah Doyle before 25 moves elapse. <b>Owner:</b> Lead CSM + Bid Architect. <b>Protects:</b> $1.5M framework tender.
+        </div>
+      `;
+    } else if (isB) {
+      p3Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel sky">DEFINITIVE ANSWER · QUESTION 3</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">ALDERMOOR TOP 3 FIRST MOVES: TACTICAL PLAYBOOK</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>#1 Priority Move (Immediate):</b> Conduct structured exit interviews with Stefan's departing deputy to codify the Plant 7 rollout template before his departure walks out with setup knowledge. <b>Owner:</b> Lead CSM + Stefan Roy. <b>Unlocks:</b> $180k idle plants.<br>
+          • <b>#2 Priority Move (Days 1–10):</b> Amend third-party ground guard contract and automate alert dispatch for Beatriz Alonso at Plant 7 so guards handle alerts instead of her personal phone. <b>Owner:</b> Stefan Roy + Procurement. <b>Secures:</b> $140k contract renewal.<br>
+          • <b>#3 Priority Move (Days 1–15):</b> Align drone network prerequisites with Owen Fitch (IT) before network migration cuts docks, and audit hard savings with Nadia Rahman. <b>Owner:</b> Lead CSM + Owen Fitch + Nadia Rahman. <b>Secures:</b> $140k renewal + $180k expansion.
+        </div>
+      `;
+    } else {
+      p3Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel sky">DEFINITIVE ANSWER · QUESTION 3</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">${escapeHtml(acc.name)}: TOP 3 INTERVENTION PRIORITIES</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          Sequenced, prioritized intervention playbook targeting contract renewal and blocker removal.
+        </div>
+      `;
+    }
+  }
+
+  // Page 4 Answer Box (Threat Radar)
+  const p4Box = document.getElementById("p4ExecutiveAnswerBox");
+  if (p4Box) {
+    if (isA) {
+      p4Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel rust">DEFINITIVE ANSWER · QUESTION 4</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">EASTERN COUNTIES THREAT RADAR: TIME CLIFFS & SINGLE POINTS OF FAILURE</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>1. DPIA Deadlock (Turns bad in 3 weeks):</b> Tarn Valley & Norwold abandon live operations if data pack is not delivered this week.<br>
+          • <b>2. Tender Spec Lockout (Turns bad at move 0):</b> 25 moves left; FlytBase permanently shut out of the £1.5M framework if cost model omitted.<br>
+          • <b>3. Autumn Bid Window:</b> Westmere fleet expansion ($250k) delayed 12 months if helicopter comparison missed.<br>
+          • <b>4. Champion Departure:</b> Rhys Calder leaving Jan 2027; single point of contact risk (§<code>champion_leaves</code>).<br>
+          • <b>5. Public Event Escalation:</b> Karen Mbeki's Dec 5 event training & hardware failure coverage unanswered (§<code>urgent_request</code>).
+        </div>
+      `;
+    } else if (isB) {
+      p4Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel rust">DEFINITIVE ANSWER · QUESTION 4</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">ALDERMOOR THREAT RADAR: DEPUTY EXIT, IT RISKS & USAGE CLIFFS</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>1. Deputy Know-How Loss (Turns bad on exit date):</b> Adoption of the 9 idle plants becomes impossible without reverse engineering.<br>
+          • <b>2. IT Network Overhaul (Turns bad upon rollout):</b> Plant drone docks disconnected unannounced without firewall exemptions.<br>
+          • <b>3. Finance Rejection of €1.2M ROI (Turns bad at renewal):</b> Finance committee will reject contract renewal on unverified savings.<br>
+          • <b>4. Plant Manager Rebellion:</b> Local managers demand dock de-installation over idle equipment cost.<br>
+          • <b>5. Nightly Usage Drop:</b> 3 docks flying nightly abruptly stopped in November without explanation (§<code>usage_drop</code>).
+        </div>
+      `;
+    } else {
+      p4Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel rust">DEFINITIVE ANSWER · QUESTION 4</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">${escapeHtml(acc.name)}: THREAT RADAR</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          Evidence-backed threat radar identifying critical failure points and operational deadlines.
+        </div>
+      `;
+    }
+  }
+
+  // Page 5 Answer Box (Blindspots)
+  const p5Box = document.getElementById("p5ExecutiveAnswerBox");
+  if (p5Box) {
+    if (isA) {
+      p5Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel gold">DEFINITIVE ANSWER · QUESTION 5</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">EASTERN COUNTIES BLINDSPOTS: 4 CRITICAL DISCOVERY GAPS</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>1. Operator Overtime Split:</b> Denominator needed to calculate cost-per-flight against £1,500/hr helicopter (Who: Ewan Brooks & Karen Mbeki).<br>
+          • <b>2. Telemetry for Tarn Valley & Norwold:</b> Force-by-force flight telemetry needed before call-off renewals (Who: Rhys Calder & flight logs).<br>
+          • <b>3. Named Force CFOs:</b> Identity of individual force CFOs required to sign call-offs (Who: Rhys Calder & Hannah Doyle).<br>
+          • <b>4. Exact Calendar Deadlines:</b> Specific cutoff dates for Autumn finance round & tender lock (Who: Hannah Doyle & Ewan Brooks).
+        </div>
+      `;
+    } else if (isB) {
+      p5Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel gold">DEFINITIVE ANSWER · QUESTION 5</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">ALDERMOOR BLINDSPOTS: 4 CRITICAL DISCOVERY GAPS</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          • <b>1. Deputy Departure Date:</b> Exact final working day of Stefan's deputy to schedule knowledge transfer (Who: Stefan Roy).<br>
+          • <b>2. IT Migration Rollout Specs:</b> Group IT network project scope, firewall rules, and port requirements (Who: Owen Fitch).<br>
+          • <b>3. Guard Contract Amendment Cost:</b> Cost to amend ground security contract to respond to automated drone alerts (Who: Beatriz Alonso & Procurement).<br>
+          • <b>4. Audited Hard ROI Model:</b> Hard incident reduction metrics acceptable to Group Finance Controller (Who: Nadia Rahman & Julian Tate).
+        </div>
+      `;
+    } else {
+      p5Box.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="badge-pixel gold">DEFINITIVE ANSWER · QUESTION 5</span>
+          <span class="font-pixel" style="font-size:11px;color:var(--espresso);">${escapeHtml(acc.name)}: DISCOVERY AUDIT & BLINDSPOTS</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-main);line-height:1.65;">
+          Critical assumptions and unverified claims requiring validation with customer stakeholders.
+        </div>
+      `;
+    }
+  }
+}
+
+// Master Dossier Modal Management
+function openFiveQuestionsDossierModal() {
+  const modal = document.getElementById("fiveQuestionsDossierModal");
+  const body = document.getElementById("dossierModalBody");
+  if (!modal || !body) return;
+
+  body.innerHTML = `
+    <!-- Account A Section -->
+    <div class="panel-pixel" style="border:3px solid var(--ink);border-left:8px solid var(--gold);background:var(--card);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:2px solid var(--ink);padding-bottom:10px;">
+        <h4 class="font-pixel" style="font-size:13px;color:var(--espresso);margin:0;">
+          🏛️ ACCOUNT A: EASTERN COUNTIES POLICE ALLIANCE
+        </h4>
+        <span class="badge-pixel gold">CEILING: $2,300,000 | CONFIRMED: $0</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;font-size:13px;line-height:1.6;">
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q1 · What is the book worth?]</b><br>
+          <b>Ceiling:</b> $2.30M (£1.5M tender, £350k renewal, £250k Westmere, £200k Tarn Valley & Norwold).<br>
+          <b>Confirmed Revenue:</b> $0 (no pooled budget §<code>rc_funding_2</code>, each force CFO approves independently).<br>
+          <b>Ground Truth:</b> 14/18 active docks (Westmere & Metro Central); 4 idle in Tarn Valley & Norwold (§<code>km_usage_1</code>).
+        </div>
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q2 · Who holds the power?]</b><br>
+          <b>Decider:</b> Hannah Doyle (300-dock tender spec) + Force CFOs (call-offs). Rhys Calder is advocate without spend authority.<br>
+          <b>Payer:</b> Individual Force CFOs (Metro Central CFO via Ewan Brooks).<br>
+          <b>User:</b> Insp. Karen Mbeki (operates 14 active docks; needs 9 more trained operators).<br>
+          <b>Blockers:</b> Fatima Osei (DPO, 4-month stalled ticket §<code>pj_ticket</code>); Ewan Brooks (Finance gatekeeper); Hannah Doyle (Cold procurement).
+        </div>
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q3 · What do you do first?]</b><br>
+          <b>#1 Move (Days 1–7):</b> Deliver engineering data-flow pack to Fatima Osei to unblock Tarn Valley & Norwold ($200k).<br>
+          <b>#2 Move (Days 1–10):</b> Reconcile operator overtime & provide helicopter comparison (£1,500/hr) to Ewan Brooks before finance round closes ($250k Westmere + $350k renewal).<br>
+          <b>#3 Move (Days 1–14):</b> Submit clarification & costed 300-dock operating model to Hannah Doyle before 25 moves elapse ($1.5M tender).
+        </div>
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q4 · What is about to go wrong?]</b><br>
+          <b>1. DPIA Deadlock:</b> Turns bad in 3 weeks; Tarn Valley & Norwold abandon live operations.<br>
+          <b>2. Tender Spec Lockout:</b> Turns bad at move 0; FlytBase permanently shut out of £1.5M framework.<br>
+          <b>3. Autumn Bid Window:</b> Westmere expansion delayed 12 months.<br>
+          <b>4. Champion Departure:</b> Rhys Calder leaving Jan 2027 (§<code>champion_leaves</code>).<br>
+          <b>5. Dec 5 Public Event:</b> Karen Mbeki escalation unanswered (§<code>urgent_request</code>).
+        </div>
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q5 · What do you still not know?]</b><br>
+          1. Operator overtime split denominator against helicopter benchmark.<br>
+          2. Force-by-force flight telemetry for Tarn Valley & Norwold.<br>
+          3. Named CFOs for each individual force.<br>
+          4. Exact calendar deadlines for Autumn finance round & tender lock.
+        </div>
+      </div>
+    </div>
+
+    <!-- Account B Section -->
+    <div class="panel-pixel" style="border:3px solid var(--ink);border-left:8px solid var(--rust);background:var(--card);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:2px solid var(--ink);padding-bottom:10px;">
+        <h4 class="font-pixel" style="font-size:13px;color:var(--espresso);margin:0;">
+          🏭 ACCOUNT B: ALDERMOOR INDUSTRIAL GROUP
+        </h4>
+        <span class="badge-pixel rust">CEILING: $320,000 | CONFIRMED: $0</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;font-size:13px;line-height:1.6;">
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q1 · What is the book worth?]</b><br>
+          <b>Ceiling:</b> $320k ($140k renewal, $180k idle plants; sister company is unpriced case study).<br>
+          <b>Confirmed Revenue:</b> $0 (contract expired without renewal; Group Finance booked $0 §<code>sr_roi_2</code>).<br>
+          <b>Ground Truth:</b> 4 of 15 plants fly regularly (Plant 7); 9 plants idle; Plant 15 has no dock (§<code>sr_roll_2</code>).<br>
+          <b>Disproven Claim:</b> €1.2M savings is theoretical spreadsheet; zero guard contracts cut (§<code>sr_roi_0</code>).
+        </div>
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q2 · Who holds the power?]</b><br>
+          <b>Decider:</b> Stefan Roy (Program vision) + Nadia Rahman (Group Finance Controller commercial approval).<br>
+          <b>Payer:</b> Central corporate security budget + local plant security levies.<br>
+          <b>User:</b> Beatriz Alonso (Plant 7 Manager, nightly patrols).<br>
+          <b>Blockers:</b> Nadia Rahman (Finance gatekeeper rejecting €1.2M claim); Owen Fitch (IT lead network migration); Plant managers (resenting idle levies).
+        </div>
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q3 · What do you do first?]</b><br>
+          <b>#1 Move (Immediate):</b> Exit interview Stefan's departing deputy to codify Plant 7 rollout playbook ($180k idle plants).<br>
+          <b>#2 Move (Days 1–10):</b> Amend third-party ground guard contract & automate alert dispatch for Plant 7 ($140k renewal).<br>
+          <b>#3 Move (Days 1–15):</b> Align drone network prerequisites with Owen Fitch (IT) and audit hard savings with Nadia Rahman ($140k renewal + $180k expansion).
+        </div>
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q4 · What is about to go wrong?]</b><br>
+          <b>1. Deputy Exit:</b> Rollout know-how walks out the door; adoption of 9 idle plants becomes impossible.<br>
+          <b>2. IT Migration:</b> Plant docks severed unannounced without firewall scope.<br>
+          <b>3. €1.2M Claim Rejection:</b> Finance committee rejects contract renewal on fictitious savings.<br>
+          <b>4. Plant Manager Rebellion:</b> Managers demand dock de-installations over idle levy.<br>
+          <b>5. Nightly Usage Drop:</b> Docks that flew nightly abruptly stopped flying (§<code>usage_drop</code>).
+        </div>
+        <div>
+          <b style="color:var(--espresso);font-family:'Press Start 2P',monospace;font-size:9px;">[Q5 · What do you still not know?]</b><br>
+          1. Exact departure date of Stefan's deputy.<br>
+          2. IT infrastructure network project rollout timeline and firewall specs.<br>
+          3. Guard contract amendment cost for automated alert response.<br>
+          4. Audited financial benefit model acceptable to Group Finance.
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.classList.remove("hidden");
+}
+
+function closeFiveQuestionsDossierModal() {
+  const modal = document.getElementById("fiveQuestionsDossierModal");
+  if (modal) modal.classList.add("hidden");
+}
+
+function copyDossierText() {
+  const text = `
+=== FLYTBASE QUESTATHON CSM 5 QUESTIONS HAND-IN DOSSIER ===
+
+--- ACCOUNT A: EASTERN COUNTIES POLICE ALLIANCE ---
+Q1 (Book Worth):
+• Opportunity Ceiling: $2,300,000 (£1.5M 300-dock tender, £350k renewal, £250k Westmere expansion, £200k Tarn Valley & Norwold).
+• Confirmed Revenue: $0.00 (No pooled budget; each of 4 force CFOs approves independently via individual call-off orders).
+• Verified Telemetry: 14/18 docks active in Westmere & Metro Central; 4 docks idle in Tarn Valley & Norwold due to stalled DPIA.
+• Disproven Claim: Assumption of pooled alliance budget is disproven by rc_funding_2 and hd_calloff_2.
+
+Q2 (Who Holds the Power):
+• Decider: Hannah Doyle (300-dock tender spec) + Force CFOs (call-offs). Rhys Calder is alliance lead but has no spend authority.
+• Payer: Individual Force CFOs (Metro Central CFO via Ewan Brooks).
+• User: Insp. Karen Mbeki (operates 14 docks daily; needs 9 more trained operators).
+• Blockers: Fatima Osei (DPO; 4-month stalled ticket pj_ticket); Ewan Brooks (Finance gatekeeper); Hannah Doyle (Cold procurement).
+
+Q3 (What Do You Do First):
+• Move 1 (Days 1–7): Deliver engineering data-flow pack to DPO Fatima Osei to resolve ticket pj_ticket and unblock Tarn Valley & Norwold ($200k).
+• Move 2 (Days 1–10): Reconcile operator overtime & provide helicopter comparison (£1,500/hr) to Ewan Brooks before Autumn finance bid window closes ($250k Westmere + $350k renewal).
+• Move 3 (Days 1–14): Submit clarification request & costed 300-dock operating model to Hannah Doyle before 25 moves elapse ($1.5M tender).
+
+Q4 (What Is About to Go Wrong):
+• 1. DPIA Deadlock: Turns bad in 3 weeks; forces abandon initiative.
+• 2. Tender Spec Lockout: Turns bad at move 0; permanently excluded from framework.
+• 3. Autumn Bid Window Closing: Westmere scaling delayed 12 months.
+• 4. Champion Departure: Rhys Calder leaves Jan 2027; single point of contact risk.
+• 5. Urgent Public Event (Dec 5): Karen Mbeki escalation unanswered.
+
+Q5 (What Do You Still Not Know):
+• 1. Exact drone operator overtime split & flight hour denominator.
+• 2. Force-by-force flight telemetry for Tarn Valley & Norwold.
+• 3. Named CFOs for each individual force.
+• 4. Exact calendar deadlines for Autumn finance round & tender lock.
+
+--- ACCOUNT B: ALDERMOOR INDUSTRIAL GROUP ---
+Q1 (Book Worth):
+• Opportunity Ceiling: $320,000 ($140k renewal, $180k idle plants; sister company case study unpriced).
+• Confirmed Revenue: $0.00 (Contract expired without renewal; Group Finance booked $0 in confirmed savings).
+• Verified Telemetry: Only 4 of 15 plants fly regularly (Plant 7); 9 plants idle; Plant 15 has no dock.
+• Disproven Claim: Claimed €1.2M savings is a theoretical spreadsheet of guard hours; zero guard contracts cut.
+
+Q2 (Who Holds the Power):
+• Decider: Stefan Roy (Program vision) + Nadia Rahman (Group Finance Controller commercial approval).
+• Payer: Central corporate security budget + local plant security levies.
+• User: Beatriz Alonso (Plant 7 Manager, nightly patrols).
+• Blockers: Nadia Rahman (Finance gatekeeper); Owen Fitch (IT lead network migration); Plant managers (resenting idle levies).
+
+Q3 (What Do You Do First):
+• Move 1 (Immediate): Exit interview Stefan's departing deputy to codify Plant 7 rollout playbook ($180k idle plants).
+• Move 2 (Days 1–10): Amend third-party ground guard contract & automate alert dispatch for Plant 7 ($140k renewal).
+• Move 3 (Days 1–15): Align drone network prerequisites with Owen Fitch (IT) and audit hard savings with Nadia Rahman ($140k renewal + $180k expansion).
+
+Q4 (What Is About to Go Wrong):
+• 1. Deputy Exit: Rollout know-how departs; adoption of 9 idle plants becomes impossible.
+• 2. IT Migration: Plant docks disconnected unannounced without firewall scope.
+• 3. €1.2M Claim Rejection: Finance committee rejects renewal on fictitious savings.
+• 4. Plant Manager Rebellion: Managers demand dock de-installations over idle levy.
+• 5. Nightly Usage Drop: Docks that flew nightly abruptly stopped flying.
+
+Q5 (What Do You Still Not Know):
+• 1. Exact departure date of Stefan's deputy.
+• 2. IT infrastructure network project rollout timeline and firewall specs.
+• 3. Guard contract amendment cost for automated alert response.
+• 4. Audited financial benefit model acceptable to Group Finance.
+  `.trim();
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Copied full 5 Questions Dossier to clipboard!");
+  }).catch(() => {
+    alert("Dossier text ready for review.");
+  });
+}
+
 // Render Core CRM Workstation Views
 function renderCurrentView() {
   if (!dashboardData || !dashboardData.accounts || dashboardData.accounts.length === 0) return;
@@ -1413,6 +1883,9 @@ function renderCurrentView() {
 
   const isA = currentAccount === "A";
   const isB = currentAccount === "B";
+
+  // Populate the 5 Executive Answer Boxes
+  populateExecutiveAnswers(acc, isA, isB);
 
   // Live Alert Banner (for current account or cross-account)
   const accSignals = isAll ? (signals || []) : (signals || []).filter(s => s.account === currentAccount);
