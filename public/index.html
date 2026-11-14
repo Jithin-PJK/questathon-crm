@@ -770,6 +770,60 @@
       gap: 10px;
     }
 
+    /* Interactive Live Feed Cards */
+    .feed-item-card {
+      background: var(--de);
+      border: 1px solid var(--db);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .feed-item-card:hover {
+      border-color: var(--orange);
+      background: var(--de-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+    .feed-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    /* Floating Live Update Notification Card */
+    .floating-update-popup {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 420px;
+      max-width: calc(100vw - 32px);
+      background: #17181d;
+      border: 1px solid var(--orange);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: 0 14px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(236, 125, 66, 0.3);
+      z-index: 250;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: popupSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes popupSlideIn {
+      from { transform: translateY(40px) scale(0.95); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .floating-popup-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
     .hidden { display: none !important; }
 
     /* Responsive */
@@ -1074,6 +1128,48 @@
       <button class="btn" onclick="closeNoteModal()">Cancel</button>
       <button class="btn btn-orange" id="btnSubmitNote" onclick="submitNote()">Save to Live Account</button>
     </div>
+  </div>
+</div>
+
+<!-- Update Detail Popup Modal (View Exact Update) -->
+<div class="modal-backdrop hidden" id="updateDetailModal">
+  <div class="modal-box" style="max-width: 680px;">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="badge badge-orange" id="updModalBadge">LIVE UPDATE</span>
+        <h3 id="updModalTitle" style="font-size:16px;">Update Detail</h3>
+      </div>
+      <button class="modal-close-btn" onclick="closeUpdateDetailModal()">✕</button>
+    </div>
+    <div class="modal-body" id="updModalBody">
+      <!-- Injected -->
+    </div>
+    <div style="padding:16px 24px;border-top:1px solid var(--db);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+      <span style="font-size:11px;color:var(--dsc);" id="updModalFooterMeta">Questathon Live Synchronized Record</span>
+      <div style="display:flex;gap:10px;">
+        <button class="btn" onclick="closeUpdateDetailModal()">Close</button>
+        <button class="btn btn-orange" id="updModalActionBtn">Act on this Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Live Update Pop-up Notification Card -->
+<div class="floating-update-popup hidden" id="liveFloatingPopup">
+  <div class="floating-popup-head">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="pulse-dot" style="background:var(--orange);box-shadow:0 0 10px var(--orange)"></span>
+      <span style="font-size:11px;font-weight:800;color:var(--orange);letter-spacing:1px;text-transform:uppercase;" id="floatPopupBadge">LIVE MCP UPDATE</span>
+    </div>
+    <button onclick="closeFloatingNotification()" style="background:none;border:none;color:var(--dsc);cursor:pointer;font-size:16px;">✕</button>
+  </div>
+  <div style="font-family:'Manrope';font-weight:700;font-size:14px;color:var(--white);line-height:1.4;" id="floatPopupTitle">New Operational Update</div>
+  <div style="font-size:12px;color:var(--dsc);line-height:1.45;" id="floatPopupSummary">Update summary details...</div>
+  <div style="display:flex;gap:8px;margin-top:4px;">
+    <button class="btn btn-orange" style="font-size:11px;padding:6px 14px;flex:1;" id="floatPopupViewBtn">
+      <span>🔍</span> View Exact Update
+    </button>
+    <button class="btn" style="font-size:11px;padding:6px 12px;" onclick="closeFloatingNotification()">Dismiss</button>
   </div>
 </div>
 
@@ -1590,11 +1686,22 @@ function renderCurrentView() {
 function renderActivityFeeds() {
   const sigList = document.getElementById("miniSignalsFeed");
   if (!signals || !signals.length) {
-    sigList.innerHTML = `<div style="color:var(--dm);font-size:12px;padding:8px;">No live signals received yet.</div>`;
+    sigList.innerHTML = `<div style="color:var(--dm);font-size:12px;padding:8px;">No live signals received yet. Click "Refresh Signals" above.</div>`;
   } else {
     sigList.innerHTML = signals.map(s => `
-      <div style="font-size:12px;background:var(--de);padding:8px 10px;border-radius:6px;border:1px solid var(--db);">
-        <b style="color:var(--orange);">${escapeHtml(s.title || "Signal")}</b>: ${escapeHtml(s.summary || s.text || JSON.stringify(s))}
+      <div class="feed-item-card" onclick="openSignalPopup('${escapeHtml(s.id)}')">
+        <div class="feed-item-header">
+          <div style="font-weight:700;color:var(--white);font-size:13px;display:flex;align-items:center;gap:6px;">
+            <span class="pulse-dot" style="width:6px;height:6px;background:var(--orange)"></span>
+            ${escapeHtml(s.title || "Live Signal")}
+          </div>
+          <span class="badge badge-orange" style="font-size:9px;padding:2px 6px;">🔍 Pop-up Notification</span>
+        </div>
+        <div style="font-size:12px;color:var(--dsc);line-height:1.4;">${escapeHtml(s.summary || s.text || "")}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dm);margin-top:2px;">
+          <span>Account ${escapeHtml(s.account || "A")} · ${escapeHtml(s.dated || "Live")}</span>
+          <span style="color:var(--orange);font-weight:600;">View exact update →</span>
+        </div>
       </div>
     `).join("");
   }
@@ -1604,12 +1711,178 @@ function renderActivityFeeds() {
     notesList.innerHTML = `<div style="color:var(--dm);font-size:12px;padding:8px;">No notes written in this session yet.</div>`;
   } else {
     notesList.innerHTML = notes.map(n => `
-      <div style="font-size:12px;background:var(--de);padding:8px 10px;border-radius:6px;border:1px solid var(--db);">
-        <span class="badge badge-orange" style="font-size:9px;padding:1px 5px;">${escapeHtml(n.kind || "note")}</span>
-        <b style="color:var(--white);">Account ${escapeHtml(n.account)}</b>: ${escapeHtml(n.text)}
+      <div class="feed-item-card" onclick="openNotePopup('${escapeHtml(n.id || "")}')">
+        <div class="feed-item-header">
+          <div style="font-weight:700;color:var(--white);font-size:13px;display:flex;align-items:center;gap:6px;">
+            <span class="badge badge-orange" style="font-size:9px;padding:1px 5px;">${escapeHtml(n.kind || "note")}</span>
+            <span>Account ${escapeHtml(n.account)}: ${escapeHtml(n.title || "Account Note")}</span>
+          </div>
+          <span class="badge badge-gray" style="font-size:9px;padding:2px 6px;">🔍 Pop-up Notification</span>
+        </div>
+        <div style="font-size:12px;color:var(--dsc);line-height:1.4;">${escapeHtml(n.text || "")}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dm);margin-top:2px;">
+          <span>${n.createdAt ? new Date(n.createdAt).toLocaleTimeString() : ""}</span>
+          <span style="color:var(--orange);font-weight:600;">View exact update →</span>
+        </div>
       </div>
     `).join("");
   }
+}
+
+function openSignalPopup(sigId) {
+  const sig = signals.find(s => s.id === sigId) || signals[0];
+  if (!sig) return;
+  const modal = document.getElementById("updateDetailModal");
+  document.getElementById("updModalBadge").className = "badge badge-orange";
+  document.getElementById("updModalBadge").textContent = "LIVE MCP SIGNAL";
+  document.getElementById("updModalTitle").textContent = sig.title || "Signal Detail";
+  
+  const accName = sig.account === "B" ? "Aldermoor Industrial Group" : "Eastern Counties Police Alliance";
+
+  let recordsHtml = "";
+  if (sig.records && sig.records.length) {
+    recordsHtml = sig.records.map((rec, idx) => `
+      <div style="margin-top:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:800;color:var(--orange);letter-spacing:1px;text-transform:uppercase;">
+            VERBATIM RECORD #${idx+1} (${escapeHtml(rec.kind || 'file')})
+          </span>
+          <span style="font-size:11px;color:var(--dsc);"><code>${escapeHtml(rec.path || "")}</code></span>
+        </div>
+        <pre style="background:#0c0d10;color:#f8fafc;padding:14px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;white-space:pre-wrap;line-height:1.5;overflow-x:auto;border:1px solid var(--db);">${escapeHtml(rec.text || "")}</pre>
+      </div>
+    `).join("");
+  }
+
+  document.getElementById("updModalBody").innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--db);">
+        <div>
+          <span style="font-size:12px;color:var(--dsc);">Target Account:</span>
+          <b style="color:var(--white);font-size:13px;margin-left:4px;">${escapeHtml(accName)} (Account ${escapeHtml(sig.account || "A")})</b>
+        </div>
+        <span class="badge badge-gray" style="font-family:'JetBrains Mono',monospace;">Dated: ${escapeHtml(sig.dated || "Live")}</span>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--dsc);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">
+          OPERATIONAL SUMMARY
+        </div>
+        <div style="font-size:14px;color:var(--white);line-height:1.55;background:var(--de);padding:14px;border-radius:8px;border-left:3px solid var(--orange);">
+          ${escapeHtml(sig.summary || sig.text || "")}
+        </div>
+      </div>
+
+      ${recordsHtml}
+
+      <div style="background:var(--ds);border:1px solid var(--db);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--dsc);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+        <span>Signal ID: <code>${escapeHtml(sig.id || "")}</code></span>
+        <span>Received via Questathon MCP Tool <code>get_signals</code></span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("updModalFooterMeta").textContent = `Signal: ${sig.id} · Live Synchronized`;
+  document.getElementById("updModalActionBtn").textContent = "Act & Write Note Back";
+  document.getElementById("updModalActionBtn").onclick = () => {
+    closeUpdateDetailModal();
+    actOnSignal(sig.id);
+  };
+
+  modal.classList.remove("hidden");
+}
+
+function openNotePopup(noteId) {
+  const note = notes.find(n => n.id === noteId) || notes[0];
+  if (!note) return;
+  const modal = document.getElementById("updateDetailModal");
+  document.getElementById("updModalBadge").className = "badge badge-green";
+  document.getElementById("updModalBadge").textContent = (note.kind || "NOTE").toUpperCase();
+  document.getElementById("updModalTitle").textContent = note.title || "Account Note";
+
+  const accName = note.account === "B" ? "Aldermoor Industrial Group" : "Eastern Counties Police Alliance";
+  const formattedTime = note.createdAt ? new Date(note.createdAt).toLocaleString() : "Just now";
+
+  document.getElementById("updModalBody").innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--db);">
+        <div>
+          <span style="font-size:12px;color:var(--dsc);">Committed to Account:</span>
+          <b style="color:var(--white);font-size:13px;margin-left:4px;">${escapeHtml(accName)} (Account ${escapeHtml(note.account)})</b>
+        </div>
+        <span class="badge badge-gray" style="font-family:'JetBrains Mono',monospace;">${escapeHtml(formattedTime)}</span>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--dsc);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">
+          NOTE CONTENT / COMMITTED ACTION
+        </div>
+        <div style="font-size:14px;color:var(--white);line-height:1.55;background:var(--de);padding:14px;border-radius:8px;border-left:3px solid var(--eucalyptus-text);">
+          ${escapeHtml(note.text || "")}
+        </div>
+      </div>
+
+      ${note.result ? `
+        <div>
+          <div style="font-size:11px;font-weight:800;color:var(--dsc);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">
+            MCP SERVER WRITE-BACK CONFIRMATION
+          </div>
+          <pre style="background:#0c0d10;color:#6ee7b7;padding:12px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11px;white-space:pre-wrap;line-height:1.4;border:1px solid var(--db);">${escapeHtml(JSON.stringify(note.result, null, 2))}</pre>
+        </div>
+      ` : ''}
+
+      <div style="background:var(--ds);border:1px solid var(--db);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--dsc);">
+        Written back to Questathon via MCP tool <code>write_note</code>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("updModalFooterMeta").textContent = `ID: ${note.id || 'note'} · Server Synchronized`;
+  document.getElementById("updModalActionBtn").textContent = "Write Another Note";
+  document.getElementById("updModalActionBtn").onclick = () => {
+    closeUpdateDetailModal();
+    openNoteModal();
+  };
+
+  modal.classList.remove("hidden");
+}
+
+function closeUpdateDetailModal() {
+  document.getElementById("updateDetailModal").classList.add("hidden");
+}
+
+let floatPopupTimer = null;
+function showLiveFloatingNotification(item, type = "signal") {
+  const popup = document.getElementById("liveFloatingPopup");
+  if (!popup || !item) return;
+
+  const isSignal = type === "signal";
+  document.getElementById("floatPopupBadge").textContent = isSignal ? "🚨 LIVE MCP SIGNAL" : "✍️ LIVE NOTE COMMITTED";
+  document.getElementById("floatPopupTitle").textContent = item.title || (isSignal ? "New Account Signal" : "Note Written Back");
+  document.getElementById("floatPopupSummary").textContent = (item.summary || item.text || "").slice(0, 130) + "...";
+
+  const btn = document.getElementById("floatPopupViewBtn");
+  btn.onclick = () => {
+    closeFloatingNotification();
+    if (isSignal) {
+      openSignalPopup(item.id);
+    } else {
+      openNotePopup(item.id);
+    }
+  };
+
+  popup.classList.remove("hidden");
+
+  if (floatPopupTimer) clearTimeout(floatPopupTimer);
+  floatPopupTimer = setTimeout(() => {
+    closeFloatingNotification();
+  }, 12000);
+}
+
+function closeFloatingNotification() {
+  const popup = document.getElementById("liveFloatingPopup");
+  if (popup) popup.classList.add("hidden");
+  if (floatPopupTimer) clearTimeout(floatPopupTimer);
 }
 
 function viewSignalRecords(sigId) {
@@ -1700,6 +1973,9 @@ async function refreshSignals() {
     signals = json.signals || [];
     startCooldownTimer(60);
     renderCurrentView();
+    if (signals.length > 0) {
+      showLiveFloatingNotification(signals[0], "signal");
+    }
     showToast("Live signals refreshed via Questathon MCP.");
   } catch (err) {
     showToast(err.message);
@@ -1745,11 +2021,15 @@ async function submitNote() {
       throw new Error(json.error || "Failed to write note");
     }
     notes = json.notes || [];
+    const latestNote = json.note || notes[0];
     closeNoteModal();
     document.getElementById("inputNoteText").value = "";
     document.getElementById("inputNoteTitle").value = "";
     startCooldownTimer(60);
     renderCurrentView();
+    if (latestNote) {
+      showLiveFloatingNotification(latestNote, "note");
+    }
     showToast("Note written to Questathon live account.");
   } catch (err) {
     showToast(err.message);
@@ -1785,6 +2065,11 @@ async function initApp() {
     }
 
     renderCurrentView();
+    if (signals && signals.length > 0) {
+      setTimeout(() => {
+        showLiveFloatingNotification(signals[0], "signal");
+      }, 700);
+    }
   } catch (err) {
     document.querySelector(".content-stage").innerHTML = `
       <div style="background:#24262b;border:1px solid #f43f5e;color:#fda4af;padding:24px;border-radius:12px;">
